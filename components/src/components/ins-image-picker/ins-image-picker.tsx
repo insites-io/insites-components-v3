@@ -36,7 +36,6 @@ export class Insimagepicker {
   imageEl: HTMLImageElement;
   modalEl: Element;
   hiddenInputEl: HTMLInputElement;
-  croppedImage;
 
   @Method()
   async getValue(){
@@ -149,7 +148,6 @@ export class Insimagepicker {
   cancelCropping(){
     if (this.cropper) this.cropper.destroy();
     this.controllersEl.classList.remove('cropping');
-    this.croppedImage = "";
   }
 
   exportImage(e: Event) {

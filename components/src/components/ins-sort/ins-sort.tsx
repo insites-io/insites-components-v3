@@ -97,11 +97,6 @@ export class InsSort {
     return order
   }
 
-  // @Method()
-  // get(){
-  //   return Sortable.get(this.body)
-  // }
-
   @Event() insDrop: EventEmitter<Object>;
   private initSortable() {
     let

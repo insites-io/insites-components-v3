@@ -20,8 +20,6 @@ export class InsSidebarItem {
   @Prop({ mutable: true }) load: boolean = false;
   @Prop({ mutable: true }) checkLoad: boolean = false;
   @Prop({ mutable: true }) tooltip: boolean = false;
-  // @Prop({ context: 'formatUrl' }) formatUrl: any = () => {};
-  // @Prop({ context: 'addRippleEffect' }) addRippleEffect: any;
 
   @State() submenuVisible: boolean;
   @State() isActive: boolean;
@@ -69,7 +67,6 @@ export class InsSidebarItem {
 
     this.toggleMenuNav();
     this.routePage.emit({ crumbs, redirect });
-    // await this.hideSiblingsMenu();
 
     let body = document.querySelector('body');
     body.style.overflowY = null;

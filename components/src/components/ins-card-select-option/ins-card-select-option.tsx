@@ -32,16 +32,6 @@ export class InsCardSelectOption {
     this.activated = !this.activated;
   }
 
-  // @Method() async hideOption(){
-  //   this.hidden = true;
-  // }
-
-  // @Method() async showOption(){
-  //   this.hidden = false;
-  // }
-  // ${this.hidden ? 'hidden': ''}
-  // ${this.disabled ? 'disabled': ''}
-
 	render() {
     return (
       <div class={`

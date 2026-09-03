@@ -34,7 +34,6 @@ export class InsInputTel {
   @Prop({mutable: true}) htmlDescription: boolean = false;
 
   responsiveView: boolean;
-  dropdownIsOpen: boolean = false;
   _phone: HTMLInputElement;
   _areaCode: HTMLInputElement;
   _phoneNumber: HTMLInputElement;
@@ -137,6 +136,7 @@ export class InsInputTel {
       return true;
 
     } else event.preventDefault();
+    return undefined;
   }
 
   initintTel() {
@@ -159,12 +159,9 @@ export class InsInputTel {
 
     this._phone.addEventListener("open:countrydropdown", () => {
       this.activateLabel();
-      this.dropdownIsOpen = true;
     });
 
     this._phone.addEventListener("close:countrydropdown", () => {
-      this.dropdownIsOpen = false;
-
       if (this._phoneNumber !== document.activeElement
         && this._areaCode !== document.activeElement){
         this.deactivateLabel();
@@ -244,7 +241,7 @@ export class InsInputTel {
     let allowed = '<a>,<abbr>,<acronym>,<address>,<article>,<aside>,<b>,<base>,<bdi>,<bdo>,<blockquote>,<br>,<caption>,<code>,<dd>,<del>,<details>,<dfn>,<dir>,<div>,<dl>,<dt>,<em>,<font>,<h1>,<h2>,<h3>,<h4>,<h5>,<h6>,<hr>,<i>,<ins>,<label>,<li>,<link>,<mark>,<menu>,<meter>,<nav>,<ol>,<p>,<pre>,<q>,<s>,<samp>,<section>,<small>,<span>,<strike>,<strong>,<sub>,<summary>,<sup>,<table>,<tbody>,<td>,<tfoot>,<th>,<thead>,<time>,<tr>,<tt>,<u>,<ul>,<wbr>';
     allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
 
-    var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
+    const tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
     commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
     return value.replace(commentsAndPhpTags, '').replace(tags, ($0, $1) => {
       return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';

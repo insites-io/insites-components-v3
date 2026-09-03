@@ -35,8 +35,6 @@ export class InsModal {
 
   @State() showModal: boolean = false;
 
-  parentModal: any;
-
   componentDidLoad() {
     this.adjustPosition();
     if (this.checkLoad) this.load = true;
@@ -158,8 +156,7 @@ export class InsModal {
         ${this.showModal ? 'show-modal' : ''} ${this.light ? 'light' : ''}
         ${this.noButton ? 'no-button' : ''}
         ${this.fullHeight ? 'full-height' : ''}
-        ${this.heading ? 'has-heading' : ''}
-        ${this.noButton ? 'no-button' : ''}`} onClick={e => this.clickOutsideHandler(e)}>
+        ${this.heading ? 'has-heading' : ''}`} onClick={e => this.clickOutsideHandler(e)}>
 
         {this.withBackdrop ? <ins-backdrop light={this.light}></ins-backdrop> : ''}
         <ins-card steady no-padding>

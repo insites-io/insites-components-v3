@@ -6,7 +6,7 @@ import tippy from 'tippy.js';
   styleUrl: './ins-input-tooltip.scss'
 })
 
-export class InsBackdrop {
+export class InsInputTooltip {
   @Element() el: HTMLElement;
   @Prop({mutable: true}) content: string = "";
   @Prop({mutable: true}) trigger: string = "click";

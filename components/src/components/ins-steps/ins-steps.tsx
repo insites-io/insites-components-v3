@@ -30,6 +30,7 @@ export class InsSteps {
         } else this.emitEvent(nextStep, i);
       }
     }
+    return undefined;
   }
 
   findActiveStep(){
@@ -42,6 +43,7 @@ export class InsSteps {
     for (let i = 0; i < this.steps.length; i++){
       if (this.steps[i].active) return i;
     }
+    return undefined;
   }
 
   emitEvent(currentStep, i){

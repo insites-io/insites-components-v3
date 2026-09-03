@@ -201,7 +201,7 @@ export class InsGallery {
       this.imgEl.width * cx + "px " + this.imgEl.height * cy + "px";
 
     let getCursorPos = (e: any) => {
-      var a,
+      let a,
         x = 0,
         y = 0;
       e = e || window.event;
@@ -220,7 +220,7 @@ export class InsGallery {
     };
 
     let moveLens = (e: any) => {
-      var pos, x, y;
+      let pos, x, y;
       /* show zoom element */
       result.classList.add("zooming");
 

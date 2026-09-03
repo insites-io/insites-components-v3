@@ -250,6 +250,7 @@ export class InsSelect {
     if (this.multiple) {
       this.resetMultipleValue(options);
     } else this.resetSelected(options);
+    return undefined;
   }
 
   resetSelected(options: any) {
@@ -286,6 +287,7 @@ export class InsSelect {
     if (this.multiple) {
       this.setMultipleValue(val, options);
     } else this.setSelected(val, options);
+    return undefined;
   }
 
   updateSelectedForMultiple(){
@@ -295,6 +297,7 @@ export class InsSelect {
           option.activated = true;
           return true;
         }
+        return undefined;
       });
     });
   }
@@ -307,6 +310,7 @@ export class InsSelect {
         this.inputValueEl.value = option.label;
         return true;
       }
+      return undefined;
     });
   }
 
@@ -316,11 +320,13 @@ export class InsSelect {
     if (this.multiple){
       this.updateSelectedForMultiple()
     } else this.updateSelected();
+    return undefined;
   }
 
   initDynamicOption(){
     if (!this.withDynamicOption) return false;
     this.dynamicInputEl = this.searchEl('input[data-dynamic]');
+    return undefined;
   }
 
   defaultValidate(value: string){
@@ -422,6 +428,7 @@ export class InsSelect {
     if (this.optionsWrapEl){
       this.optionsWrapEl.classList[state? 'add' : 'remove']('searching');
     } else return false
+    return undefined;
   }
 
   @Method()
@@ -430,6 +437,7 @@ export class InsSelect {
     if (this.optionsWrapEl){
       this.optionsWrapEl.classList[state? 'add':'remove']('loading');
     } else return false
+    return undefined;
   }
 
   staticSearch(keyword: string){
@@ -453,6 +461,7 @@ export class InsSelect {
 
     if (!hasResult) this.enableNoResult();
     else this.checkForOptions();
+    return undefined;
   }
 
   @Method()
@@ -460,6 +469,7 @@ export class InsSelect {
     if (this.optionsWrapEl){
       this.optionsWrapEl.classList.add('no-result');
     } else return false
+    return undefined;
   }
 
   @Method()
@@ -467,6 +477,7 @@ export class InsSelect {
     if (this.optionsWrapEl){
       this.optionsWrapEl.classList.remove('no-result');
     } else return false
+    return undefined;
   }
 
   @Listen('insSelectOptionClicked')
@@ -514,6 +525,7 @@ export class InsSelect {
         hasOption = true;
         return true;
       }
+      return undefined;
     }, options);
 
     let action = hasOption ? "remove" : "add";
@@ -836,7 +848,7 @@ export class InsSelect {
     let allowed = '<a>,<abbr>,<acronym>,<address>,<article>,<aside>,<b>,<base>,<bdi>,<bdo>,<blockquote>,<br>,<caption>,<code>,<dd>,<del>,<details>,<dfn>,<dir>,<div>,<dl>,<dt>,<em>,<font>,<h1>,<h2>,<h3>,<h4>,<h5>,<h6>,<hr>,<i>,<ins>,<label>,<li>,<link>,<mark>,<menu>,<meter>,<nav>,<ol>,<p>,<pre>,<q>,<s>,<samp>,<section>,<small>,<span>,<strike>,<strong>,<sub>,<summary>,<sup>,<table>,<tbody>,<td>,<tfoot>,<th>,<thead>,<time>,<tr>,<tt>,<u>,<ul>,<wbr>';
     allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
 
-    var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
+    const tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
     commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
     return value.replace(commentsAndPhpTags, '').replace(tags, ($0, $1) => {
       return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';

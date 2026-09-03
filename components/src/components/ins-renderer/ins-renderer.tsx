@@ -1,4 +1,4 @@
-import { h, Component, Prop, State, Method, Element, Event, EventEmitter } from "@stencil/core";
+import { h, Component, Prop, Method, Element, Event, EventEmitter, State } from "@stencil/core";
 
 @Component({ tag: 'ins-renderer' })
 export class InsRenderer {
@@ -6,7 +6,8 @@ export class InsRenderer {
   @Event() didLoad: EventEmitter<void>;
   @Prop() hasLoad: string;
 
-  @State() insBreadCrumbsEl: any;
+  @State() insBreadCrumbsEl: any; // unused, kept this pass: removing a @State member changes the compiled component manifest — schedule with a reviewed release
+
   @Prop({ mutable: true }) link: string;
   @Prop({ mutable: true }) disableBreadcrumbs: boolean = false;
   @Prop({ mutable: true }) app: boolean = false;
@@ -26,7 +27,6 @@ export class InsRenderer {
   titleEl: HTMLElement;
   breadcrumbsEl: HTMLElement;
   wrapEl: HTMLElement;
-  slotWrapEl: HTMLElement;
 
   @Method()
   async updateRoute(newRoutes: any[], noRedirect = false, iframe: boolean) {

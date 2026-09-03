@@ -12,7 +12,7 @@ export class InsInstances {
   @Prop({ mutable: true }) load: boolean = false;
   @Prop({ mutable: true }) checkLoad: boolean = false;
 
-  @State() dropDownState: boolean;
+  @State() dropDownState: boolean; // unused, kept this pass: removing a @State member changes the compiled component manifest — schedule with a reviewed release
   @State() hasItems: boolean;
   @State() activeSubItem: boolean;
 
@@ -48,21 +48,6 @@ export class InsInstances {
       let func = window["Insites"].methods[this.hasLoad];
       if (func) func(this.el);
     }
-  }
-
-  toggleDropDown(){
-    this.dropDownState = !this.dropDownState;
-  }
-
-  relocate(link: string){
-    link = (link) ? link : '/';
-
-    if (this.newTab) {
-      window.open(link, '_blank');
-      return;
-    }
-
-    window.location.assign(link);
   }
 
   render() {
