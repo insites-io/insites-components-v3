@@ -41,25 +41,25 @@
 
 ## Events
 
-| Event            | Description | Type               |
-| ---------------- | ----------- | ------------------ |
-| `didLoad`        |             | `CustomEvent<any>` |
-| `insBlur`        |             | `CustomEvent<any>` |
-| `insColorChange` |             | `CustomEvent<any>` |
-| `insIconClick`   |             | `CustomEvent<any>` |
-| `insInput`       |             | `CustomEvent<any>` |
-| `insValueChange` |             | `CustomEvent<any>` |
+| Event            | Description | Type                                                   |
+| ---------------- | ----------- | ------------------------------------------------------ |
+| `didLoad`        |             | `CustomEvent<any>`                                     |
+| `insBlur`        |             | `CustomEvent<{ value: string; keyCode: number; }>`     |
+| `insColorChange` |             | `CustomEvent<{ value: string; valid: boolean; }>`      |
+| `insIconClick`   |             | `CustomEvent<{ target: HTMLElement; value: string; }>` |
+| `insInput`       |             | `CustomEvent<{ value: string; keyCode?: number; }>`    |
+| `insValueChange` |             | `CustomEvent<string>`                                  |
 
 
 ## Methods
 
-### `getValue() => Promise<any>`
+### `getValue() => Promise<string>`
 
 
 
 #### Returns
 
-Type: `Promise<any>`
+Type: `Promise<string>`
 
 
 
@@ -83,15 +83,15 @@ Type: `Promise<void>`
 
 
 
-### `setValue(value: any) => Promise<void>`
+### `setValue(value: string) => Promise<void>`
 
 
 
 #### Parameters
 
-| Name    | Type  | Description |
-| ------- | ----- | ----------- |
-| `value` | `any` |             |
+| Name    | Type     | Description |
+| ------- | -------- | ----------- |
+| `value` | `string` |             |
 
 #### Returns
 

@@ -4,7 +4,7 @@ import { h, Component, Element, Prop, Event, EventEmitter } from "@stencil/core"
 export class InsAccordion {
   @Element() insAccordionEl: HTMLElement;
   @Event() insToggle: EventEmitter;
-  @Event() didLoad: EventEmitter;
+  @Event() didLoad: EventEmitter<void>;
   @Prop() hasLoad: string;
   @Prop({ mutable: true }) menu: boolean = false;
   @Prop({ mutable: true }) load: boolean = false;

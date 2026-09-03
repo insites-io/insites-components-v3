@@ -3,7 +3,7 @@ import { h, Watch, Component, Element, Event, EventEmitter, Method, Prop, State 
 @Component({ tag: 'ins-filter-item' })
 export class InsFilterItem {
     @Element() el: HTMLElement;
-    @Event() insSelect: EventEmitter;
+    @Event() insSelect: EventEmitter<{ name: string; option: string }>;
     @Event() didLoad: EventEmitter;
     @Prop() hasLoad: string;
     @Prop({ mutable: true }) name: string = 'Category Label';
@@ -14,9 +14,9 @@ export class InsFilterItem {
 
     @State() dropDownState: boolean = false;
 
-    currentFilter: any;
-    optionsWrapEl: any;
-    _options: any;
+    currentFilter: string;
+    optionsWrapEl: Element;
+    _options: string[];
 
     @Watch('options')
     optionsUpdate() {
@@ -42,7 +42,7 @@ export class InsFilterItem {
 
     addClickOutside(){
       window.addEventListener("click", e => {
-        let target = e.target as any;
+        let target = e.target as HTMLElement;
         let closest = target.closest(".filter-item__button")
 
         if (closest !== this.optionsWrapEl) {
@@ -88,7 +88,7 @@ export class InsFilterItem {
         }
     }
 
-    filterHandler(option) {
+    filterHandler(option: string) {
         if (this.currentFilter !== option) {
             this.insSelect.emit({
               name: this.name,
@@ -100,7 +100,7 @@ export class InsFilterItem {
         }
     }
 
-    isJSON(str) {
+    isJSON(str: string) {
         try {
             JSON.parse(str);
         } catch (e) {

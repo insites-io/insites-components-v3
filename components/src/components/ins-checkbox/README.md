@@ -43,17 +43,17 @@ Type: `Promise<{ value: string; trueValue: string; falseValue: string; }>`
 
 
 
-### `setValue(value: any, trueValue: any, falseValue: any) => Promise<void>`
+### `setValue(value: string, trueValue: string, falseValue: string) => Promise<void>`
 
 
 
 #### Parameters
 
-| Name         | Type  | Description |
-| ------------ | ----- | ----------- |
-| `value`      | `any` |             |
-| `trueValue`  | `any` |             |
-| `falseValue` | `any` |             |
+| Name         | Type     | Description |
+| ------------ | -------- | ----------- |
+| `value`      | `string` |             |
+| `trueValue`  | `string` |             |
+| `falseValue` | `string` |             |
 
 #### Returns
 
@@ -61,15 +61,15 @@ Type: `Promise<void>`
 
 
 
-### `updateCheckState(state: any) => Promise<void>`
+### `updateCheckState(state: boolean) => Promise<void>`
 
 
 
 #### Parameters
 
-| Name    | Type  | Description |
-| ------- | ----- | ----------- |
-| `state` | `any` |             |
+| Name    | Type      | Description |
+| ------- | --------- | ----------- |
+| `state` | `boolean` |             |
 
 #### Returns
 

@@ -12,7 +12,7 @@ export class InsHeaderUser {
   @Prop({ mutable: true }) formattedRoute: string;
   @State() dropDownState: boolean;
 
-  insRendererEl: any;
+  insRendererEl: HTMLInsRendererElement;
 
   toggleDropDown(){
     this.dropDownState = !this.dropDownState;
@@ -28,7 +28,7 @@ export class InsHeaderUser {
       withSubmenu: false
     }
     let currentCrumbs = JSON.parse(window.localStorage.getItem('ins_breadcrumbs'));
-    let insRendererEl = parent.document.querySelector('ins-renderer') as any;
+    let insRendererEl = parent.document.querySelector('ins-renderer') as HTMLInsRendererElement;
 
     if (currentCrumbs[currentCrumbs.length - 1].label !== 'My Profile'){
       currentCrumbs.push(newRoute);

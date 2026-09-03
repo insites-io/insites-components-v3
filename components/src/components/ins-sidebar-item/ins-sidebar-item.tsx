@@ -3,9 +3,9 @@ import { h, Component, Prop, Event, EventEmitter, State, Method, Element } from 
 @Component({ tag: 'ins-sidebar-item' })
 export class InsSidebarItem {
   @Element() insSidebarItemEl: HTMLElement;
-  @Event() routePage: EventEmitter;
-  @Event() didLoad: EventEmitter;
-  @Event() didHover: EventEmitter;
+  @Event() routePage: EventEmitter<{ crumbs: any[]; redirect: boolean }>;
+  @Event() didLoad: EventEmitter<void>;
+  @Event() didHover: EventEmitter<{ x: number; y: number; label: string; state: boolean }>;
   @Prop() hasLoad: string;
 
   @Prop({mutable: true}) link: any = '';
@@ -28,12 +28,12 @@ export class InsSidebarItem {
   @State() formattedRoute: string;
 
   @Method()
-  async routePageHandler(e){
+  async routePageHandler(e?: Event | string){
     let redirect = false;
 
     if (e) {
       if (e === "landing") redirect = true
-      else e.preventDefault();
+      else (e as Event).preventDefault();
     }
 
     this.activate();
@@ -97,7 +97,7 @@ export class InsSidebarItem {
     }
   }
 
-  hasClass(element, cls){
+  hasClass(element: Element, cls: string){
     return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
   }
 
@@ -174,10 +174,10 @@ export class InsSidebarItem {
     return true;
   }
 
-  addRippleEffect(startingPoint, target){
+  addRippleEffect(startingPoint: MouseEvent, target: HTMLElement){
 
     let rect = target.getBoundingClientRect();
-    let ripple = target.querySelector('.ripple-wave');
+    let ripple = target.querySelector('.ripple-wave') as HTMLSpanElement;
 
     if (!ripple) {
       ripple = document.createElement('span');
@@ -231,7 +231,7 @@ export class InsSidebarItem {
     return this.locFormatRoute();
   }
 
-  formatUrl(e){
+  formatUrl(e: string){
     return e.toLowerCase()
         .replace(/ +(?= )/g, '')
         .replace(/- | - | -| /gi, '-')
@@ -256,9 +256,9 @@ export class InsSidebarItem {
     }
   }
 
-  toggleTooltip(event, state){
+  toggleTooltip(event: MouseEvent, state: boolean){
     this.didHover.emit({
-      x: event.target.getBoundingClientRect().right, y:  event.target.getBoundingClientRect().top, label: this.label, state: state
+      x: (event.target as HTMLElement).getBoundingClientRect().right, y:  (event.target as HTMLElement).getBoundingClientRect().top, label: this.label, state: state
     });
   }
 

@@ -51,15 +51,15 @@ Type: `Promise<any>`
 
 
 
-### `setValue(value: any) => Promise<void>`
+### `setValue(value: number) => Promise<void>`
 
 
 
 #### Parameters
 
-| Name    | Type  | Description |
-| ------- | ----- | ----------- |
-| `value` | `any` |             |
+| Name    | Type     | Description |
+| ------- | -------- | ----------- |
+| `value` | `number` |             |
 
 #### Returns
 

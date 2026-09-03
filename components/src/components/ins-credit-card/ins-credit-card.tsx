@@ -35,7 +35,7 @@ export class InsCreditCard {
   @Prop({ mutable: true }) optionsColor: string = 'grey';
 
   @Method()
-  async setValue(value){
+  async setValue(value: string){
     this.value = value;
     this.insValueChange.emit(this.value);
   }
@@ -522,7 +522,7 @@ export class InsCreditCard {
     }
   }
 
-  checkAttrVal(attr, min, max){
+  checkAttrVal(attr: string, min: number, max: number){
     let num = +attr;
     if (num && (num >= min && num <= max)){
       let str = attr.toString();
@@ -548,8 +548,8 @@ export class InsCreditCard {
       }
   }
 
-  triggerClickCompactEvent(event) {
-    event.target.checked = this.active;
+  triggerClickCompactEvent(event: MouseEvent) {
+    (event.target as HTMLInputElement).checked = this.active;
   }
 
   constructOptions() {
@@ -561,7 +561,7 @@ export class InsCreditCard {
   }
 
   @Listen('insClickOption')
-  optionClickHandler(event) {
+  optionClickHandler(event: CustomEvent) {
     this.insOption.emit(event.detail);
   }
 

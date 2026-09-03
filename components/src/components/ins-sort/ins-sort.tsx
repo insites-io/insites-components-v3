@@ -24,47 +24,47 @@ export class InsSort {
   group: ISortableGroup = new SortableGroup();
 
   @Event() insDragStart: EventEmitter<Object>;
-  onDraggingStart(event) {
+  onDraggingStart(event: any) {
     this.insDragStart.emit(event);
   }
 
   @Event() insDragEnd: EventEmitter<Object>;
-  onDraggingEnd(event) {
+  onDraggingEnd(event: any) {
     this.insDragEnd.emit(event);
   }
 
   @Event() insChoose: EventEmitter<Object>;
-  onChooseElement(event) {
+  onChooseElement(event: any) {
     this.insChoose.emit(event);
   }
 
   @Event() insUpdate: EventEmitter<Object>;
-  onUpdating(event) {
+  onUpdating(event: any) {
     this.insUpdate.emit(event);
   }
 
   @Event() insMove: EventEmitter<Object>;
-  onMoving(event) {
+  onMoving(event: any) {
     this.insMove.emit(event);
   }
 
   @Event() insAdd: EventEmitter<Object>;
-  onAdding(event) {
+  onAdding(event: any) {
     this.insAdd.emit(event);
   }
 
   @Event() insRemove: EventEmitter<Object>;
-  onRemoving(event) {
+  onRemoving(event: any) {
     this.insRemove.emit(event);
   }
 
   @Event() insClone: EventEmitter<Object>;
-  onCloning(event) {
+  onCloning(event: any) {
     this.insClone.emit(event);
   }
 
   @Event() insPositionChanged: EventEmitter<Object>;
-  onPositionChanging(event) {
+  onPositionChanging(event: any) {
     this.insPositionChanged.emit(event);
   }
 
@@ -72,7 +72,7 @@ export class InsSort {
   async getSortOrder(){
     let instance = Sortable.get(this.body),
         order = instance.toArray(),
-        result = {}
+        result: Record<number, string> = {}
     order.forEach((value, key) => {
       result[key] = value
     });

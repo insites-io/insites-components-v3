@@ -20,9 +20,9 @@
 
 ## Events
 
-| Event     | Description | Type               |
-| --------- | ----------- | ------------------ |
-| `didLoad` |             | `CustomEvent<any>` |
+| Event     | Description | Type                |
+| --------- | ----------- | ------------------- |
+| `didLoad` |             | `CustomEvent<void>` |
 
 
 ## Methods
@@ -37,7 +37,7 @@ Type: `Promise<void>`
 
 
 
-### `updateRoute(newRoutes: any, noRedirect: boolean, iframe: any) => Promise<void>`
+### `updateRoute(newRoutes: any[], noRedirect: boolean, iframe: boolean) => Promise<void>`
 
 
 
@@ -45,9 +45,9 @@ Type: `Promise<void>`
 
 | Name         | Type      | Description |
 | ------------ | --------- | ----------- |
-| `newRoutes`  | `any`     |             |
+| `newRoutes`  | `any[]`   |             |
 | `noRedirect` | `boolean` |             |
-| `iframe`     | `any`     |             |
+| `iframe`     | `boolean` |             |
 
 #### Returns
 
@@ -55,15 +55,15 @@ Type: `Promise<void>`
 
 
 
-### `updateRouteLabel(value: any) => Promise<void>`
+### `updateRouteLabel(value: string) => Promise<void>`
 
 
 
 #### Parameters
 
-| Name    | Type  | Description |
-| ------- | ----- | ----------- |
-| `value` | `any` |             |
+| Name    | Type     | Description |
+| ------- | -------- | ----------- |
+| `value` | `string` |             |
 
 #### Returns
 

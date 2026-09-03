@@ -17,9 +17,9 @@
 
 ## Events
 
-| Event              | Description | Type               |
-| ------------------ | ----------- | ------------------ |
-| `insGalleryUpdate` |             | `CustomEvent<any>` |
+| Event              | Description | Type                                                 |
+| ------------------ | ----------- | ---------------------------------------------------- |
+| `insGalleryUpdate` |             | `CustomEvent<{ thumbnail: string; image: string; }>` |
 
 
 ## Methods

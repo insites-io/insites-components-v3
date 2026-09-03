@@ -13,12 +13,12 @@ export class InsHeader {
 
   @State() sidebarMini: boolean;
   @State() hasSidebar: boolean;
-  @State() insAdminEl: any;
-  @State() insNotificationsEl: any;
-  @State() insSidebarEl: any;
+  @State() insAdminEl: HTMLElement;
+  @State() insNotificationsEl: HTMLInsNotificationsElement;
+  @State() insSidebarEl: HTMLInsSidebarElement;
 
-  insNavEl: any;
-  @State() fullScreenState: any;
+  insNavEl: HTMLElement;
+  @State() fullScreenState: boolean;
 
   componentWillLoad() {
     this.sidebarMini = false;
@@ -30,7 +30,7 @@ export class InsHeader {
 
   componentDidLoad() {
     let $this = this;
-    this.insNavEl = document.querySelector('.full-width-navs');
+    this.insNavEl = document.querySelector('.full-width-navs') as HTMLElement;
 
     window.onresize = function() {
       $this.toggleMinimise();
@@ -86,11 +86,11 @@ export class InsHeader {
 
     if (insAdminEl.className.includes('mini')){
       for (let i = 0; i < submenuWrapEls.length; ++i) {
-        let submenuWrap = submenuWrapEls[i] as any;
+        let submenuWrap = submenuWrapEls[i];
         submenuWrap.hideSubMenu();
       }
       for (let i = 0; i < footerMenus.length; ++i) {
-        let footerMenu = footerMenus[i] as any;
+        let footerMenu = footerMenus[i];
         footerMenu.hideMenu();
       }
     }
@@ -132,7 +132,7 @@ export class InsHeader {
     this.insNotificationsEl.toggleNotificationshandler();
   }
 
-  checkURL(url){
+  checkURL(url: string){
       if (url.includes('https://')){
           return url;
       } else if (url.includes('http://')){
@@ -146,7 +146,7 @@ export class InsHeader {
     window.open(this.checkURL(this.supportLink))
   }
 
-  hasClass(element, cls){
+  hasClass(element: HTMLElement, cls: string){
     return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
   }
 

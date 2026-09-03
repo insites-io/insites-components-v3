@@ -3,8 +3,8 @@ import { h, Component, Prop, Event, EventEmitter, State, Method, Listen, Element
 @Component({ tag: 'ins-sidebar' })
 export class InsSidebar {
   @Element() insSidebarEl: HTMLElement;
-  @Event() insSidebarAction: EventEmitter;
-  @Event() didLoad: EventEmitter;
+  @Event() insSidebarAction: EventEmitter<any>;
+  @Event() didLoad: EventEmitter<void>;
 
   @Prop() hasLoad: string;
   @Prop({ mutable: true }) fullLogo: string;
@@ -16,9 +16,9 @@ export class InsSidebar {
   @State() noFooter: boolean = false;
 
   baseURL = "https://components.insites.io/assets/images";
-  sidebarItemEls: any;
-  insRenderer: any;
-  insHeaderUserEl: any;
+  sidebarItemEls: NodeListOf<HTMLInsSidebarItemElement>;
+  insRenderer: HTMLInsRendererElement;
+  insHeaderUserEl: HTMLInsHeaderUserElement;
   reroute: boolean = false;
 
   componentWillLoad(){
@@ -75,7 +75,7 @@ export class InsSidebar {
     this.updateRoute(event.detail.crumbs, event.detail.redirect);
   }
 
-  async updateRoute(crumbs, redirect) {
+  async updateRoute(crumbs: any[], redirect: boolean) {
     let noRedirect = !redirect;
 
     if (this.reroute){
@@ -96,7 +96,7 @@ export class InsSidebar {
     await this.insRenderer.updateRoute(crumbs, noRedirect, true);
   }
 
-  async goToMyProfilePage(deeplink){
+  async goToMyProfilePage(deeplink: boolean){
     let insHeaderUserEl = document.querySelector('ins-header-user');
     if (!deeplink) await this.hideSidebarItems();
 
@@ -130,7 +130,7 @@ export class InsSidebar {
     }
   }
 
-  checkIfRoot(show){
+  checkIfRoot(show: boolean){
     let currentHash = window.location.hash;
     if (currentHash === "" || currentHash === "#/"){
       if (show) this.showLandingPage();
@@ -170,7 +170,7 @@ export class InsSidebar {
     return false
   }
 
-  async loadRoute(sidebarItem, deeplink){
+  async loadRoute(sidebarItem: any, deeplink: boolean){
     if (!deeplink){
       sidebarItem.routePageHandler();
     } else {
@@ -180,7 +180,7 @@ export class InsSidebar {
     return true;
   }
 
-  async checkHash(deeplink?){
+  async checkHash(deeplink?: boolean){
     let route = this.checkIfRoot(true);
     if (route === "#/app/my-profile" ||
       (this.insHeaderUserEl && this.insHeaderUserEl.profileLink === route)
@@ -236,7 +236,7 @@ export class InsSidebar {
     this.minimised = false;
   }
 
-  sidebarActionEventHandler(event){
+  sidebarActionEventHandler(event: any){
     this.insSidebarAction.emit(event);
   }
 

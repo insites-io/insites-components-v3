@@ -106,7 +106,7 @@ export class InsModal {
     insCardWrap.parentElement.style.left = `calc(50% - ${adjust}px)`;
   }
 
-  closeConfirmModal(type){
+  closeConfirmModal(type: string){
     this.insClose.emit({
       action: type,
       value: this.value
@@ -119,7 +119,7 @@ export class InsModal {
   }
 
   @Method()
-  async parentClosed(type){
+  async parentClosed(type: string){
     this.closeConfirmModal(type);
   }
 
@@ -142,7 +142,7 @@ export class InsModal {
     parentModal.close()
   }
 
-  clickOutsideHandler(e){
+  clickOutsideHandler(e: MouseEvent){
     if (this.preventClickOutside) return;
     let insModalWrap = this.insModalEl.querySelector('.ins-modal-wrap');
     let insModalBackdrop = this.insModalEl.querySelector('.ins-backdrop-wrap');

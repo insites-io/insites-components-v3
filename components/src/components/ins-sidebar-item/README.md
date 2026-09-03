@@ -26,11 +26,11 @@
 
 ## Events
 
-| Event       | Description | Type               |
-| ----------- | ----------- | ------------------ |
-| `didHover`  |             | `CustomEvent<any>` |
-| `didLoad`   |             | `CustomEvent<any>` |
-| `routePage` |             | `CustomEvent<any>` |
+| Event       | Description | Type                                                                    |
+| ----------- | ----------- | ----------------------------------------------------------------------- |
+| `didHover`  |             | `CustomEvent<{ x: number; y: number; label: string; state: boolean; }>` |
+| `didLoad`   |             | `CustomEvent<void>`                                                     |
+| `routePage` |             | `CustomEvent<{ crumbs: any[]; redirect: boolean; }>`                    |
 
 
 ## Methods
@@ -85,15 +85,15 @@ Type: `Promise<boolean>`
 
 
 
-### `routePageHandler(e: any) => Promise<{ crumbs: any[]; }>`
+### `routePageHandler(e?: Event | string) => Promise<{ crumbs: any[]; }>`
 
 
 
 #### Parameters
 
-| Name | Type  | Description |
-| ---- | ----- | ----------- |
-| `e`  | `any` |             |
+| Name | Type              | Description |
+| ---- | ----------------- | ----------- |
+| `e`  | `string \| Event` |             |
 
 #### Returns
 

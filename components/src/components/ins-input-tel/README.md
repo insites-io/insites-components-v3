@@ -63,13 +63,13 @@ Type: `Promise<string>`
 
 
 
-### `getValues() => Promise<{ country_code: any; area_code: any; phone_number: any; }>`
+### `getValues() => Promise<{ country_code: string; area_code: string; phone_number: string; }>`
 
 
 
 #### Returns
 
-Type: `Promise<{ country_code: any; area_code: any; phone_number: any; }>`
+Type: `Promise<{ country_code: string; area_code: string; phone_number: string; }>`
 
 
 
@@ -93,15 +93,15 @@ Type: `Promise<void>`
 
 
 
-### `setCountry(country: any) => Promise<void>`
+### `setCountry(country: string) => Promise<void>`
 
 
 
 #### Parameters
 
-| Name      | Type  | Description |
-| --------- | ----- | ----------- |
-| `country` | `any` |             |
+| Name      | Type     | Description |
+| --------- | -------- | ----------- |
+| `country` | `string` |             |
 
 #### Returns
 
@@ -109,15 +109,15 @@ Type: `Promise<void>`
 
 
 
-### `setCountryCode(code: any) => Promise<void>`
+### `setCountryCode(code: string) => Promise<void>`
 
 
 
 #### Parameters
 
-| Name   | Type  | Description |
-| ------ | ----- | ----------- |
-| `code` | `any` |             |
+| Name   | Type     | Description |
+| ------ | -------- | ----------- |
+| `code` | `string` |             |
 
 #### Returns
 
@@ -125,15 +125,15 @@ Type: `Promise<void>`
 
 
 
-### `setValue({ country, country_code, area_code, phone_number }: { country: any; country_code: any; area_code: any; phone_number: any; }) => Promise<void>`
+### `setValue({ country, country_code, area_code, phone_number }: { country?: string; country_code?: string; area_code?: string; phone_number?: string; }) => Promise<void>`
 
 
 
 #### Parameters
 
-| Name  | Type                                                                      | Description |
-| ----- | ------------------------------------------------------------------------- | ----------- |
-| `__0` | `{ country: any; country_code: any; area_code: any; phone_number: any; }` |             |
+| Name  | Type                                                                                      | Description |
+| ----- | ----------------------------------------------------------------------------------------- | ----------- |
+| `__0` | `{ country?: string; country_code?: string; area_code?: string; phone_number?: string; }` |             |
 
 #### Returns
 

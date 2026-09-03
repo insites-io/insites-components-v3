@@ -9,9 +9,9 @@ import intlTelInput from "intl-tel-input";
 export class InsInputPhone {
   @Element() el: HTMLElement;
   @Event() insInput: EventEmitter;
-  @Event() insValueChange: EventEmitter;
-  @Event() insValidation: EventEmitter;
-  @Event() didLoad: EventEmitter;
+  @Event() insValueChange: EventEmitter<string>;
+  @Event() insValidation: EventEmitter<{hasError: boolean; errorMessage: string}>;
+  @Event() didLoad: EventEmitter<void>;
   @Prop() hasLoad: string;
 
   @Prop({ mutable: true }) label: string = "";
@@ -35,11 +35,11 @@ export class InsInputPhone {
 
   @State() activated: boolean = false;
 
-  _iti: any;
+  _iti: ReturnType<typeof intlTelInput>;
   _errorMessage: string;
 
   @Watch('value')
-  valueHandler(newValue) {
+  valueHandler(newValue: string) {
     if (newValue) this.setValue(newValue);
   }
 
@@ -49,7 +49,7 @@ export class InsInputPhone {
   }
 
   @Method()
-  async setValue(value){
+  async setValue(value: string){
     this._iti.setNumber(value);
   }
 
@@ -111,7 +111,7 @@ export class InsInputPhone {
     }
   }
 
-  validateDescription(value) {
+  validateDescription(value: string) {
     let allowed = '<a>,<abbr>,<acronym>,<address>,<article>,<aside>,<b>,<base>,<bdi>,<bdo>,<blockquote>,<br>,<caption>,<code>,<dd>,<del>,<details>,<dfn>,<dir>,<div>,<dl>,<dt>,<em>,<font>,<h1>,<h2>,<h3>,<h4>,<h5>,<h6>,<hr>,<i>,<ins>,<label>,<li>,<link>,<mark>,<menu>,<meter>,<nav>,<ol>,<p>,<pre>,<q>,<s>,<samp>,<section>,<small>,<span>,<strike>,<strong>,<sub>,<summary>,<sup>,<table>,<tbody>,<td>,<tfoot>,<th>,<thead>,<time>,<tr>,<tt>,<u>,<ul>,<wbr>';
     allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
 

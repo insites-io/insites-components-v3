@@ -32,11 +32,11 @@
 
 ## Events
 
-| Event            | Description | Type               |
-| ---------------- | ----------- | ------------------ |
-| `didLoad`        |             | `CustomEvent<any>` |
-| `insClick`       |             | `CustomEvent<any>` |
-| `insClickOption` |             | `CustomEvent<any>` |
+| Event            | Description | Type                                              |
+| ---------------- | ----------- | ------------------------------------------------- |
+| `didLoad`        |             | `CustomEvent<void>`                               |
+| `insClick`       |             | `CustomEvent<{ label: string; data: string; }>`   |
+| `insClickOption` |             | `CustomEvent<{ label: string; option: string; }>` |
 
 
 ## Dependencies

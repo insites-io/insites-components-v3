@@ -22,7 +22,7 @@ export class InsInstances {
   }
 
   @Listen('routeInstance')
-  routeInstanceHandler(event){
+  routeInstanceHandler(event: CustomEvent<{ instance: string; logoLink: string; withSubItem: boolean }>){
     this.instance = event.detail.instance;
     this.logoLink = event.detail.logoLink;
 
@@ -54,7 +54,7 @@ export class InsInstances {
     this.dropDownState = !this.dropDownState;
   }
 
-  relocate(link){
+  relocate(link: string){
     link = (link) ? link : '/';
 
     if (this.newTab) {

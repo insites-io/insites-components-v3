@@ -5,6 +5,8 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { Event } from "@stencil/core";
+export { Event } from "@stencil/core";
 export namespace Components {
     interface InsAccordion {
         "checkLoad": boolean;
@@ -23,7 +25,7 @@ export namespace Components {
         "linkTarget": string;
         "openIcon": string;
         "toggle": () => Promise<void>;
-        "udpateScrollHeight": (height: any) => Promise<void>;
+        "udpateScrollHeight": (height: number) => Promise<void>;
     }
     interface InsAccordionItemHeading {
     }
@@ -67,7 +69,7 @@ export namespace Components {
         "checkLoad": boolean;
         "hasLoad": string;
         "load": boolean;
-        "updateCrumbs": (crumbs: any, noRedirect?: boolean) => Promise<void>;
+        "updateCrumbs": (crumbs: any[], noRedirect?: boolean) => Promise<void>;
     }
     interface InsButton {
         "checkLoad": boolean;
@@ -96,11 +98,11 @@ export namespace Components {
         "checkLoad": boolean;
         "color": string;
         "disabled": boolean;
-        "getActiveOption": () => Promise<{ index: number; label: any; }>;
+        "getActiveOption": () => Promise<{ index: number; label: string; }>;
         "hasLoad": string;
         "load": boolean;
         "options": string;
-        "setActiveOption": (option: any) => Promise<void>;
+        "setActiveOption": (option: string) => Promise<void>;
         "size": string;
     }
     interface InsButtonSelect {
@@ -142,8 +144,8 @@ export namespace Components {
         "searchable": boolean;
         "searchablePlaceholder": string;
         "selectedValues": any;
-        "setLoadingState": (state: any) => Promise<boolean>;
-        "setSearchingState": (state: any) => Promise<boolean>;
+        "setLoadingState": (state: boolean) => Promise<boolean>;
+        "setSearchingState": (state: boolean) => Promise<boolean>;
         "setValue": (value?: any) => Promise<boolean>;
         "small": boolean;
         "value": any;
@@ -184,7 +186,7 @@ export namespace Components {
         "load": boolean;
         "multiple": boolean;
         "readonly": boolean;
-        "setValue": (value: any) => Promise<void>;
+        "setValue": (value: string | string[]) => Promise<void>;
         "tooltip": string;
         "value": any;
     }
@@ -211,7 +213,7 @@ export namespace Components {
         "ctaLinkTarget": string;
         "dragDisabled": boolean;
         "duration": number;
-        "goTo": (slide: any) => Promise<void>;
+        "goTo": (slide: string | number) => Promise<void>;
         "hasLoad": string;
         "heading": string;
         "height": string;
@@ -227,8 +229,8 @@ export namespace Components {
         "width": string;
     }
     interface InsChart {
-        "generateColor": (color: any, count: any) => Promise<Highcharts.ColorType>;
-        "renderChart": (options: any) => Promise<void>;
+        "generateColor": (color: string, count: number) => Promise<Highcharts.ColorType>;
+        "renderChart": (options: Highcharts.Options) => Promise<void>;
     }
     interface InsCheckbox {
         "checkLoad": boolean;
@@ -240,10 +242,10 @@ export namespace Components {
         "label": string;
         "load": boolean;
         "name": string;
-        "setValue": (value: any, trueValue: any, falseValue: any) => Promise<void>;
+        "setValue": (value: string, trueValue: string, falseValue: string) => Promise<void>;
         "tooltip": string;
         "trueValue": string;
-        "updateCheckState": (state: any) => Promise<void>;
+        "updateCheckState": (state: boolean) => Promise<void>;
         "value": string;
     }
     interface InsCheckboxCard {
@@ -257,7 +259,7 @@ export namespace Components {
         "noPadding": boolean;
         "selected": boolean;
         "selectedColor": string;
-        "setValue": (value: any) => Promise<void>;
+        "setValue": (value: string) => Promise<void>;
         "tabOrder": string;
         "value": string;
     }
@@ -277,7 +279,7 @@ export namespace Components {
         "load": boolean;
         "multiple": boolean;
         "readonly": boolean;
-        "setValue": (value: any) => Promise<void>;
+        "setValue": (value: string[]) => Promise<void>;
         "tooltip": string;
         "value": any;
     }
@@ -303,7 +305,7 @@ export namespace Components {
         "readonly": boolean;
         "refresh": () => Promise<void>;
         "reset": () => Promise<void>;
-        "setValue": (value: any) => Promise<void>;
+        "setValue": (value: string) => Promise<void>;
         "theme": string;
         "tooltip": string;
         "val": () => Promise<any>;
@@ -329,7 +331,7 @@ export namespace Components {
         "options": string;
         "optionsColor": string;
         "optionsIcon": string;
-        "setValue": (value: any) => Promise<void>;
+        "setValue": (value: string) => Promise<void>;
         "tag": string;
         "tagBackgroundColor": string;
         "tagColor": string;
@@ -346,8 +348,8 @@ export namespace Components {
         "disabled": boolean;
         "errorMessage": string;
         "format": string;
-        "formatDate": (date: any) => Promise<any>;
-        "getDate": () => Promise<{ value: string; selected_dates: any; }>;
+        "formatDate": (date: Date) => Promise<string>;
+        "getDate": () => Promise<{ value: string; selected_dates: Date[]; }>;
         "getValue": () => Promise<string>;
         "hasError": boolean;
         "hasLoad": string;
@@ -367,7 +369,7 @@ export namespace Components {
         "noMeridiem": boolean;
         "placeholder": string;
         "readonly": boolean;
-        "setValue": (value: any) => Promise<void>;
+        "setValue": (value: string) => Promise<void>;
         "tooltip": string;
         "value": string;
     }
@@ -383,7 +385,7 @@ export namespace Components {
         "load": boolean;
         "noPadding": boolean;
         "position": string;
-        "setDrawerState": (status: any) => Promise<void>;
+        "setDrawerState": (status: boolean) => Promise<void>;
         "showCloseButton": boolean;
         "showHeader": boolean;
         "stickyHeader": boolean;
@@ -410,7 +412,7 @@ export namespace Components {
         "description": string;
         "disableLineNumbers": boolean;
         "errorMessage": string;
-        "getValue": () => Promise<any>;
+        "getValue": () => Promise<string>;
         "hasCodeEditor": boolean;
         "hasError": boolean;
         "htmlDescription": boolean;
@@ -424,11 +426,11 @@ export namespace Components {
         "name": string;
         "pluginsList": any;
         "readonly": boolean;
-        "setValue": (value: any) => Promise<void>;
+        "setValue": (value: string) => Promise<void>;
         "showSource": boolean;
         "theme": string;
         "tooltip": string;
-        "val": () => Promise<any>;
+        "val": () => Promise<string>;
         "value": string;
     }
     interface InsFilter {
@@ -440,7 +442,7 @@ export namespace Components {
         "dateTitle": any;
         "dateTo": string;
         "defaultDate": string;
-        "getDate": () => Promise<"All" | { from: any; to: any; }>;
+        "getDate": () => Promise<"All" | { from: string; to: string; }>;
         "hasLoad": string;
         "label": string;
         "load": boolean;
@@ -449,7 +451,7 @@ export namespace Components {
     interface InsFilterItem {
         "checkLoad": boolean;
         "closeFilter": () => Promise<void>;
-        "getSelected": () => Promise<{ name: string; option: any; }>;
+        "getSelected": () => Promise<{ name: string; option: string; }>;
         "hasLoad": string;
         "load": boolean;
         "name": string;
@@ -457,7 +459,7 @@ export namespace Components {
         "selected": any;
     }
     interface InsGallery {
-        "activate": (index: any) => Promise<void>;
+        "activate": (index: number) => Promise<void>;
         "checkLoad": boolean;
         "imgAlt": string;
         "imgTitle": string;
@@ -521,7 +523,7 @@ export namespace Components {
         "name": string;
         "notImageFile": boolean;
         "placeholder": string;
-        "setValue": (value: any, file_name: any) => Promise<void>;
+        "setValue": (value: string, file_name: string) => Promise<void>;
         "uploadImgContainer": string;
         "uploadImgFileFormats": string;
         "uploadImgRecFileSize": number;
@@ -554,7 +556,7 @@ export namespace Components {
         "errorMessage": string;
         "field": string;
         "fieldId": string;
-        "getValue": () => Promise<any>;
+        "getValue": () => Promise<string>;
         "hasError": boolean;
         "hasLoad": string;
         "htmlDescription": boolean;
@@ -572,7 +574,7 @@ export namespace Components {
         "placeholder": string;
         "readonly": boolean;
         "required": boolean;
-        "setValue": (value: any) => Promise<void>;
+        "setValue": (value: string) => Promise<void>;
         "step": string;
         "tooltip": string;
         "unitLeft": string;
@@ -582,7 +584,7 @@ export namespace Components {
     interface InsInputFile {
         "acceptedFiles": string;
         "autoUpload": boolean;
-        "buildFormData": (s3Data: any, formData: any) => Promise<void>;
+        "buildFormData": (s3Data: any, formData: FormData) => Promise<void>;
         "capture": string;
         "checkLoad": boolean;
         "checkValue": boolean;
@@ -595,7 +597,7 @@ export namespace Components {
         "fileIcon": string;
         "getDropzoneInstance": () => Promise<any>;
         "getFilesList": () => Promise<any>;
-        "getS3Credentials": () => Promise<unknown>;
+        "getS3Credentials": () => Promise<object>;
         "getUploadingFiles": () => Promise<any>;
         "hasError": boolean;
         "hasLoad": string;
@@ -642,7 +644,7 @@ export namespace Components {
         "name": string;
         "placeholder": string;
         "readonly": boolean;
-        "setValue": (value: any) => Promise<void>;
+        "setValue": (value: string | any[]) => Promise<void>;
         "tooltip": string;
         "val": () => Promise<any>;
         "value": any;
@@ -664,7 +666,7 @@ export namespace Components {
         "placeholder": string;
         "readonly": boolean;
         "required": boolean;
-        "setValue": (value: any) => Promise<void>;
+        "setValue": (value: string) => Promise<void>;
         "tooltip": string;
         "validate": boolean;
         "value": string;
@@ -698,7 +700,7 @@ export namespace Components {
         "readonly": boolean;
         "resetValue": () => Promise<void>;
         "searchValue": string;
-        "setOptions": (value: any) => Promise<void>;
+        "setOptions": (value: Array<{ label: string; value: string; }>) => Promise<void>;
         "setValue": (value: any) => Promise<void>;
         "tooltip": string;
         "value": any;
@@ -749,8 +751,8 @@ export namespace Components {
         "searchable": boolean;
         "searchablePlaceholder": string;
         "selectedValues": any;
-        "setLoadingState": (state: any) => Promise<boolean>;
-        "setSearchingState": (state: any) => Promise<boolean>;
+        "setLoadingState": (state: boolean) => Promise<boolean>;
+        "setSearchingState": (state: boolean) => Promise<boolean>;
         "setValue": (value?: any) => Promise<boolean>;
         "tooltip": string;
         "value": any;
@@ -786,7 +788,7 @@ export namespace Components {
         "min": number;
         "name": string;
         "position": string;
-        "setValue": (value: any) => Promise<void>;
+        "setValue": (value: number) => Promise<void>;
         "sliderOnly": boolean;
         "step": number;
         "tooltip": string;
@@ -812,7 +814,7 @@ export namespace Components {
         "noValueChangeOnBlur": boolean;
         "readonly": boolean;
         "required": boolean;
-        "setValue": (value: any) => Promise<void>;
+        "setValue": (value: string) => Promise<void>;
         "step": string;
         "tooltip": string;
         "value": string;
@@ -826,7 +828,7 @@ export namespace Components {
         "description": string;
         "disabled": boolean;
         "errorMessage": string;
-        "getValue": () => Promise<any>;
+        "getValue": () => Promise<Record<string, string>[]>;
         "hasError": boolean;
         "hasLoad": string;
         "htmlDescription": boolean;
@@ -837,7 +839,7 @@ export namespace Components {
         "readonly": boolean;
         "removeButtonColor": string;
         "removeButtonIcon": string;
-        "setValue": (value: any) => Promise<any>;
+        "setValue": (value: Array<Record<string, string | null>>) => Promise<Record<string, string>[]>;
         "tableHeaders": any;
         "tooltip": string;
     }
@@ -853,7 +855,7 @@ export namespace Components {
         "errorMessage": string;
         "getCountryData": () => Promise<any>;
         "getValue": () => Promise<string>;
-        "getValues": () => Promise<{ country_code: any; area_code: any; phone_number: any; }>;
+        "getValues": () => Promise<{ country_code: string; area_code: string; phone_number: string; }>;
         "hasError": boolean;
         "hasLoad": string;
         "htmlDescription": boolean;
@@ -867,9 +869,9 @@ export namespace Components {
         "phonenumValue": string;
         "readonly": boolean;
         "required": boolean;
-        "setCountry": (country: any) => Promise<void>;
-        "setCountryCode": (code: any) => Promise<void>;
-        "setValue": ({ country, country_code, area_code, phone_number }: { country: any; country_code: any; area_code: any; phone_number: any; }) => Promise<void>;
+        "setCountry": (country: string) => Promise<void>;
+        "setCountryCode": (code: string) => Promise<void>;
+        "setValue": ({ country, country_code, area_code, phone_number }: { country?: string; country_code?: string; area_code?: string; phone_number?: string; }) => Promise<void>;
         "tooltip": string;
     }
     interface InsInputTooltip {
@@ -911,7 +913,7 @@ export namespace Components {
         "addItemButtonLabel": string;
         "disableDrop": boolean;
         "disableSort": boolean;
-        "getColumnCardsOrder": () => Promise<{}>;
+        "getColumnCardsOrder": () => Promise<Record<number, string>>;
         "heading": string;
         "headingColor": string;
         "headingSubDetail": string;
@@ -919,7 +921,7 @@ export namespace Components {
         "noItems": boolean;
         "noItemsDetail": string;
         "noItemsHeading": string;
-        "reorderCards": (sortable: any) => Promise<void>;
+        "reorderCards": (sortable: string | any[]) => Promise<void>;
         "sortableItems": [];
         "totalCount": string;
     }
@@ -967,7 +969,7 @@ export namespace Components {
         "readonly": boolean;
         "required": boolean;
         "reset": () => Promise<void>;
-        "setValue": (value: any) => Promise<void>;
+        "setValue": (value: string) => Promise<void>;
         "tooltip": string;
         "val": () => Promise<any>;
         "value": string;
@@ -992,7 +994,7 @@ export namespace Components {
         "load": boolean;
         "noButton": boolean;
         "open": () => Promise<void>;
-        "parentClosed": (type: any) => Promise<void>;
+        "parentClosed": (type: string) => Promise<void>;
         "parentRender": string;
         "preventClickOutside": boolean;
         "value": any;
@@ -1074,7 +1076,7 @@ export namespace Components {
         "multiple": boolean;
         "noneLabel": String;
         "readonly": boolean;
-        "setValue": (value: any) => Promise<void>;
+        "setValue": (value: string | any[]) => Promise<void>;
         "tooltip": string;
         "value": any;
     }
@@ -1087,8 +1089,8 @@ export namespace Components {
         "link": string;
         "load": boolean;
         "resizeIframe": () => Promise<void>;
-        "updateRoute": (newRoutes: any, noRedirect: boolean, iframe: any) => Promise<void>;
-        "updateRouteLabel": (value: any) => Promise<void>;
+        "updateRoute": (newRoutes: any[], noRedirect: boolean, iframe: boolean) => Promise<void>;
+        "updateRouteLabel": (value: string) => Promise<void>;
     }
     interface InsSelect {
         "button": boolean;
@@ -1126,8 +1128,8 @@ export namespace Components {
         "searchable": boolean;
         "selected_values": any;
         "setInsSelectDefaultValue": () => Promise<void>;
-        "setLoadingState": (state: any) => Promise<boolean>;
-        "setSearchingState": (state: any) => Promise<boolean>;
+        "setLoadingState": (state: boolean) => Promise<boolean>;
+        "setSearchingState": (state: boolean) => Promise<boolean>;
         "setSelectedFromValue": (value?: any) => Promise<boolean>;
         "setValue": (value: any) => Promise<void>;
         "small": boolean;
@@ -1173,7 +1175,7 @@ export namespace Components {
         "checkLoad": boolean;
         "hasLoad": string;
         "icon": string;
-        "insSidebarFooterButtonOnClick": (event: any) => Promise<void>;
+        "insSidebarFooterButtonOnClick": (event: MouseEvent) => Promise<void>;
         "load": boolean;
         "open": string;
     }
@@ -1201,7 +1203,7 @@ export namespace Components {
         "landingPage": boolean;
         "link": any;
         "load": boolean;
-        "routePageHandler": (e: any) => Promise<{ crumbs: any[]; }>;
+        "routePageHandler": (e?: Event | string) => Promise<{ crumbs: any[]; }>;
         "showSubMenu": () => Promise<boolean>;
         "tooltip": boolean;
         "withSubmenu": boolean;
@@ -1211,7 +1213,7 @@ export namespace Components {
         "cloneOnDrag": boolean;
         "disabled": boolean;
         "droppable": boolean;
-        "getSortOrder": () => Promise<{}>;
+        "getSortOrder": () => Promise<Record<number, string>>;
         "hasLoad": string;
         "ignoreElements": string;
         "insDraggable": boolean;
@@ -1245,21 +1247,21 @@ export namespace Components {
         "clickable": boolean;
         "complete": boolean;
         "finish": () => Promise<boolean>;
-        "getAllSteps": () => Promise<any>;
+        "getAllSteps": () => Promise<NodeListOf<any>>;
         "indicator": string;
         "inline": boolean;
         "next": () => Promise<{ end: boolean; previousStep: any; currentStep: any; }>;
         "prev": () => Promise<{ start: boolean; previousStep: any; currentStep: any; }>;
         "reset": () => Promise<boolean>;
         "setComplete": () => Promise<boolean>;
-        "setStep": (i: any) => Promise<{ previousStep: any; currentStep: any; }>;
+        "setStep": (i: number) => Promise<{ previousStep: any; currentStep: any; }>;
         "withValidation": boolean;
     }
     interface InsStyleguide {
         "label": string;
     }
     interface InsTab {
-        "activateTab": (place: any) => Promise<void>;
+        "activateTab": (place: number) => Promise<void>;
         "checkLoad": boolean;
         "hasLoad": string;
         "load": boolean;
@@ -1302,7 +1304,7 @@ export namespace Components {
         "searchPosition": string;
         "searchbarPlaceholder": string;
         "selectedRows": any;
-        "setBulkAction": (value: any) => Promise<void>;
+        "setBulkAction": (value: string) => Promise<void>;
         "sortKeyword": string;
         "sortOrder": boolean;
         "staticTable": boolean;
@@ -1355,7 +1357,7 @@ export namespace Components {
         "placeholder": string;
         "readonly": boolean;
         "required": boolean;
-        "setValue": (value: any) => Promise<void>;
+        "setValue": (value: string) => Promise<void>;
         "tooltip": string;
         "value": string;
     }
@@ -1414,10 +1416,10 @@ export namespace Components {
         "label": string;
         "load": boolean;
         "name": string;
-        "setValue": (value: any, trueValue: any, falseValue: any) => Promise<void>;
+        "setValue": (value: string, trueValue: string, falseValue: string) => Promise<void>;
         "tooltip": string;
         "trueValue": string;
-        "updateCheckState": (state: any) => Promise<void>;
+        "updateCheckState": (state: boolean) => Promise<void>;
         "value": string;
     }
     interface InsTooltip {
@@ -1734,7 +1736,7 @@ export interface InsToggleSwitchCustomEvent<T> extends CustomEvent<T> {
 declare global {
     interface HTMLInsAccordionElementEventMap {
         "insToggle": any;
-        "didLoad": any;
+        "didLoad": void;
     }
     interface HTMLInsAccordionElement extends Components.InsAccordion, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsAccordionElementEventMap>(type: K, listener: (this: HTMLInsAccordionElement, ev: InsAccordionCustomEvent<HTMLInsAccordionElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1763,7 +1765,7 @@ declare global {
         new (): HTMLInsAccordionItemHeadingElement;
     };
     interface HTMLInsAccordionLinkElementEventMap {
-        "didLoad": any;
+        "didLoad": void;
     }
     interface HTMLInsAccordionLinkElement extends Components.InsAccordionLink, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsAccordionLinkElementEventMap>(type: K, listener: (this: HTMLInsAccordionLinkElement, ev: InsAccordionLinkCustomEvent<HTMLInsAccordionLinkElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1786,7 +1788,7 @@ declare global {
         new (): HTMLInsAdminElement;
     };
     interface HTMLInsAlertBoxElementEventMap {
-        "didLoad": any;
+        "didLoad": void;
     }
     interface HTMLInsAlertBoxElement extends Components.InsAlertBox, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsAlertBoxElementEventMap>(type: K, listener: (this: HTMLInsAlertBoxElement, ev: InsAlertBoxCustomEvent<HTMLInsAlertBoxElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1809,7 +1811,7 @@ declare global {
         new (): HTMLInsBackdropElement;
     };
     interface HTMLInsBarChartElementEventMap {
-        "didLoad": any;
+        "didLoad": void;
     }
     interface HTMLInsBarChartElement extends Components.InsBarChart, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsBarChartElementEventMap>(type: K, listener: (this: HTMLInsBarChartElement, ev: InsBarChartCustomEvent<HTMLInsBarChartElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1826,8 +1828,8 @@ declare global {
         new (): HTMLInsBarChartElement;
     };
     interface HTMLInsBreadcrumbsElementEventMap {
-        "routePage": any;
-        "didLoad": any;
+        "routePage": { crumbs: any[]; redirect: boolean };
+        "didLoad": void;
     }
     interface HTMLInsBreadcrumbsElement extends Components.InsBreadcrumbs, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsBreadcrumbsElementEventMap>(type: K, listener: (this: HTMLInsBreadcrumbsElement, ev: InsBreadcrumbsCustomEvent<HTMLInsBreadcrumbsElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1844,9 +1846,9 @@ declare global {
         new (): HTMLInsBreadcrumbsElement;
     };
     interface HTMLInsButtonElementEventMap {
-        "insClick": any;
-        "insClickOption": any;
-        "didLoad": any;
+        "insClick": {label: string; data: string};
+        "insClickOption": {label: string | null; option: string};
+        "didLoad": void;
     }
     interface HTMLInsButtonElement extends Components.InsButton, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsButtonElementEventMap>(type: K, listener: (this: HTMLInsButtonElement, ev: InsButtonCustomEvent<HTMLInsButtonElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1863,8 +1865,8 @@ declare global {
         new (): HTMLInsButtonElement;
     };
     interface HTMLInsButtonGroupElementEventMap {
-        "insClick": any;
-        "didLoad": any;
+        "insClick": {action: string; label: string; index: number};
+        "didLoad": void;
     }
     interface HTMLInsButtonGroupElement extends Components.InsButtonGroup, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsButtonGroupElementEventMap>(type: K, listener: (this: HTMLInsButtonGroupElement, ev: InsButtonGroupCustomEvent<HTMLInsButtonGroupElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1882,11 +1884,11 @@ declare global {
     };
     interface HTMLInsButtonSelectElementEventMap {
         "insChange": any;
-        "insOptionSelect": any;
-        "insDynamicSubmit": any;
-        "insSearch": any;
-        "insLoadMore": any;
-        "didLoad": any;
+        "insOptionSelect": {event_type: string; selected: any[]; selectedOptions: {label: string; value: string}[]};
+        "insDynamicSubmit": string;
+        "insSearch": string;
+        "insLoadMore": void;
+        "didLoad": void;
     }
     interface HTMLInsButtonSelectElement extends Components.InsButtonSelect, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsButtonSelectElementEventMap>(type: K, listener: (this: HTMLInsButtonSelectElement, ev: InsButtonSelectCustomEvent<HTMLInsButtonSelectElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1909,7 +1911,7 @@ declare global {
         new (): HTMLInsButtonSelectGroupElement;
     };
     interface HTMLInsButtonSelectOptionElementEventMap {
-        "insButtonSelectOptionClicked": any;
+        "insButtonSelectOptionClicked": {value: string; label: string};
     }
     interface HTMLInsButtonSelectOptionElement extends Components.InsButtonSelectOption, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsButtonSelectOptionElementEventMap>(type: K, listener: (this: HTMLInsButtonSelectOptionElement, ev: InsButtonSelectOptionCustomEvent<HTMLInsButtonSelectOptionElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2143,10 +2145,10 @@ declare global {
         new (): HTMLInsDropdownItemElement;
     };
     interface HTMLInsEditorElementEventMap {
-        "insBlur": any;
-        "insInput": any;
+        "insBlur": string;
+        "insInput": string | null;
         "insUpload": any;
-        "insValueChange": any;
+        "insValueChange": string;
     }
     interface HTMLInsEditorElement extends Components.InsEditor, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsEditorElementEventMap>(type: K, listener: (this: HTMLInsEditorElement, ev: InsEditorCustomEvent<HTMLInsEditorElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2163,7 +2165,7 @@ declare global {
         new (): HTMLInsEditorElement;
     };
     interface HTMLInsFilterElementEventMap {
-        "insFilterApply": any;
+        "insFilterApply": Record<string, any>;
         "didLoad": any;
     }
     interface HTMLInsFilterElement extends Components.InsFilter, HTMLStencilElement {
@@ -2181,7 +2183,7 @@ declare global {
         new (): HTMLInsFilterElement;
     };
     interface HTMLInsFilterItemElementEventMap {
-        "insSelect": any;
+        "insSelect": { name: string; option: string };
         "didLoad": any;
     }
     interface HTMLInsFilterItemElement extends Components.InsFilterItem, HTMLStencilElement {
@@ -2217,7 +2219,7 @@ declare global {
         new (): HTMLInsGalleryElement;
     };
     interface HTMLInsGalleryImageElementEventMap {
-        "insGalleryUpdate": any;
+        "insGalleryUpdate": { thumbnail: string; image: string };
     }
     interface HTMLInsGalleryImageElement extends Components.InsGalleryImage, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsGalleryImageElementEventMap>(type: K, listener: (this: HTMLInsGalleryImageElement, ev: InsGalleryImageCustomEvent<HTMLInsGalleryImageElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2268,7 +2270,7 @@ declare global {
         new (): HTMLInsHeaderUserElement;
     };
     interface HTMLInsHeadingElementEventMap {
-        "insChange": any;
+        "insChange": { name: string; old_label: string; new_label: string };
         "didLoad": any;
     }
     interface HTMLInsHeadingElement extends Components.InsHeading, HTMLStencilElement {
@@ -2321,11 +2323,11 @@ declare global {
         new (): HTMLInsInfoTableElement;
     };
     interface HTMLInsInputElementEventMap {
-        "insInput": any;
-        "insBlur": any;
-        "insIconClick": any;
-        "insValueChange": any;
-        "insColorChange": any;
+        "insInput": { value: string | null; keyCode?: number };
+        "insBlur": { value: string; keyCode: number };
+        "insIconClick": { target: HTMLElement; value: string };
+        "insValueChange": string | null;
+        "insColorChange": { value: string | null; valid: boolean };
         "didLoad": any;
     }
     interface HTMLInsInputElement extends Components.InsInput, HTMLStencilElement {
@@ -2386,9 +2388,9 @@ declare global {
     };
     interface HTMLInsInputPhoneElementEventMap {
         "insInput": any;
-        "insValueChange": any;
-        "insValidation": any;
-        "didLoad": any;
+        "insValueChange": string;
+        "insValidation": {hasError: boolean; errorMessage: string};
+        "didLoad": void;
     }
     interface HTMLInsInputPhoneElement extends Components.InsInputPhone, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsInputPhoneElementEventMap>(type: K, listener: (this: HTMLInsInputPhoneElement, ev: InsInputPhoneCustomEvent<HTMLInsInputPhoneElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2425,7 +2427,7 @@ declare global {
         new (): HTMLInsInputSearchElement;
     };
     interface HTMLInsInputSearchOptionElementEventMap {
-        "insInputSearchOptionClicked": any;
+        "insInputSearchOptionClicked": { value: string; label: string };
     }
     interface HTMLInsInputSearchOptionElement extends Components.InsInputSearchOption, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsInputSearchOptionElementEventMap>(type: K, listener: (this: HTMLInsInputSearchOptionElement, ev: InsInputSearchOptionCustomEvent<HTMLInsInputSearchOptionElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2470,7 +2472,7 @@ declare global {
         new (): HTMLInsInputSelectGroupElement;
     };
     interface HTMLInsInputSelectOptionElementEventMap {
-        "insInputSelectOptionClicked": any;
+        "insInputSelectOptionClicked": { value: string; label: string };
     }
     interface HTMLInsInputSelectOptionElement extends Components.InsInputSelectOption, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsInputSelectOptionElementEventMap>(type: K, listener: (this: HTMLInsInputSelectOptionElement, ev: InsInputSelectOptionCustomEvent<HTMLInsInputSelectOptionElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2587,8 +2589,8 @@ declare global {
         new (): HTMLInsInstancesElement;
     };
     interface HTMLInsInstancesItemElementEventMap {
-        "routeInstance": any;
-        "activeSubItem": any;
+        "routeInstance": { instance: string; logoLink: string; withSubItem: boolean };
+        "activeSubItem": void;
     }
     interface HTMLInsInstancesItemElement extends Components.InsInstancesItem, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsInstancesItemElementEventMap>(type: K, listener: (this: HTMLInsInstancesItemElement, ev: InsInstancesItemCustomEvent<HTMLInsInstancesItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2605,7 +2607,7 @@ declare global {
         new (): HTMLInsInstancesItemElement;
     };
     interface HTMLInsInstancesSubItemElementEventMap {
-        "routeInstanceSubItem": any;
+        "routeInstanceSubItem": { instance: string; link: string };
     }
     interface HTMLInsInstancesSubItemElement extends Components.InsInstancesSubItem, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsInstancesSubItemElementEventMap>(type: K, listener: (this: HTMLInsInstancesSubItemElement, ev: InsInstancesSubItemCustomEvent<HTMLInsInstancesSubItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2841,8 +2843,8 @@ declare global {
         new (): HTMLInsRadioElement;
     };
     interface HTMLInsRadioGroupElementEventMap {
-        "insInput": any;
-        "didLoad": any;
+        "insInput": { value: any };
+        "didLoad": void;
     }
     interface HTMLInsRadioGroupElement extends Components.InsRadioGroup, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsRadioGroupElementEventMap>(type: K, listener: (this: HTMLInsRadioGroupElement, ev: InsRadioGroupCustomEvent<HTMLInsRadioGroupElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2859,7 +2861,7 @@ declare global {
         new (): HTMLInsRadioGroupElement;
     };
     interface HTMLInsRendererElementEventMap {
-        "didLoad": any;
+        "didLoad": void;
     }
     interface HTMLInsRendererElement extends Components.InsRenderer, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsRendererElementEventMap>(type: K, listener: (this: HTMLInsRendererElement, ev: InsRendererCustomEvent<HTMLInsRendererElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2877,12 +2879,12 @@ declare global {
     };
     interface HTMLInsSelectElementEventMap {
         "insValueChange": any;
-        "insOptionSelect": any;
-        "insClose": any;
-        "insSubmit": any;
-        "insSearch": any;
-        "insLoadMore": any;
-        "didLoad": any;
+        "insOptionSelect": { event_type: string; selected: any[]; selectedOptions: Array<{ label: string; value: any }> };
+        "insClose": void;
+        "insSubmit": string;
+        "insSearch": string;
+        "insLoadMore": void;
+        "didLoad": void;
     }
     interface HTMLInsSelectElement extends Components.InsSelect, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsSelectElementEventMap>(type: K, listener: (this: HTMLInsSelectElement, ev: InsSelectCustomEvent<HTMLInsSelectElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2905,7 +2907,7 @@ declare global {
         new (): HTMLInsSelectGroupElement;
     };
     interface HTMLInsSelectOptionElementEventMap {
-        "insSelectOptionClicked": any;
+        "insSelectOptionClicked": { value: string; label: string };
     }
     interface HTMLInsSelectOptionElement extends Components.InsSelectOption, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsSelectOptionElementEventMap>(type: K, listener: (this: HTMLInsSelectOptionElement, ev: InsSelectOptionCustomEvent<HTMLInsSelectOptionElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2923,7 +2925,7 @@ declare global {
     };
     interface HTMLInsSidebarElementEventMap {
         "insSidebarAction": any;
-        "didLoad": any;
+        "didLoad": void;
     }
     interface HTMLInsSidebarElement extends Components.InsSidebar, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsSidebarElementEventMap>(type: K, listener: (this: HTMLInsSidebarElement, ev: InsSidebarCustomEvent<HTMLInsSidebarElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2940,7 +2942,7 @@ declare global {
         new (): HTMLInsSidebarElement;
     };
     interface HTMLInsSidebarFooterElementEventMap {
-        "didLoad": any;
+        "didLoad": void;
     }
     interface HTMLInsSidebarFooterElement extends Components.InsSidebarFooter, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsSidebarFooterElementEventMap>(type: K, listener: (this: HTMLInsSidebarFooterElement, ev: InsSidebarFooterCustomEvent<HTMLInsSidebarFooterElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2957,8 +2959,8 @@ declare global {
         new (): HTMLInsSidebarFooterElement;
     };
     interface HTMLInsSidebarFooterButtonElementEventMap {
-        "insSidebarFooterButtonEvent": any;
-        "didLoad": any;
+        "insSidebarFooterButtonEvent": MouseEvent;
+        "didLoad": void;
     }
     interface HTMLInsSidebarFooterButtonElement extends Components.InsSidebarFooterButton, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsSidebarFooterButtonElementEventMap>(type: K, listener: (this: HTMLInsSidebarFooterButtonElement, ev: InsSidebarFooterButtonCustomEvent<HTMLInsSidebarFooterButtonElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2981,9 +2983,9 @@ declare global {
         new (): HTMLInsSidebarFooterMenuElement;
     };
     interface HTMLInsSidebarItemElementEventMap {
-        "routePage": any;
-        "didLoad": any;
-        "didHover": any;
+        "routePage": { crumbs: any[]; redirect: boolean };
+        "didLoad": void;
+        "didHover": { x: number; y: number; label: string; state: boolean };
     }
     interface HTMLInsSidebarItemElement extends Components.InsSidebarItem, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsSidebarItemElementEventMap>(type: K, listener: (this: HTMLInsSidebarItemElement, ev: InsSidebarItemCustomEvent<HTMLInsSidebarItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3044,7 +3046,7 @@ declare global {
         new (): HTMLInsSparklineElement;
     };
     interface HTMLInsStepElementEventMap {
-        "insStepClick": any;
+        "insStepClick": void;
     }
     interface HTMLInsStepElement extends Components.InsStep, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsStepElementEventMap>(type: K, listener: (this: HTMLInsStepElement, ev: InsStepCustomEvent<HTMLInsStepElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3061,7 +3063,7 @@ declare global {
         new (): HTMLInsStepElement;
     };
     interface HTMLInsStepsElementEventMap {
-        "insClick": any;
+        "insClick": { start?: boolean; end?: boolean; nextStep?: any; previousStep?: any; currentStep: any };
     }
     interface HTMLInsStepsElement extends Components.InsSteps, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsStepsElementEventMap>(type: K, listener: (this: HTMLInsStepsElement, ev: InsStepsCustomEvent<HTMLInsStepsElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3358,7 +3360,7 @@ declare namespace LocalJSX {
         "hasLoad"?: string;
         "load"?: boolean;
         "menu"?: boolean;
-        "onDidLoad"?: (event: InsAccordionCustomEvent<any>) => void;
+        "onDidLoad"?: (event: InsAccordionCustomEvent<void>) => void;
         "onInsToggle"?: (event: InsAccordionCustomEvent<any>) => void;
     }
     interface InsAccordionItem {
@@ -3385,7 +3387,7 @@ declare namespace LocalJSX {
         "linkTarget"?: string;
         "linkTitle"?: string;
         "load"?: boolean;
-        "onDidLoad"?: (event: InsAccordionLinkCustomEvent<any>) => void;
+        "onDidLoad"?: (event: InsAccordionLinkCustomEvent<void>) => void;
     }
     interface InsAdmin {
     }
@@ -3394,7 +3396,7 @@ declare namespace LocalJSX {
         "closeIcon"?: string;
         "load"?: boolean;
         "noCloseButton"?: boolean;
-        "onDidLoad"?: (event: InsAlertBoxCustomEvent<any>) => void;
+        "onDidLoad"?: (event: InsAlertBoxCustomEvent<void>) => void;
         "type"?: string;
     }
     interface InsBackdrop {
@@ -3408,7 +3410,7 @@ declare namespace LocalJSX {
         "horizontal"?: boolean;
         "load"?: boolean;
         "name"?: string;
-        "onDidLoad"?: (event: InsBarChartCustomEvent<any>) => void;
+        "onDidLoad"?: (event: InsBarChartCustomEvent<void>) => void;
         "stacked"?: boolean;
     }
     interface InsBreadcrumbs {
@@ -3416,8 +3418,8 @@ declare namespace LocalJSX {
         "checkLoad"?: boolean;
         "hasLoad"?: string;
         "load"?: boolean;
-        "onDidLoad"?: (event: InsBreadcrumbsCustomEvent<any>) => void;
-        "onRoutePage"?: (event: InsBreadcrumbsCustomEvent<any>) => void;
+        "onDidLoad"?: (event: InsBreadcrumbsCustomEvent<void>) => void;
+        "onRoutePage"?: (event: InsBreadcrumbsCustomEvent<{ crumbs: any[]; redirect: boolean }>) => void;
     }
     interface InsButton {
         "checkLoad"?: boolean;
@@ -3432,9 +3434,9 @@ declare namespace LocalJSX {
         "label"?: string;
         "load"?: boolean;
         "loading"?: boolean;
-        "onDidLoad"?: (event: InsButtonCustomEvent<any>) => void;
-        "onInsClick"?: (event: InsButtonCustomEvent<any>) => void;
-        "onInsClickOption"?: (event: InsButtonCustomEvent<any>) => void;
+        "onDidLoad"?: (event: InsButtonCustomEvent<void>) => void;
+        "onInsClick"?: (event: InsButtonCustomEvent<{label: string; data: string}>) => void;
+        "onInsClickOption"?: (event: InsButtonCustomEvent<{label: string | null; option: string}>) => void;
         "options"?: string;
         "optionsOnly"?: boolean;
         "outlined"?: boolean;
@@ -3451,8 +3453,8 @@ declare namespace LocalJSX {
         "disabled"?: boolean;
         "hasLoad"?: string;
         "load"?: boolean;
-        "onDidLoad"?: (event: InsButtonGroupCustomEvent<any>) => void;
-        "onInsClick"?: (event: InsButtonGroupCustomEvent<any>) => void;
+        "onDidLoad"?: (event: InsButtonGroupCustomEvent<void>) => void;
+        "onInsClick"?: (event: InsButtonGroupCustomEvent<{action: string; label: string; index: number}>) => void;
         "options"?: string;
         "size"?: string;
     }
@@ -3481,12 +3483,12 @@ declare namespace LocalJSX {
         "multiple"?: boolean;
         "name"?: string;
         "noLabel"?: boolean;
-        "onDidLoad"?: (event: InsButtonSelectCustomEvent<any>) => void;
+        "onDidLoad"?: (event: InsButtonSelectCustomEvent<void>) => void;
         "onInsChange"?: (event: InsButtonSelectCustomEvent<any>) => void;
-        "onInsDynamicSubmit"?: (event: InsButtonSelectCustomEvent<any>) => void;
-        "onInsLoadMore"?: (event: InsButtonSelectCustomEvent<any>) => void;
-        "onInsOptionSelect"?: (event: InsButtonSelectCustomEvent<any>) => void;
-        "onInsSearch"?: (event: InsButtonSelectCustomEvent<any>) => void;
+        "onInsDynamicSubmit"?: (event: InsButtonSelectCustomEvent<string>) => void;
+        "onInsLoadMore"?: (event: InsButtonSelectCustomEvent<void>) => void;
+        "onInsOptionSelect"?: (event: InsButtonSelectCustomEvent<{event_type: string; selected: any[]; selectedOptions: {label: string; value: string}[]}>) => void;
+        "onInsSearch"?: (event: InsButtonSelectCustomEvent<string>) => void;
         "optionsData"?: Array<any>;
         "placeholder"?: string;
         "readonly"?: boolean;
@@ -3506,7 +3508,7 @@ declare namespace LocalJSX {
         "disabled"?: boolean;
         "hidden"?: boolean;
         "label"?: string;
-        "onInsButtonSelectOptionClicked"?: (event: InsButtonSelectOptionCustomEvent<any>) => void;
+        "onInsButtonSelectOptionClicked"?: (event: InsButtonSelectOptionCustomEvent<{value: string; label: string}>) => void;
         "value"?: string;
     }
     interface InsCard {
@@ -3755,10 +3757,10 @@ declare namespace LocalJSX {
         "load"?: boolean;
         "mode"?: string;
         "name"?: string;
-        "onInsBlur"?: (event: InsEditorCustomEvent<any>) => void;
-        "onInsInput"?: (event: InsEditorCustomEvent<any>) => void;
+        "onInsBlur"?: (event: InsEditorCustomEvent<string>) => void;
+        "onInsInput"?: (event: InsEditorCustomEvent<string | null>) => void;
         "onInsUpload"?: (event: InsEditorCustomEvent<any>) => void;
-        "onInsValueChange"?: (event: InsEditorCustomEvent<any>) => void;
+        "onInsValueChange"?: (event: InsEditorCustomEvent<string>) => void;
         "pluginsList"?: any;
         "readonly"?: boolean;
         "showSource"?: boolean;
@@ -3778,7 +3780,7 @@ declare namespace LocalJSX {
         "label"?: string;
         "load"?: boolean;
         "onDidLoad"?: (event: InsFilterCustomEvent<any>) => void;
-        "onInsFilterApply"?: (event: InsFilterCustomEvent<any>) => void;
+        "onInsFilterApply"?: (event: InsFilterCustomEvent<Record<string, any>>) => void;
         "withDateFilter"?: boolean;
     }
     interface InsFilterItem {
@@ -3787,7 +3789,7 @@ declare namespace LocalJSX {
         "load"?: boolean;
         "name"?: string;
         "onDidLoad"?: (event: InsFilterItemCustomEvent<any>) => void;
-        "onInsSelect"?: (event: InsFilterItemCustomEvent<any>) => void;
+        "onInsSelect"?: (event: InsFilterItemCustomEvent<{ name: string; option: string }>) => void;
         "options"?: any;
         "selected"?: any;
     }
@@ -3807,7 +3809,7 @@ declare namespace LocalJSX {
         "image"?: string;
         "imgAlt"?: string;
         "imgTitle"?: string;
-        "onInsGalleryUpdate"?: (event: InsGalleryImageCustomEvent<any>) => void;
+        "onInsGalleryUpdate"?: (event: InsGalleryImageCustomEvent<{ thumbnail: string; image: string }>) => void;
         "thumbnail"?: string;
     }
     interface InsHeader {
@@ -3840,7 +3842,7 @@ declare namespace LocalJSX {
         "maxlength"?: string;
         "name"?: string;
         "onDidLoad"?: (event: InsHeadingCustomEvent<any>) => void;
-        "onInsChange"?: (event: InsHeadingCustomEvent<any>) => void;
+        "onInsChange"?: (event: InsHeadingCustomEvent<{ name: string; old_label: string; new_label: string }>) => void;
         "withoutLine"?: boolean;
     }
     interface InsImagePicker {
@@ -3903,11 +3905,11 @@ declare namespace LocalJSX {
         "min"?: string;
         "name"?: string;
         "onDidLoad"?: (event: InsInputCustomEvent<any>) => void;
-        "onInsBlur"?: (event: InsInputCustomEvent<any>) => void;
-        "onInsColorChange"?: (event: InsInputCustomEvent<any>) => void;
-        "onInsIconClick"?: (event: InsInputCustomEvent<any>) => void;
-        "onInsInput"?: (event: InsInputCustomEvent<any>) => void;
-        "onInsValueChange"?: (event: InsInputCustomEvent<any>) => void;
+        "onInsBlur"?: (event: InsInputCustomEvent<{ value: string; keyCode: number }>) => void;
+        "onInsColorChange"?: (event: InsInputCustomEvent<{ value: string | null; valid: boolean }>) => void;
+        "onInsIconClick"?: (event: InsInputCustomEvent<{ target: HTMLElement; value: string }>) => void;
+        "onInsInput"?: (event: InsInputCustomEvent<{ value: string | null; keyCode?: number }>) => void;
+        "onInsValueChange"?: (event: InsInputCustomEvent<string | null>) => void;
         "placeholder"?: string;
         "readonly"?: boolean;
         "required"?: boolean;
@@ -3990,10 +3992,10 @@ declare namespace LocalJSX {
         "label"?: string;
         "load"?: boolean;
         "name"?: string;
-        "onDidLoad"?: (event: InsInputPhoneCustomEvent<any>) => void;
+        "onDidLoad"?: (event: InsInputPhoneCustomEvent<void>) => void;
         "onInsInput"?: (event: InsInputPhoneCustomEvent<any>) => void;
-        "onInsValidation"?: (event: InsInputPhoneCustomEvent<any>) => void;
-        "onInsValueChange"?: (event: InsInputPhoneCustomEvent<any>) => void;
+        "onInsValidation"?: (event: InsInputPhoneCustomEvent<{hasError: boolean; errorMessage: string}>) => void;
+        "onInsValueChange"?: (event: InsInputPhoneCustomEvent<string>) => void;
         "placeholder"?: string;
         "readonly"?: boolean;
         "required"?: boolean;
@@ -4036,7 +4038,7 @@ declare namespace LocalJSX {
     interface InsInputSearchOption {
         "activated"?: boolean;
         "label"?: string;
-        "onInsInputSearchOptionClicked"?: (event: InsInputSearchOptionCustomEvent<any>) => void;
+        "onInsInputSearchOptionClicked"?: (event: InsInputSearchOptionCustomEvent<{ value: string; label: string }>) => void;
         "value"?: string;
     }
     interface InsInputSelect {
@@ -4089,7 +4091,7 @@ declare namespace LocalJSX {
         "disabled"?: boolean;
         "hidden"?: boolean;
         "label"?: string;
-        "onInsInputSelectOptionClicked"?: (event: InsInputSelectOptionCustomEvent<any>) => void;
+        "onInsInputSelectOptionClicked"?: (event: InsInputSelectOptionCustomEvent<{ value: string; label: string }>) => void;
         "value"?: string;
     }
     interface InsInputSlider {
@@ -4208,14 +4210,14 @@ declare namespace LocalJSX {
         "instance"?: string;
         "instanceLink"?: string;
         "logoLink"?: string;
-        "onActiveSubItem"?: (event: InsInstancesItemCustomEvent<any>) => void;
-        "onRouteInstance"?: (event: InsInstancesItemCustomEvent<any>) => void;
+        "onActiveSubItem"?: (event: InsInstancesItemCustomEvent<void>) => void;
+        "onRouteInstance"?: (event: InsInstancesItemCustomEvent<{ instance: string; logoLink: string; withSubItem: boolean }>) => void;
         "withSubItem"?: boolean;
     }
     interface InsInstancesSubItem {
         "instance"?: string;
         "link"?: string;
-        "onRouteInstanceSubItem"?: (event: InsInstancesSubItemCustomEvent<any>) => void;
+        "onRouteInstanceSubItem"?: (event: InsInstancesSubItemCustomEvent<{ instance: string; link: string }>) => void;
     }
     interface InsKanbanBoard {
         "boardGroup"?: string;
@@ -4399,8 +4401,8 @@ declare namespace LocalJSX {
         "load"?: boolean;
         "multiple"?: boolean;
         "noneLabel"?: String;
-        "onDidLoad"?: (event: InsRadioGroupCustomEvent<any>) => void;
-        "onInsInput"?: (event: InsRadioGroupCustomEvent<any>) => void;
+        "onDidLoad"?: (event: InsRadioGroupCustomEvent<void>) => void;
+        "onInsInput"?: (event: InsRadioGroupCustomEvent<{ value: any }>) => void;
         "readonly"?: boolean;
         "tooltip"?: string;
         "value"?: any;
@@ -4413,7 +4415,7 @@ declare namespace LocalJSX {
         "label"?: string;
         "link"?: string;
         "load"?: boolean;
-        "onDidLoad"?: (event: InsRendererCustomEvent<any>) => void;
+        "onDidLoad"?: (event: InsRendererCustomEvent<void>) => void;
     }
     interface InsSelect {
         "button"?: boolean;
@@ -4436,12 +4438,12 @@ declare namespace LocalJSX {
         "load"?: boolean;
         "multiple"?: boolean;
         "name"?: string;
-        "onDidLoad"?: (event: InsSelectCustomEvent<any>) => void;
-        "onInsClose"?: (event: InsSelectCustomEvent<any>) => void;
-        "onInsLoadMore"?: (event: InsSelectCustomEvent<any>) => void;
-        "onInsOptionSelect"?: (event: InsSelectCustomEvent<any>) => void;
-        "onInsSearch"?: (event: InsSelectCustomEvent<any>) => void;
-        "onInsSubmit"?: (event: InsSelectCustomEvent<any>) => void;
+        "onDidLoad"?: (event: InsSelectCustomEvent<void>) => void;
+        "onInsClose"?: (event: InsSelectCustomEvent<void>) => void;
+        "onInsLoadMore"?: (event: InsSelectCustomEvent<void>) => void;
+        "onInsOptionSelect"?: (event: InsSelectCustomEvent<{ event_type: string; selected: any[]; selectedOptions: Array<{ label: string; value: any }> }>) => void;
+        "onInsSearch"?: (event: InsSelectCustomEvent<string>) => void;
+        "onInsSubmit"?: (event: InsSelectCustomEvent<string>) => void;
         "onInsValueChange"?: (event: InsSelectCustomEvent<any>) => void;
         "optionsData"?: Array<any>;
         "placeholder"?: string;
@@ -4465,7 +4467,7 @@ declare namespace LocalJSX {
         "disabled"?: boolean;
         "hidden"?: boolean;
         "label"?: string;
-        "onInsSelectOptionClicked"?: (event: InsSelectOptionCustomEvent<any>) => void;
+        "onInsSelectOptionClicked"?: (event: InsSelectOptionCustomEvent<{ value: string; label: string }>) => void;
         "value"?: string;
     }
     interface InsSidebar {
@@ -4474,22 +4476,22 @@ declare namespace LocalJSX {
         "hasLoad"?: string;
         "iconLogo"?: string;
         "load"?: boolean;
-        "onDidLoad"?: (event: InsSidebarCustomEvent<any>) => void;
+        "onDidLoad"?: (event: InsSidebarCustomEvent<void>) => void;
         "onInsSidebarAction"?: (event: InsSidebarCustomEvent<any>) => void;
     }
     interface InsSidebarFooter {
         "checkLoad"?: boolean;
         "hasLoad"?: string;
         "load"?: boolean;
-        "onDidLoad"?: (event: InsSidebarFooterCustomEvent<any>) => void;
+        "onDidLoad"?: (event: InsSidebarFooterCustomEvent<void>) => void;
     }
     interface InsSidebarFooterButton {
         "checkLoad"?: boolean;
         "hasLoad"?: string;
         "icon"?: string;
         "load"?: boolean;
-        "onDidLoad"?: (event: InsSidebarFooterButtonCustomEvent<any>) => void;
-        "onInsSidebarFooterButtonEvent"?: (event: InsSidebarFooterButtonCustomEvent<any>) => void;
+        "onDidLoad"?: (event: InsSidebarFooterButtonCustomEvent<void>) => void;
+        "onInsSidebarFooterButtonEvent"?: (event: InsSidebarFooterButtonCustomEvent<MouseEvent>) => void;
         "open"?: string;
     }
     interface InsSidebarFooterMenu {
@@ -4508,9 +4510,9 @@ declare namespace LocalJSX {
         "landingPage"?: boolean;
         "link"?: any;
         "load"?: boolean;
-        "onDidHover"?: (event: InsSidebarItemCustomEvent<any>) => void;
-        "onDidLoad"?: (event: InsSidebarItemCustomEvent<any>) => void;
-        "onRoutePage"?: (event: InsSidebarItemCustomEvent<any>) => void;
+        "onDidHover"?: (event: InsSidebarItemCustomEvent<{ x: number; y: number; label: string; state: boolean }>) => void;
+        "onDidLoad"?: (event: InsSidebarItemCustomEvent<void>) => void;
+        "onRoutePage"?: (event: InsSidebarItemCustomEvent<{ crumbs: any[]; redirect: boolean }>) => void;
         "tooltip"?: boolean;
         "withSubmenu"?: boolean;
     }
@@ -4558,14 +4560,14 @@ declare namespace LocalJSX {
         "hasError"?: boolean;
         "icon"?: string;
         "indicator"?: string;
-        "onInsStepClick"?: (event: InsStepCustomEvent<any>) => void;
+        "onInsStepClick"?: (event: InsStepCustomEvent<void>) => void;
     }
     interface InsSteps {
         "clickable"?: boolean;
         "complete"?: boolean;
         "indicator"?: string;
         "inline"?: boolean;
-        "onInsClick"?: (event: InsStepsCustomEvent<any>) => void;
+        "onInsClick"?: (event: InsStepsCustomEvent<{ start?: boolean; end?: boolean; nextStep?: any; previousStep?: any; currentStep: any }>) => void;
         "withValidation"?: boolean;
     }
     interface InsStyleguide {

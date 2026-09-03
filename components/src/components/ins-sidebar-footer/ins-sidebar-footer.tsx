@@ -3,14 +3,14 @@ import { h, Component, Element, Method, Event, EventEmitter, Prop } from "@stenc
 @Component({ tag: 'ins-sidebar-footer' })
 export class InsSidebarFooter {
   @Element() InsSidebarFooter: HTMLElement;
-  @Event() didLoad: EventEmitter;
+  @Event() didLoad: EventEmitter<void>;
   @Prop() hasLoad: string;
   @Prop({ mutable: true }) load: boolean = false;
   @Prop({ mutable: true }) checkLoad: boolean = false;
 
   componentDidLoad(){
     let items = this.InsSidebarFooter
-      .querySelectorAll('.slot-wrapper .ins-sidebar-footer-item-wrap') as any;
+      .querySelectorAll('.slot-wrapper .ins-sidebar-footer-item-wrap') as NodeListOf<HTMLElement>;
 
     for (let i = 0; i < items.length; i++) {
       items[i].style.width = `${100 / items.length}%`;

@@ -54,7 +54,7 @@ export class InsInputMultiple {
     }
   }
 
-  isJSON(value) {
+  isJSON(value: string) {
     try { return JSON.parse(value) }
     catch(err) { return [] }
   }
@@ -79,7 +79,7 @@ export class InsInputMultiple {
   }
 
 	@Method()
-	async setValue(value) {
+	async setValue(value: string | any[]) {
 		this.value = value;
     this.insValueChange.emit(this.value);
 	}
@@ -92,7 +92,7 @@ export class InsInputMultiple {
 		this.insInputMultipleEl.querySelector('.ins-input-multiple').classList.remove('active');
 	}
 
-	onremoveHandler(index) {
+	onremoveHandler(index: number) {
 		let value = this.value;
 		value.splice(index, 1);
 		this.value = [];
@@ -100,13 +100,13 @@ export class InsInputMultiple {
     this.insInput.emit({ value });
 	}
 
-	onclickContainer(event) {
+	onclickContainer(event: any) {
 		if (event.target.classList.contains('ins-input-multiple-container')) {
 			event.target.querySelector('input').focus();
 		}
 	}
 
-	oninputHandler(event) {
+	oninputHandler(event: any) {
 		let value = this.value;
     let eventValue = event.target.value;
 
@@ -119,7 +119,7 @@ export class InsInputMultiple {
 		}
   }
 
-  onaddHandler(event) {
+  onaddHandler(event: any) {
 		let value = this.value;
 		let eventValue = event.target.previousSibling.value;
 
@@ -130,7 +130,7 @@ export class InsInputMultiple {
 		}
 	}
 
-	updateValue(value, eventValue) {
+	updateValue(value: any[], eventValue: string) {
 		this.value = [];
 		this.value = value;
 		this.value.push(eventValue);

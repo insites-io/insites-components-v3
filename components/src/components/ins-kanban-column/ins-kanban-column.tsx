@@ -23,7 +23,7 @@ export class InsKanbanColumn {
   insitesKanbanColumnSortable;
 
   @Event() insDragStart: EventEmitter<Object>;
-  onDraggingStart(event) {
+  onDraggingStart(event: any) {
     this.insDragStart.emit({
       item: event.item, // dragged HTMLElement
       from: event.from, // previous list
@@ -34,7 +34,7 @@ export class InsKanbanColumn {
   }
 
   @Event() insDragEnd: EventEmitter<Object>;
-  onDraggingEnd(event) {
+  onDraggingEnd(event: any) {
     this.insDragEnd.emit({
       item: event.item, // dragged HTMLElement
       to: event.to, // target list
@@ -48,7 +48,7 @@ export class InsKanbanColumn {
   }
 
   @Event() insAdd: EventEmitter<Object>;
-  onAdding(event) {
+  onAdding(event: any) {
     this.insAdd.emit({
       item: event.item, // dragged HTMLElement
       to: event.to, // target list
@@ -61,7 +61,7 @@ export class InsKanbanColumn {
   }
 
   @Event() insSort: EventEmitter<Object>;
-  onSorting(event) {
+  onSorting(event: any) {
     this.insSort.emit({
       item: event.item, // dragged HTMLElement
       to: event.to, // target list
@@ -74,7 +74,7 @@ export class InsKanbanColumn {
   }
 
   @Event() insChoose: EventEmitter<Object>;
-  onChooseElement(event) {
+  onChooseElement(event: any) {
     this.insChoose.emit({
       item: event.item, // dragged HTMLElement
       from: event.from, // previous list
@@ -83,7 +83,7 @@ export class InsKanbanColumn {
   }
 
   @Event() insUpdate: EventEmitter<Object>;
-  onUpdating(event) {
+  onUpdating(event: any) {
     this.insUpdate.emit({
       item: event.item, // dragged HTMLElement
       to: event.to, // target list
@@ -96,7 +96,7 @@ export class InsKanbanColumn {
   }
 
   @Event() insMove: EventEmitter<Object>;
-  onMoving(event, /*originalEvent*/) {
+  onMoving(event: any, /*originalEvent*/) {
     this.insMove.emit({
       item: event.dragged, // dragged HTMLElement
       to: event.to, // target list
@@ -107,7 +107,7 @@ export class InsKanbanColumn {
   }
 
   @Event() insRemove: EventEmitter<Object>;
-  onRemoving(event) {
+  onRemoving(event: any) {
     this.insRemove.emit({
       item: event.item, // dragged HTMLElement
       to: event.to, // target list
@@ -120,7 +120,7 @@ export class InsKanbanColumn {
   }
 
   @Event() insPositionChanged: EventEmitter<Object>;
-  onPositionChanging(event) {
+  onPositionChanging(event: any) {
     this.insPositionChanged.emit({
       item: event.item, // dragged HTMLElement
       to: event.to, // target list
@@ -202,7 +202,7 @@ export class InsKanbanColumn {
     this.insitesKanbanColumnSortable = new Sortable(el, config);
   }
 
-  load(sortable: any[] = []) {
+  load(sortable: string | any[] = []) {
     let order = []
     if (typeof sortable === 'string' || sortable instanceof String)
       order = sortable ? sortable.split('|') : []
@@ -218,8 +218,8 @@ export class InsKanbanColumn {
   async getColumnCardsOrder(){
     let instance = Sortable.get(this.kanbanItemsWrap),
         order = instance.toArray(),
-        result = {}
-    order.forEach((value, key) => {
+        result: Record<number, string> = {}
+    order.forEach((value: string, key: number) => {
       result[key] = value
     });
 
@@ -227,7 +227,7 @@ export class InsKanbanColumn {
   }
 
   @Method()
-  async reorderCards(sortable){
+  async reorderCards(sortable: string | any[]){
     this.load(sortable);
   }
 

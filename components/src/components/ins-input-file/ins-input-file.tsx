@@ -99,8 +99,8 @@ export class InsInputFile {
   }
 
   @Method()
-  async processS3AutoUpload(file) {
-    this.s3Data = await this.getS3Credentials() as any;
+  async processS3AutoUpload(file: any) {
+    this.s3Data = await this.getS3Credentials();
 
     this.setS3FormData();
     this.dropZone.enqueueFile(file);
@@ -108,10 +108,10 @@ export class InsInputFile {
   }
 
   @Method()
-  async getS3Credentials() {
-      return await new Promise(resolve => {
+  async getS3Credentials(): Promise<object> {
+      return await new Promise<object>(resolve => {
           let xhttp = new XMLHttpRequest();
-          let token = document.getElementsByName('csrf-token')[0] as any;
+          let token = document.getElementsByName('csrf-token')[0] as HTMLMetaElement;
 
           xhttp.open("GET", this.credentialsUrl, true);
           xhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
@@ -137,14 +137,14 @@ export class InsInputFile {
   }
 
   @Method()
-  async buildFormData(s3Data, formData) {
+  async buildFormData(s3Data: any, formData: FormData) {
     let s3Fields = s3Data[this.fieldName][this.fieldType].s3_upload.form_data;
     Object.keys(s3Fields).forEach(function (key) {
         formData.append(key, s3Fields[key]);
     });
   }
 
-  setFileIcon(file) {
+  setFileIcon(file: any) {
     let inputEl = this.insInputFileEl.querySelector('.ins-dropzone');
     let isImage = !file.type && file.type !== '' ? true : file.type.indexOf('image/') >= 0 ? true : false;
     let thumbnail = inputEl.querySelector('.ins-dropzone .dz-preview:last-of-type .dz-image');
@@ -153,7 +153,7 @@ export class InsInputFile {
     }
   }
 
-  checkFileSizeDisplay(file) {
+  checkFileSizeDisplay(file: any) {
     let inputEl = this.insInputFileEl.querySelector('.ins-dropzone');
     let sizeEl = inputEl.querySelector('.ins-dropzone .dz-preview:last-of-type .dz-size');
     if (!file.size || file.size < 0) {
@@ -161,7 +161,7 @@ export class InsInputFile {
     }
   }
 
-  addDownloadLink(file) {
+  addDownloadLink(file: any) {
     if (!file.url) return;
     let parent = file.previewElement;
     let linkEl = document.createElement('a');
@@ -175,7 +175,7 @@ export class InsInputFile {
     parent.appendChild(linkEl);
   }
 
-  errorHandler(file, errorMessage) {
+  errorHandler(file: any, errorMessage: string) {
     if (errorMessage) {
       // Remove file on error
       this.dropZone.removeFile(file);
@@ -200,8 +200,8 @@ export class InsInputFile {
     }
   }
 
-  toastIt(type, message) {
-    let parent = window as any;
+  toastIt(type: string, message: string) {
+    let parent = window as { toastr?: any };
     if (this.showNotifications)
       if (parent.toastr) parent.toastr[type](message);
       else console.warn(message);
@@ -220,11 +220,11 @@ export class InsInputFile {
     }
   }
 
-  emitFileError(file, errorMessage) {
+  emitFileError(file: any, errorMessage: string) {
     file.errorMessage = errorMessage;
     this.insFileError.emit(file);
   }
-  async emitFileAdded(file) {
+  async emitFileAdded(file: any) {
     if (!this.value || typeof this.value === "string") {
       this.value = [];
     }
@@ -234,7 +234,7 @@ export class InsInputFile {
     this.insFileChange.emit({ value: await this.getFilesList() });
   }
 
-  async emitFileRemoved(file) {
+  async emitFileRemoved(file: any) {
     if (file.status !== 'error') {
       this.insFileRemoved.emit(file);
     } else {
@@ -244,13 +244,13 @@ export class InsInputFile {
     this.insFileChange.emit({ value: await this.getFilesList() });
   }
 
-  processFiles(files) {
+  processFiles(files: any) {
     files.forEach(item => {
       this.setFile(item);
     });
   }
 
-  validateFile(file) {
+  validateFile(file: any) {
     let isMaxFile = this.dropZone.files.length < this.maxFiles;
     let type = file.url.split(".");
         type = type[type.length - 1];
@@ -269,7 +269,7 @@ export class InsInputFile {
     return message;
   }
 
-  setFile(item) {
+  setFile(item: any) {
     let message = this.validateFile(item);
     if (!message) {
       item.accepted = true;
@@ -285,7 +285,7 @@ export class InsInputFile {
     }
   }
 
-  bindFiles(files) { // mounted / no validation
+  bindFiles(files: any) { // mounted / no validation
     if (files.length) {
       this.processFiles(files);
     } else {
@@ -305,7 +305,7 @@ export class InsInputFile {
   }
 
   @Method()
-  async setFiles(files) {
+  async setFiles(files: any) {
     if (!this.disabled) {
       return this.bindFiles(files);
     } else return false;
@@ -396,7 +396,7 @@ export class InsInputFile {
     return true
   }
 
-  validateDescription(value) {
+  validateDescription(value: string) {
     let allowed = '<a>,<abbr>,<acronym>,<address>,<article>,<aside>,<b>,<base>,<bdi>,<bdo>,<blockquote>,<br>,<caption>,<code>,<dd>,<del>,<details>,<dfn>,<dir>,<div>,<dl>,<dt>,<em>,<font>,<h1>,<h2>,<h3>,<h4>,<h5>,<h6>,<hr>,<i>,<ins>,<label>,<li>,<link>,<mark>,<menu>,<meter>,<nav>,<ol>,<p>,<pre>,<q>,<s>,<samp>,<section>,<small>,<span>,<strike>,<strong>,<sub>,<summary>,<sup>,<table>,<tbody>,<td>,<tfoot>,<th>,<thead>,<time>,<tr>,<tt>,<u>,<ul>,<wbr>';
     allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
 

@@ -18,10 +18,10 @@
 
 ## Events
 
-| Event              | Description | Type               |
-| ------------------ | ----------- | ------------------ |
-| `didLoad`          |             | `CustomEvent<any>` |
-| `insSidebarAction` |             | `CustomEvent<any>` |
+| Event              | Description | Type                |
+| ------------------ | ----------- | ------------------- |
+| `didLoad`          |             | `CustomEvent<void>` |
+| `insSidebarAction` |             | `CustomEvent<any>`  |
 
 
 ## Methods

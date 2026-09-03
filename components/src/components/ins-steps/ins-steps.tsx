@@ -3,17 +3,17 @@ import { h, Component, Element, Method, Prop, Listen, Event, EventEmitter } from
 @Component({ tag: 'ins-steps' })
 export class InsSteps {
   @Element() el: HTMLElement;
-  @Event() insClick: EventEmitter;
+  @Event() insClick: EventEmitter<{ start?: boolean; end?: boolean; nextStep?: any; previousStep?: any; currentStep: any }>;
   @Prop({ mutable: true }) indicator: string = "";
   @Prop({ mutable: true }) inline: boolean = false;
   @Prop({ mutable: true }) clickable: boolean = false;
   @Prop({ mutable: true }) withValidation: boolean = false;
   @Prop({ mutable: true }) complete: boolean = false;
 
-  steps;
+  steps: NodeListOf<any>;
 
   @Listen('insStepClick')
-  insStepClicked(e){
+  insStepClicked(e: CustomEvent){
     if (!this.clickable) return false;
 
     let nextStep = e.target;
@@ -95,7 +95,7 @@ export class InsSteps {
   }
 
   @Method()
-  async setStep(i){
+  async setStep(i: number){
     for (let l = 0; l < this.steps.length; l++){
       this.steps[l].active = false;
     }

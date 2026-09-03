@@ -27,9 +27,9 @@ export class InsInputTable {
   @Prop({mutable: true}) description: string = "";
   @Prop({mutable: true}) htmlDescription: boolean = false;
 
-  @State() data: any = [{}];
+  @State() data: Array<Record<string, string | null>> = [{}];
 
-  columnWidth;
+  columnWidth: string;
 
   @Prop({ mutable: true }) checkValue: boolean = false;
   @Method()
@@ -86,7 +86,7 @@ export class InsInputTable {
   }
 
   @Method()
-  async setValue(value) {
+  async setValue(value: Array<Record<string, string | null>>) {
     this.data = value;
     return await value;
   }
@@ -131,7 +131,7 @@ export class InsInputTable {
     this.insInput.emit(values);
   }
 
-  fixBlankValues(values) {
+  fixBlankValues(values: Array<Record<string, string | null>>) {
     let nullValue = true;
     for (const value of values) {
       for (const key in Object.keys(value)) {
@@ -219,7 +219,7 @@ export class InsInputTable {
     this.updateValue(this.insInputTableEl.querySelectorAll('input'));
   }
 
-  validateDescription(value) {
+  validateDescription(value: string) {
     let allowed = '<a>,<abbr>,<acronym>,<address>,<article>,<aside>,<b>,<base>,<bdi>,<bdo>,<blockquote>,<br>,<caption>,<code>,<dd>,<del>,<details>,<dfn>,<dir>,<div>,<dl>,<dt>,<em>,<font>,<h1>,<h2>,<h3>,<h4>,<h5>,<h6>,<hr>,<i>,<ins>,<label>,<li>,<link>,<mark>,<menu>,<meter>,<nav>,<ol>,<p>,<pre>,<q>,<s>,<samp>,<section>,<small>,<span>,<strike>,<strong>,<sub>,<summary>,<sup>,<table>,<tbody>,<td>,<tfoot>,<th>,<thead>,<time>,<tr>,<tt>,<u>,<ul>,<wbr>';
     allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
 

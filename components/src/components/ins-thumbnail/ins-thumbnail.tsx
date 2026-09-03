@@ -20,7 +20,7 @@ export class InsThumbnail {
     @Prop({ mutable: true }) buttonIcon: string = "";
 
     @State() hoverState: boolean = false;
-    buttonEl;
+    buttonEl: HTMLInsButtonElement;
 
     componentDidLoad(){
       this.buttonEl = this.insThumbnailEl.querySelector('ins-button');
@@ -41,7 +41,7 @@ export class InsThumbnail {
       }
     }
 
-    private _getSvgType(type){
+    private _getSvgType(type: string){
       switch(type){
         case "eps":
           return (
@@ -125,7 +125,7 @@ export class InsThumbnail {
         return (<small><span class="icon-cancel"></span> Error! The file type is empty.</small>)
     }
 
-    toggleHoverState(state){
+    toggleHoverState(state: boolean){
         this.hoverState = state;
     }
 

@@ -2,7 +2,7 @@ import { h, Element, Component, Prop, State, Method, Event, EventEmitter } from 
 import CodeMirror from "codemirror";
 import "../../assets/redactor.min.js";
 
-declare var $R;
+declare const $R: any;
 
 // addons
 import "codemirror/addon/search/search";
@@ -26,10 +26,10 @@ import "codemirror/mode/yaml/yaml";
 
 export class InsEditor {
 	@Element() insEditorEl: HTMLElement;
-  @Event() insBlur: EventEmitter;
-  @Event() insInput: EventEmitter;
+  @Event() insBlur: EventEmitter<string>;
+  @Event() insInput: EventEmitter<string | null>;
   @Event() insUpload: EventEmitter;
-  @Event() insValueChange: EventEmitter;
+  @Event() insValueChange: EventEmitter<string>;
 
   @Prop({ mutable: true }) load: boolean = false;
   @Prop({ mutable: true }) checkLoad: boolean = false;
@@ -66,7 +66,7 @@ export class InsEditor {
 	@State() hasRedactorDoctypeHTML: number = -1;
 	/*@State()*/ redactorHTML: string = "";
 	/*@State()*/ redactorHead: string = "";
-	/*@State()*/ redactorStyle: any = [];
+	/*@State()*/ redactorStyle: { tag: string; attribute: string; original: string; converted: string }[] = [];
 	/*@State()*/ redactorBody: string = "";
 	/*@State()*/ redactorBodyTag: string = "";
 
@@ -108,7 +108,7 @@ export class InsEditor {
   }
 
 	@Method()
-	async setValue(value) {
+	async setValue(value: string) {
     this.value = value;
     if (this.showSource || this.disableVisualEditor) {
       this.codeEditor.setValue(value);
@@ -126,7 +126,7 @@ export class InsEditor {
 		} else return this.sourceViewRedactor();
   }
 
-	generateClassId(length) {
+	generateClassId(length: number) {
 		let result = "";
 		let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 		for (let i = 0; i < length; i++) {
@@ -210,7 +210,7 @@ export class InsEditor {
 		return;
   }
 
-  removeEditableAttr(value){
+  removeEditableAttr(value: string){
     return this.removeHTMLMarkers(value.replace(/ contenteditable="true"/g, ""));
   }
 
@@ -303,7 +303,7 @@ export class InsEditor {
 		return callbacks;
 	}
 
-	toggleRedactor(source_view) {
+	toggleRedactor(source_view: boolean) {
 		this.sourceView = source_view;
 
 		if (source_view) {
@@ -355,7 +355,7 @@ export class InsEditor {
 		return value;
 	}
 
-	convertValues(tag, value) {
+	convertValues(tag: string, value: string) {
 		value = this.removeHTMLMarkers(value);
 		let data = this.formatTags(tag, value);
 		let converted = '';
@@ -377,7 +377,7 @@ export class InsEditor {
 		};
 	}
 
-	getTagChildren(tag, data, value) {
+	getTagChildren(tag: string, data: { index: { start: number; end: number }[]; value: string }, value: string) {
 		let converted = `<${tag}>`;
 		let original = `<${tag}>`;
 		let tags = [];
@@ -408,7 +408,7 @@ export class InsEditor {
 		};
 	}
 
-	removeHTMLMarkers(value) {
+	removeHTMLMarkers(value: string) {
 		return value.replace('<span id="selection-marker-start" class="redactor-selection-marker"></span>', '')
 								.replace('<span id="selection-marker-end" class="redactor-selection-marker">﻿</span>', '')
 								.replace('</span><span id="selection-marker-end" class="redactor-selection-marker">﻿</span>', '')
@@ -416,7 +416,7 @@ export class InsEditor {
 								.replace(new RegExp(` data-redactor-style-cache="([\\s\\S]+?)"`, 'gi'), '');
 	}
 
-	convertString(value, delimeter) {
+	convertString(value: string, delimeter: string) {
 		let new_value = '';
 		for (let counter = 0; counter < value.length; counter++) {
 			new_value += delimeter;
@@ -440,14 +440,14 @@ export class InsEditor {
 		return value.join(' } ');
 	}
 
-	getTagAttributes(tag, value) {
+	getTagAttributes(tag: string, value: string) {
 		var start = value.indexOf('<') + 1;
 		var end = value.indexOf('>') - 1;
 
 		return value.substr(start, end).replace(tag, '');
 	}
 
-	removeTag(tag, value) {
+	removeTag(tag: string, value: string) {
 		let original_value = value;
 
 		if (value.indexOf(`<${tag}>`) > -1) {
@@ -463,7 +463,7 @@ export class InsEditor {
 		return value;
 	}
 
-	formatTags(tag, value) {
+	formatTags(tag: string, value: string) {
 		let indices = [];
 		let index = 0;
 		// let counter = 0;
@@ -513,7 +513,7 @@ export class InsEditor {
 		}
 	}
 
-	toggleRedactorUpdateEditorValue(editor_value, tags) {
+	toggleRedactorUpdateEditorValue(editor_value: string, tags: { tag: string; attribute: string; original: string; converted: string }[]) {
 		for (let counter = 0; counter < tags.length; counter++) {
 			editor_value = editor_value.replace('<' + tags[counter].tag + tags[counter].attribute + '>' + this.uncommentOriginalStyles(tags[counter].original) + '</' + tags[counter].tag + '>', '');
 		}
@@ -551,16 +551,16 @@ export class InsEditor {
 		return sanitized;
 	}
 
-	uncommentOriginalStyles(html) {
+	uncommentOriginalStyles(html: string) {
 		return html.replace(new RegExp(`<!--က([\\s\\S]+?)က`, 'gi'), '<style')
 							 .replace(new RegExp(`\\ခ([\\s\\S]+?)-->`, 'gi'), 'style>');
 	}
 
-	removeRedactorStyles(html) {
+	removeRedactorStyles(html: string) {
 		return html.replace(new RegExp(`<style data-redactor-style([\\s\\S]+?)</style>`, 'gi'), '');
 	}
 
-	removeGeneratedFigure(html) {
+	removeGeneratedFigure(html: string) {
 		return html.replace(new RegExp(`<figure class="redactor-component redactor-component-active"([\\s\\S]+?)</span>`, 'gi'), '')
 								.replace(new RegExp(`<figure class="redactor-component([\\s\\S]+?)>`, 'gi'), '')
 								.replace(new RegExp(`<figure([\\s\\S]+?)>`, 'gi'), '')
@@ -662,7 +662,7 @@ export class InsEditor {
 		}
 	}
 
-	sourceCodeViewOnly(html) {
+	sourceCodeViewOnly(html: string) {
 		if (this.searchFromCode(html, '<ins-') !== -1) {
 			this.disableVisualEditor = true;
 		} else if (this.searchFromCode(html, '{{') !== -1 || this.searchFromCode(html, '{%') !== -1 ||
@@ -673,7 +673,7 @@ export class InsEditor {
 		}
 	}
 
-	searchFromCode(html, value) {
+	searchFromCode(html: string, value: string) {
 		let index = -1;
 		if (html) {
 			index = html.toLowerCase().indexOf(value);
@@ -693,7 +693,7 @@ export class InsEditor {
 		</style>`;
 	}
 
-  validateDescription(value) {
+  validateDescription(value: string) {
     let allowed = '<a>,<abbr>,<acronym>,<address>,<article>,<aside>,<b>,<base>,<bdi>,<bdo>,<blockquote>,<br>,<caption>,<code>,<dd>,<del>,<details>,<dfn>,<dir>,<div>,<dl>,<dt>,<em>,<font>,<h1>,<h2>,<h3>,<h4>,<h5>,<h6>,<hr>,<i>,<ins>,<label>,<li>,<link>,<mark>,<menu>,<meter>,<nav>,<ol>,<p>,<pre>,<q>,<s>,<samp>,<section>,<small>,<span>,<strike>,<strong>,<sub>,<summary>,<sup>,<table>,<tbody>,<td>,<tfoot>,<th>,<thead>,<time>,<tr>,<tt>,<u>,<ul>,<wbr>';
     allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
 

@@ -3,19 +3,19 @@ import { h, Component, Prop, Element, Method, Event, EventEmitter, Listen } from
 @Component({ tag: 'ins-select' })
 export class InsSelect {
   @Element() insSelectEl: HTMLElement;
-  @Event() insValueChange: EventEmitter;
-  @Event() insOptionSelect: EventEmitter;
+  @Event() insValueChange: EventEmitter<any>;
+  @Event() insOptionSelect: EventEmitter<{ event_type: string; selected: any[]; selectedOptions: Array<{ label: string; value: any }> }>;
   @Event({
     bubbles: false
-  }) insClose: EventEmitter;
+  }) insClose: EventEmitter<void>;
 
   // Dynamic Events
-  @Event() insSubmit: EventEmitter;
-  @Event() insSearch: EventEmitter;
-  @Event() insLoadMore: EventEmitter;
+  @Event() insSubmit: EventEmitter<string>;
+  @Event() insSearch: EventEmitter<string>;
+  @Event() insLoadMore: EventEmitter<void>;
 
   // Lifecycle
-  @Event() didLoad: EventEmitter;
+  @Event() didLoad: EventEmitter<void>;
   @Prop() hasLoad: string;
 
   // Input Controllers
@@ -46,9 +46,10 @@ export class InsSelect {
 
   // Static Controllers
   @Prop({ mutable: true }) selected_values: any = [];
-  activated: boolean = false; options = [];
+  activated: boolean = false; options: Array<{ el: any; label: string; value: any; activated: boolean; hidden: boolean }> = [];
   labelOfValue = ""; tempSearch = "";
-  inputValueEl; optionsWrapEl; mainWrapEl; labelWrapEl;
+  // inputValueEl stays `any`: setSearchingState sets a `readonly` expando (HTMLInputElement's property is `readOnly`)
+  inputValueEl: any; optionsWrapEl: HTMLElement; mainWrapEl: HTMLElement; labelWrapEl: HTMLElement;
 
   // Dynamic Controllers
   @Prop({ mutable: true }) initializing: boolean = false;
@@ -63,7 +64,7 @@ export class InsSelect {
 
   @Prop({mutable: true}) tooltip: string = "";
 
-  dynamicInputEl; scrollWrapEl;
+  dynamicInputEl: HTMLInputElement; scrollWrapEl: HTMLElement;
   loading: boolean = false;
   searching: boolean = false;
 
@@ -128,12 +129,12 @@ export class InsSelect {
     this.checkForOptions();
   }
 
-  isJSON(value) {
+  isJSON(value: string) {
     try { return JSON.parse(value) }
     catch(err) { return [] }
   }
 
-  searchEl(selector){
+  searchEl(selector: string){
     return this.insSelectEl.querySelector(selector) as any;
   }
 
@@ -203,7 +204,7 @@ export class InsSelect {
     } else this.setDefault();
   }
 
-  setMultipleValue(val, options){
+  setMultipleValue(val: any[], options: any){
     let values = [], selections = []
     this.loopThroughOptions(option => {
       option.activated = false;
@@ -218,7 +219,7 @@ export class InsSelect {
     this.selected_values = values;
   }
 
-  setSelected(val, options){
+  setSelected(val: any, options: any){
     this.loopThroughOptions(option => {
       option.activated = false;
       if (val === option.value) {
@@ -230,7 +231,7 @@ export class InsSelect {
     }, options);
   }
 
-  updateValueEls(option){
+  updateValueEls(option: any){
     if (this.inputValueEl){
       this.inputValueEl.value = option.label;
     }
@@ -251,13 +252,13 @@ export class InsSelect {
     } else this.resetSelected(options);
   }
 
-  resetSelected(options) {
+  resetSelected(options: any) {
     this.loopThroughOptions(o => o.activated = false, options);
     this.labelOfValue = "";
     this.value = "";
   }
 
-  resetMultipleValue(options){
+  resetMultipleValue(options: any){
     this.loopThroughOptions(o => o.activated = false, options);
     this.value = [];
     this.selected_values = [];
@@ -270,14 +271,14 @@ export class InsSelect {
   }
 
   @Method()
-  async setValue(value){
+  async setValue(value: any){
     this.value = value;
     await this.setSelectedFromValue(value);
     this.insValueChange.emit(await this.getValue());
   }
 
   @Method()
-  async setSelectedFromValue(value?){
+  async setSelectedFromValue(value?: any){
     let options = await this.getAllOptions();
     if (!options.length) return false;
 
@@ -322,7 +323,7 @@ export class InsSelect {
     this.dynamicInputEl = this.searchEl('input[data-dynamic]');
   }
 
-  defaultValidate(value){
+  defaultValidate(value: string){
     if (value){
       this.dynamicInputEl.classList.remove('invalid');
       this.insSubmit.emit(value);
@@ -332,7 +333,7 @@ export class InsSelect {
     } else this.dynamicInputEl.classList.add('invalid');
   }
 
-  dynamicOptionHandler(e) {
+  dynamicOptionHandler(e: MouseEvent) {
     e.stopPropagation();
     let value = this.dynamicInputEl.value;
     if (this.withDynamicOptionValidate){
@@ -372,19 +373,19 @@ export class InsSelect {
     }
   }
 
-  loopThroughOptions(cb, opts?){
+  loopThroughOptions(cb: (option: any) => boolean | void, opts?: any){
     let options = opts || this.insSelectEl.querySelectorAll('ins-select-option');
     for (let i = 0; i < options.length; i++){
       if (cb(options[i])) break;
     }
   }
 
-  buttoniseClick(e){
+  buttoniseClick(e: MouseEvent){
     e.preventDefault();
     if (this.button){
       let validTarget = true;
 
-      if (e.target.classList.contains('ins-select-option-wrap')){
+      if ((e.target as HTMLElement).classList.contains('ins-select-option-wrap')){
         validTarget = false;
       }
 
@@ -394,8 +395,8 @@ export class InsSelect {
     }
   }
 
-  searchOptions(event){
-    let keyword = event.target.value;
+  searchOptions(event: KeyboardEvent){
+    let keyword = (event.target as HTMLInputElement).value;
     this.tempSearch = keyword;
     this.disableNoResult();
     if (!this.activated) this.expandSection();
@@ -405,7 +406,7 @@ export class InsSelect {
     } else this.staticSearch(keyword);
   }
 
-  dynamicSearchHandler(keyword, event){
+  dynamicSearchHandler(keyword: string, event: KeyboardEvent){
     if ((event.which === 13 || keyword === "") &&
     !this.searching && !this.loading) {
       this.setSearchingState(true);
@@ -415,7 +416,7 @@ export class InsSelect {
   }
 
   @Method()
-  async setSearchingState(state){
+  async setSearchingState(state: boolean){
     this.searching = state;
     this.inputValueEl.readonly = state;
     if (this.optionsWrapEl){
@@ -424,14 +425,14 @@ export class InsSelect {
   }
 
   @Method()
-  async setLoadingState(state){
+  async setLoadingState(state: boolean){
     this.loading = state;
     if (this.optionsWrapEl){
       this.optionsWrapEl.classList[state? 'add':'remove']('loading');
     } else return false
   }
 
-  staticSearch(keyword){
+  staticSearch(keyword: string){
     if (!keyword) {
       this.showHiddenOptions();
       return this.checkForOptions();
@@ -476,7 +477,7 @@ export class InsSelect {
     } else this.defaultInputHandler(clickedOption, event.detail);
   }
 
-  multipleInputHandler(clickedOption){
+  multipleInputHandler(clickedOption: any){
     let checkSelections = this.value.find(el => {
       return el === clickedOption
     });
@@ -488,7 +489,7 @@ export class InsSelect {
     }
   }
 
-  defaultInputHandler(clickedOption, e){
+  defaultInputHandler(clickedOption: any, e: { label: string; value: any }){
     this.loopThroughOptions(option => option.activated = false);
     clickedOption.activated = true;
     this.collapseSection();
@@ -520,13 +521,13 @@ export class InsSelect {
     return hasOption;
   }
 
-  emitEvent(event_type){
+  emitEvent(event_type: string){
     if (this.multiple) {
       this.emitForMultiple(event_type);
     } else this.insValueChange.emit(this.value);
   }
 
-  emitForMultiple(event_type){
+  emitForMultiple(event_type: string){
     let selected = this.value.map(item => item.value);
     let selectedOptions = this.value.map(item => {
       return {
@@ -583,7 +584,7 @@ export class InsSelect {
     this.insClose.emit();
   }
 
-  removeItem(option){
+  removeItem(option: any){
     if (!this.disabled && !this.readonly){
       let i = this.value.findIndex(el => {
         return el === option
@@ -662,7 +663,7 @@ export class InsSelect {
     )
   }
 
-  renderItem(item){
+  renderItem(item: any){
     return (
       <div class="multiple-item-wrap">
         <span>{item.label}</span>
@@ -831,7 +832,7 @@ export class InsSelect {
     )
   }
 
-  validateDescription(value) {
+  validateDescription(value: string) {
     let allowed = '<a>,<abbr>,<acronym>,<address>,<article>,<aside>,<b>,<base>,<bdi>,<bdo>,<blockquote>,<br>,<caption>,<code>,<dd>,<del>,<details>,<dfn>,<dir>,<div>,<dl>,<dt>,<em>,<font>,<h1>,<h2>,<h3>,<h4>,<h5>,<h6>,<hr>,<i>,<ins>,<label>,<li>,<link>,<mark>,<menu>,<meter>,<nav>,<ol>,<p>,<pre>,<q>,<s>,<samp>,<section>,<small>,<span>,<strike>,<strong>,<sub>,<summary>,<sup>,<table>,<tbody>,<td>,<tfoot>,<th>,<thead>,<time>,<tr>,<tt>,<u>,<ul>,<wbr>';
     allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
 

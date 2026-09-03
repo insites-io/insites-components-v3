@@ -20,9 +20,9 @@ export class InsPieChart {
   @Prop({ mutable: true }) load: boolean = false;
   @Prop({ mutable: true }) checkLoad: boolean = false;
 
-  insChartEl: any;
-  chartContainerEl: any;
-  chartColors: any;
+  insChartEl: HTMLInsChartElement;
+  chartContainerEl: HTMLElement;
+  chartColors: any[];
 
   componentDidUpdate() {
     this.checkColors();
@@ -31,7 +31,7 @@ export class InsPieChart {
 
   componentDidLoad() {
     this.insChartEl = this.InsPieChartEl.querySelector('ins-chart');
-    this.chartContainerEl = this.insChartEl.querySelector('.chart-container');
+    this.chartContainerEl = this.insChartEl.querySelector('.chart-container') as HTMLElement;
     this.checkColors();
     this.checkProps();
     if (this.checkLoad) this.load = true;
@@ -111,7 +111,7 @@ export class InsPieChart {
       },
     }
 
-    this.insChartEl.renderChart(options)
+    this.insChartEl.renderChart(options as any)
   }
 
   render() {

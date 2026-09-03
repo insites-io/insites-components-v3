@@ -35,23 +35,23 @@
 
 ## Events
 
-| Event            | Description | Type               |
-| ---------------- | ----------- | ------------------ |
-| `insBlur`        |             | `CustomEvent<any>` |
-| `insInput`       |             | `CustomEvent<any>` |
-| `insUpload`      |             | `CustomEvent<any>` |
-| `insValueChange` |             | `CustomEvent<any>` |
+| Event            | Description | Type                  |
+| ---------------- | ----------- | --------------------- |
+| `insBlur`        |             | `CustomEvent<string>` |
+| `insInput`       |             | `CustomEvent<string>` |
+| `insUpload`      |             | `CustomEvent<any>`    |
+| `insValueChange` |             | `CustomEvent<string>` |
 
 
 ## Methods
 
-### `getValue() => Promise<any>`
+### `getValue() => Promise<string>`
 
 
 
 #### Returns
 
-Type: `Promise<any>`
+Type: `Promise<string>`
 
 
 
@@ -75,15 +75,15 @@ Type: `Promise<void>`
 
 
 
-### `setValue(value: any) => Promise<void>`
+### `setValue(value: string) => Promise<void>`
 
 
 
 #### Parameters
 
-| Name    | Type  | Description |
-| ------- | ----- | ----------- |
-| `value` | `any` |             |
+| Name    | Type     | Description |
+| ------- | -------- | ----------- |
+| `value` | `string` |             |
 
 #### Returns
 
@@ -91,13 +91,13 @@ Type: `Promise<void>`
 
 
 
-### `val() => Promise<any>`
+### `val() => Promise<string>`
 
 
 
 #### Returns
 
-Type: `Promise<any>`
+Type: `Promise<string>`
 
 
 

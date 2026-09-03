@@ -12,8 +12,8 @@ export class InsMarkdownEditor {
   @Prop() hasLoad: string;
 
   editor: any;
-  labelEl: any;
-  wrapperEl: any;
+  labelEl: HTMLElement;
+  wrapperEl: HTMLElement;
 
   @Prop({ mutable: true }) label: string = "";
   @Prop({ mutable: true }) value: string = "";
@@ -64,7 +64,7 @@ export class InsMarkdownEditor {
   }
 
   @Method()
-  async setValue(value) {
+  async setValue(value: string) {
     this.value = value;
     this.editor.value(value);
   }
@@ -113,8 +113,8 @@ export class InsMarkdownEditor {
   }
 
   initEls(){
-    this.labelEl = this.insMarkdownEditorEl.querySelector('label');
-    this.wrapperEl = this.insMarkdownEditorEl.querySelector('.ins-markdown-editor');
+    this.labelEl = this.insMarkdownEditorEl.querySelector('label') as HTMLElement;
+    this.wrapperEl = this.insMarkdownEditorEl.querySelector('.ins-markdown-editor') as HTMLElement;
   }
 
   initEventListeners() {
@@ -131,7 +131,7 @@ export class InsMarkdownEditor {
     });
   }
 
-  validateDescription(value) {
+  validateDescription(value: string) {
     let allowed = '<a>,<abbr>,<acronym>,<address>,<article>,<aside>,<b>,<base>,<bdi>,<bdo>,<blockquote>,<br>,<caption>,<code>,<dd>,<del>,<details>,<dfn>,<dir>,<div>,<dl>,<dt>,<em>,<font>,<h1>,<h2>,<h3>,<h4>,<h5>,<h6>,<hr>,<i>,<ins>,<label>,<li>,<link>,<mark>,<menu>,<meter>,<nav>,<ol>,<p>,<pre>,<q>,<s>,<samp>,<section>,<small>,<span>,<strike>,<strong>,<sub>,<summary>,<sup>,<table>,<tbody>,<td>,<tfoot>,<th>,<thead>,<time>,<tr>,<tt>,<u>,<ul>,<wbr>';
     allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
 

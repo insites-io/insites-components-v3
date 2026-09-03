@@ -17,15 +17,15 @@
 
 ## Events
 
-| Event       | Description | Type               |
-| ----------- | ----------- | ------------------ |
-| `didLoad`   |             | `CustomEvent<any>` |
-| `routePage` |             | `CustomEvent<any>` |
+| Event       | Description | Type                                                 |
+| ----------- | ----------- | ---------------------------------------------------- |
+| `didLoad`   |             | `CustomEvent<void>`                                  |
+| `routePage` |             | `CustomEvent<{ crumbs: any[]; redirect: boolean; }>` |
 
 
 ## Methods
 
-### `updateCrumbs(crumbs: any, noRedirect?: boolean) => Promise<void>`
+### `updateCrumbs(crumbs: any[], noRedirect?: boolean) => Promise<void>`
 
 
 
@@ -33,7 +33,7 @@
 
 | Name         | Type      | Description |
 | ------------ | --------- | ----------- |
-| `crumbs`     | `any`     |             |
+| `crumbs`     | `any[]`   |             |
 | `noRedirect` | `boolean` |             |
 
 #### Returns

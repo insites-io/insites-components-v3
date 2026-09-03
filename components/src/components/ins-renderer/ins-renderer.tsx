@@ -3,7 +3,7 @@ import { h, Component, Prop, State, Method, Element, Event, EventEmitter } from 
 @Component({ tag: 'ins-renderer' })
 export class InsRenderer {
   @Element() insRendererEl: HTMLElement;
-  @Event() didLoad: EventEmitter;
+  @Event() didLoad: EventEmitter<void>;
   @Prop() hasLoad: string;
 
   @State() insBreadCrumbsEl: any;
@@ -14,22 +14,22 @@ export class InsRenderer {
   @Prop({ mutable: true }) load: boolean = false;
   @Prop({ mutable: true }) checkLoad: boolean = false;
 
-  route: any = {
+  route: { label: string; link: string; app?: boolean } = {
     label: "", link: ""
   };
 
   rerouting: boolean = false;
-  breadcrumbs: any = [];
-  insRendererFrameEl: any;
+  breadcrumbs: Array<{ label: string; link: string; app?: boolean; withSubmenu?: boolean; formattedRoute?: string }> = [];
+  insRendererFrameEl: HTMLIFrameElement;
 
-  titleWrapEl: any;
-  titleEl: any;
-  breadcrumbsEl: any;
-  wrapEl: any;
-  slotWrapEl: any;
+  titleWrapEl: HTMLElement;
+  titleEl: HTMLElement;
+  breadcrumbsEl: HTMLElement;
+  wrapEl: HTMLElement;
+  slotWrapEl: HTMLElement;
 
   @Method()
-  async updateRoute(newRoutes, noRedirect = false, iframe) {
+  async updateRoute(newRoutes: any[], noRedirect = false, iframe: boolean) {
     if (newRoutes && newRoutes.length) {
       let last = newRoutes.length - 1;
       this.route = newRoutes[last];
@@ -84,7 +84,7 @@ export class InsRenderer {
     }
   }
 
-  formatUrl(e){
+  formatUrl(e: string){
     return e.toLowerCase()
         .replace(/ +(?= )/g, '')
         .replace(/- | - | -| /gi, '-')
@@ -108,7 +108,7 @@ export class InsRenderer {
   }
 
   @Method()
-  async updateRouteLabel(value) {
+  async updateRouteLabel(value: string) {
     this.route.label = value;
   }
 
@@ -124,14 +124,14 @@ export class InsRenderer {
   }
 
   getElements(){
-    this.wrapEl = this.insRendererEl.querySelector('.ins-renderer-wrap');
-    this.titleWrapEl = this.insRendererEl.querySelector('.ins-renderer-wrap__title');
-    this.titleEl = this.insRendererEl.querySelector('.ins-renderer-wrap__title-span');
-    this.breadcrumbsEl = this.insRendererEl.querySelector('.ins-breadcrumbs-wrap');
+    this.wrapEl = this.insRendererEl.querySelector('.ins-renderer-wrap') as HTMLElement;
+    this.titleWrapEl = this.insRendererEl.querySelector('.ins-renderer-wrap__title') as HTMLElement;
+    this.titleEl = this.insRendererEl.querySelector('.ins-renderer-wrap__title-span') as HTMLElement;
+    this.breadcrumbsEl = this.insRendererEl.querySelector('.ins-breadcrumbs-wrap') as HTMLElement;
   }
 
   bindIframeListener() {
-    this.insRendererFrameEl = this.insRendererEl.querySelector('#insRendererFrame') as any;
+    this.insRendererFrameEl = this.insRendererEl.querySelector('#insRendererFrame') as HTMLIFrameElement;
     if (this.insRendererFrameEl) {
       this.iframeURLChange(this.insRendererFrameEl, e => {
         // if (this.route.app){
@@ -165,8 +165,8 @@ export class InsRenderer {
     }
   }
 
-  iframeURLChange(iframe, callback) {
-    let lastDispatched = null;
+  iframeURLChange(iframe: HTMLIFrameElement, callback: (href: string) => void) {
+    let lastDispatched: string | null = null;
 
     let dispatchChange = function () {
       let newHref = iframe.contentWindow.location.href;
@@ -194,7 +194,7 @@ export class InsRenderer {
     attachUnload();
   }
 
-  updateBreadcrumbs(newRoutes, noRedirect){
+  updateBreadcrumbs(newRoutes: any[], noRedirect: boolean){
     if(!this.disableBreadcrumbs){
       this.breadcrumbs = newRoutes;
       let parsedCrumbs = JSON.stringify(newRoutes);
@@ -209,7 +209,7 @@ export class InsRenderer {
     }
   }
 
-  routePageHandler(crumb, index){
+  routePageHandler(crumb: any, index: number){
     let count = this.breadcrumbs.length;
     let lastCrumb = (count - 1) === index;
     if (!crumb.withSubmenu && !lastCrumb){

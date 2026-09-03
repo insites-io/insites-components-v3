@@ -1,11 +1,19 @@
 import { h, Component, Prop, Method, Event, EventEmitter, Element } from '@stencil/core';
 
+interface Breadcrumb {
+  label: string;
+  link?: string;
+  withSubmenu?: boolean;
+  app?: boolean;
+  [key: string]: any;
+}
+
 @Component({ tag: 'ins-breadcrumbs' })
 export class InsBreadCrumbs {
   @Element() insBreadCrumbsEl: HTMLElement;
   @Prop({ mutable: true }) breadcrumbs: Array<any> = [];
-  @Event() routePage: EventEmitter;
-  @Event() didLoad: EventEmitter;
+  @Event() routePage: EventEmitter<{ crumbs: any[]; redirect: boolean }>;
+  @Event() didLoad: EventEmitter<void>;
   @Prop() hasLoad: string;
   @Prop({ mutable: true }) load: boolean = false;
   @Prop({ mutable: true }) checkLoad: boolean = false;
@@ -19,7 +27,7 @@ export class InsBreadCrumbs {
     }
   }
 
-  routePageHandler(crumb, index){
+  routePageHandler(crumb: Breadcrumb, index: number){
     let count = this.breadcrumbs.length;
     let lastCrumb = (count - 1) === index;
     if (!crumb.withSubmenu && !lastCrumb){
@@ -33,7 +41,7 @@ export class InsBreadCrumbs {
   }
 
   @Method()
-  async updateCrumbs(crumbs, noRedirect = false){
+  async updateCrumbs(crumbs: any[], noRedirect: boolean = false){ // typed any[] deliberately: a local interface in a public @Method signature leaks into the generated components.d.ts
     this.breadcrumbs = crumbs;
     let parsedCrumbs = JSON.stringify(crumbs);
     window.localStorage.setItem('ins_breadcrumbs', parsedCrumbs);

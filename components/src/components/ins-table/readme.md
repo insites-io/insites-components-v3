@@ -74,15 +74,15 @@ Type: `Promise<void>`
 
 
 
-### `setBulkAction(value: any) => Promise<void>`
+### `setBulkAction(value: string) => Promise<void>`
 
 
 
 #### Parameters
 
-| Name    | Type  | Description |
-| ------- | ----- | ----------- |
-| `value` | `any` |             |
+| Name    | Type     | Description |
+| ------- | -------- | ----------- |
+| `value` | `string` |             |
 
 #### Returns
 

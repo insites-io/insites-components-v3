@@ -6,8 +6,8 @@ import { h, Component, Prop, Element, Event, EventEmitter, Listen, Method } from
 
 export class InsRadioGroup {
   @Element() insRadioGroupEl: HTMLElement;
-  @Event() insInput: EventEmitter;
-  @Event() didLoad: EventEmitter;
+  @Event() insInput: EventEmitter<{ value: any }>;
+  @Event() didLoad: EventEmitter<void>;
 
   @Prop ({ mutable:true }) load: boolean = false;
   @Prop ({ mutable:true }) checkLoad: boolean = false;
@@ -24,7 +24,7 @@ export class InsRadioGroup {
   @Prop ({ mutable:true }) noneLabel: String = "None";
   @Prop({mutable: true}) description: string = "";
   @Prop({mutable: true}) htmlDescription: boolean = false;
-  radioOptions;
+  radioOptions: any;
 
   @Prop({ mutable: true }) checkValue: boolean = false;
   @Method()
@@ -51,21 +51,21 @@ export class InsRadioGroup {
       item.querySelector(".ripple-check.radio").checked = false;
     }
 
-    const target = event.target as any;
-    target.querySelector(".ripple-check.radio").checked = true;
+    const target = event.target as HTMLElement;
+    target.querySelector<HTMLInputElement>(".ripple-check.radio").checked = true;
 
     this.value = event.detail.value;
     this.insInput.emit({ value: event.detail.value });
   }
 
   @Listen('didLoad')
-  async didLoadHandler(event) {
-    if (this.disabled) event.target.disabled = true;
-    if (this.readonly) event.target.readonly = true;
+  async didLoadHandler(event: CustomEvent) {
+    if (this.disabled) (event.target as any).disabled = true;
+    if (this.readonly) (event.target as any).readonly = true;
   }
 
   @Method()
-  async setValue(value) {
+  async setValue(value: string | any[]) {
     for (let item of this.radioOptions) {
       item.querySelector(".ripple-check.radio").checked = false;
       if (value.indexOf(item.value) !== -1) {
@@ -85,7 +85,7 @@ export class InsRadioGroup {
     this.didLoad.emit();
   }
 
-  validateDescription(value) {
+  validateDescription(value: string): string {
     let allowed = '<a>,<abbr>,<acronym>,<address>,<article>,<aside>,<b>,<base>,<bdi>,<bdo>,<blockquote>,<br>,<caption>,<code>,<dd>,<del>,<details>,<dfn>,<dir>,<div>,<dl>,<dt>,<em>,<font>,<h1>,<h2>,<h3>,<h4>,<h5>,<h6>,<hr>,<i>,<ins>,<label>,<li>,<link>,<mark>,<menu>,<meter>,<nav>,<ol>,<p>,<pre>,<q>,<s>,<samp>,<section>,<small>,<span>,<strike>,<strong>,<sub>,<summary>,<sup>,<table>,<tbody>,<td>,<tfoot>,<th>,<thead>,<time>,<tr>,<tt>,<u>,<ul>,<wbr>';
     allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
 

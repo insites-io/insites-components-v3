@@ -3,8 +3,8 @@ import { h, Component, Event, EventEmitter, Prop, State, Element } from "@stenci
 @Component({ tag: 'ins-instances-item' })
 export class InsInstancesItem {
   @Element() el: HTMLElement;
-  @Event() routeInstance: EventEmitter;
-  @Event() activeSubItem: EventEmitter;
+  @Event() routeInstance: EventEmitter<{ instance: string; logoLink: string; withSubItem: boolean }>;
+  @Event() activeSubItem: EventEmitter<void>;
   @Prop({ mutable: true }) logoLink: string = "";
   @Prop({ mutable: true }) instance: string = "";
   @Prop({ mutable: true }) instanceLink: string = "";

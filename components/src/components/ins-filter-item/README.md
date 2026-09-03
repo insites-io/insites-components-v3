@@ -19,10 +19,10 @@
 
 ## Events
 
-| Event       | Description | Type               |
-| ----------- | ----------- | ------------------ |
-| `didLoad`   |             | `CustomEvent<any>` |
-| `insSelect` |             | `CustomEvent<any>` |
+| Event       | Description | Type                                             |
+| ----------- | ----------- | ------------------------------------------------ |
+| `didLoad`   |             | `CustomEvent<any>`                               |
+| `insSelect` |             | `CustomEvent<{ name: string; option: string; }>` |
 
 
 ## Methods
@@ -37,13 +37,13 @@ Type: `Promise<void>`
 
 
 
-### `getSelected() => Promise<{ name: string; option: any; }>`
+### `getSelected() => Promise<{ name: string; option: string; }>`
 
 
 
 #### Returns
 
-Type: `Promise<{ name: string; option: any; }>`
+Type: `Promise<{ name: string; option: string; }>`
 
 
 

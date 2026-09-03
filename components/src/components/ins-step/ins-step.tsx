@@ -2,7 +2,7 @@ import { h, Component, Prop, Event, EventEmitter } from "@stencil/core";
 
 @Component({ tag: 'ins-step' })
 export class InsStep {
-  @Event() insStepClick: EventEmitter;
+  @Event() insStepClick: EventEmitter<void>;
 
   @Prop({ mutable: true }) indicator: string = "";
   @Prop({ mutable: true }) icon: string = "";

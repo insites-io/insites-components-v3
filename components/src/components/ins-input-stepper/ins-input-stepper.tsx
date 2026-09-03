@@ -32,7 +32,7 @@ export class InsStepper {
   @Prop({mutable: true}) htmlDescription: boolean = false;
   @Prop({mutable: true}) noValueChangeOnBlur: boolean = false;
 
-  labelEl; inputEl; active;
+  labelEl: HTMLElement; inputEl: HTMLElement; active: boolean;
 
   @Prop({ mutable: true }) checkValue: boolean = false;
   @Method()
@@ -63,7 +63,7 @@ export class InsStepper {
   }
 
   @Method()
-  async setValue(value) {
+  async setValue(value: string) {
     this.value = value;
     this.insValueChange.emit(this.value);
   }
@@ -89,8 +89,8 @@ export class InsStepper {
   }
 
   bindEls(){
-    this.labelEl = this.el.querySelector('.ins-form-label');
-    this.inputEl = this.el.querySelector('.ins-input-stepper_input-wrap');
+    this.labelEl = this.el.querySelector('.ins-form-label') as HTMLElement;
+    this.inputEl = this.el.querySelector('.ins-input-stepper_input-wrap') as HTMLElement;
   }
 
   stepDown(){
@@ -172,7 +172,7 @@ export class InsStepper {
 
   addClickOutside(){
     window.addEventListener("click", e => {
-      let target = e.target as any;
+      let target = e.target as HTMLElement;
       let closest = target.closest("ins-input-stepper")
 
       if (closest !== this.el) {
@@ -181,7 +181,7 @@ export class InsStepper {
     });
   }
 
-  validateDescription(value) {
+  validateDescription(value: string) {
     let allowed = '<a>,<abbr>,<acronym>,<address>,<article>,<aside>,<b>,<base>,<bdi>,<bdo>,<blockquote>,<br>,<caption>,<code>,<dd>,<del>,<details>,<dfn>,<dir>,<div>,<dl>,<dt>,<em>,<font>,<h1>,<h2>,<h3>,<h4>,<h5>,<h6>,<hr>,<i>,<ins>,<label>,<li>,<link>,<mark>,<menu>,<meter>,<nav>,<ol>,<p>,<pre>,<q>,<s>,<samp>,<section>,<small>,<span>,<strike>,<strong>,<sub>,<summary>,<sup>,<table>,<tbody>,<td>,<tfoot>,<th>,<thead>,<time>,<tr>,<tt>,<u>,<ul>,<wbr>';
     allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
 

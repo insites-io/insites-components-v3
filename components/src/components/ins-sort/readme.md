@@ -56,13 +56,13 @@ Type: `Promise<void>`
 
 
 
-### `getSortOrder() => Promise<{}>`
+### `getSortOrder() => Promise<Record<number, string>>`
 
 
 
 #### Returns
 
-Type: `Promise<{}>`
+Type: `Promise<Record<number, string>>`
 
 
 
