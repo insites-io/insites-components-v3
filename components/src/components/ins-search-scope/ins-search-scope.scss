@@ -1,0 +1,111 @@
+ins-search-scope {
+  display: block;
+
+  .ins-search-scope {
+    display: flex;
+    align-items: center;
+    height: 38px;
+    box-sizing: border-box;
+    background-color: var(--ins-color-white);
+    border: var(--ins-border-style) var(--ins-border-thickness) var(--ins-border-color);
+    border-radius: var(--ins-border-radius);
+    transition: border-color .25s ease-in-out;
+
+    &:hover {
+      border-color: var(--ins-color-ink40);
+    }
+
+    &:focus-within {
+      border-color: var(--ins-color-primary);
+    }
+  }
+
+  .ins-search-scope-icon {
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    color: var(--ins-color-ink40);
+    font-size: 14px;
+    pointer-events: none;
+  }
+
+  .ins-search-scope-input {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 100%;
+    border: none;
+    background: transparent;
+    margin: 0;
+    padding: 0 10px;
+    color: var(--ins-color-ink);
+    font-family: var(--ins-font-family);
+    font-size: 14px;
+    font-weight: 400;
+    box-shadow: none;
+
+    &:focus {
+      outline: 0;
+      box-shadow: none;
+    }
+
+    &::placeholder {
+      color: var(--ins-color-ink40);
+    }
+
+    &::-webkit-search-decoration,
+    &::-webkit-search-cancel-button {
+      -webkit-appearance: none;
+      appearance: none;
+    }
+  }
+
+  .ins-search-scope-select-wrap {
+    display: flex;
+    align-items: center;
+    align-self: stretch;
+    flex: 0 0 auto;
+    position: relative;
+    border-left: var(--ins-border-style) var(--ins-border-thickness) var(--ins-border-color);
+
+    &::after {
+      content: "";
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      width: 6px;
+      height: 6px;
+      margin-top: -5px;
+      border-right: 1.5px solid var(--ins-color-ink40);
+      border-bottom: 1.5px solid var(--ins-color-ink40);
+      transform: rotate(45deg);
+      pointer-events: none;
+    }
+  }
+
+  .ins-search-scope-select {
+    height: 100%;
+    max-width: 180px;
+    border: none;
+    background: transparent;
+    margin: 0;
+    padding: 0 28px 0 10px;
+    color: var(--ins-color-ink);
+    font-family: var(--ins-font-family);
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border-radius: 0 var(--ins-border-radius) var(--ins-border-radius) 0;
+
+    &:hover {
+      background-color: var(--ins-bg-color2);
+    }
+
+    &:focus {
+      outline: 0;
+      box-shadow: inset 0 0 0 1px var(--ins-color-primary);
+    }
+  }
+}

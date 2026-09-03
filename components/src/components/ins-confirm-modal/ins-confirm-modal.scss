@@ -1,0 +1,118 @@
+ins-confirm-modal {
+  .ins-confirm-modal-backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1050;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: var(--ins-color-ink);
+      opacity: 0.5;
+    }
+
+    &.open {
+      display: flex;
+    }
+  }
+
+  .ins-confirm-modal-panel {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 480px;
+    padding: 24px;
+    background-color: var(--ins-color-white);
+    border-radius: var(--ins-border-radius);
+    box-shadow: var(--ins-shadow-x) var(--ins-shadow-y) var(--ins-shadow-blur) var(--ins-shadow-color);
+    font-family: var(--ins-font-family);
+    color: var(--ins-color-ink);
+  }
+
+  .ins-confirm-modal-heading {
+    margin: 0 0 12px;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ins-color-ink);
+  }
+
+  .ins-confirm-modal-body {
+    margin-bottom: 16px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ins-color-ink);
+  }
+
+  .ins-confirm-modal-field {
+    margin-bottom: 20px;
+  }
+
+  .ins-confirm-modal-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    color: var(--ins-color-ink40);
+  }
+
+  .ins-confirm-modal-input {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-family: var(--ins-font-family);
+    color: var(--ins-color-ink);
+    background-color: var(--ins-color-white);
+    border: var(--ins-border-thickness) var(--ins-border-style) var(--ins-border-color);
+    border-radius: var(--ins-border-radius);
+
+    &:focus {
+      outline: none;
+      border-color: var(--ins-color-primary);
+    }
+  }
+
+  .ins-confirm-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .ins-confirm-modal-cancel,
+  .ins-confirm-modal-confirm {
+    padding: 8px 16px;
+    font-size: 14px;
+    font-family: var(--ins-font-family);
+    border-radius: var(--ins-border-radius);
+    cursor: pointer;
+  }
+
+  .ins-confirm-modal-cancel {
+    background-color: transparent;
+    color: var(--ins-color-ink);
+    border: var(--ins-border-thickness) var(--ins-border-style) var(--ins-border-color);
+  }
+
+  .ins-confirm-modal-confirm {
+    background-color: var(--ins-color-negative);
+    color: var(--ins-color-white);
+    border: var(--ins-border-thickness) var(--ins-border-style) var(--ins-color-negative);
+
+    &:disabled {
+      background-color: var(--ins-color-disabled);
+      border-color: var(--ins-color-disabled);
+      cursor: not-allowed;
+    }
+  }
+}

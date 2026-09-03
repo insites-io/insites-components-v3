@@ -42,6 +42,26 @@ export namespace Components {
         "load": boolean;
         "toggle": () => Promise<void>;
     }
+    interface InsActionMenu {
+        "ariaLabelText": string;
+        "checkLoad": boolean;
+        "closeMenu": () => Promise<void>;
+        "hasLoad": string;
+        "load": boolean;
+        "position": string;
+        "triggerIcon": string;
+        "triggerLabel": string;
+    }
+    interface InsActionMenuItem {
+        "checkLoad": boolean;
+        "danger": boolean;
+        "disabled": boolean;
+        "hasLoad": string;
+        "icon": string;
+        "label": string;
+        "load": boolean;
+        "value": string;
+    }
     interface InsAdmin {
     }
     interface InsAlertBox {
@@ -311,6 +331,18 @@ export namespace Components {
         "val": () => Promise<any>;
         "value": string;
     }
+    interface InsConfirmModal {
+        "cancelButtonLabel": string;
+        "checkLoad": boolean;
+        "confirmButtonLabel": string;
+        "confirmWord": string;
+        "hasLoad": string;
+        "heading": string;
+        "hide": () => Promise<void>;
+        "load": boolean;
+        "open": boolean;
+        "show": () => Promise<void>;
+    }
     interface InsContent {
     }
     interface InsCreditCard {
@@ -372,6 +404,28 @@ export namespace Components {
         "setValue": (value: string) => Promise<void>;
         "tooltip": string;
         "value": string;
+    }
+    interface InsDisclosurePanel {
+        "checkLoad": boolean;
+        /**
+          * Programmatic close — does NOT emit insToggle.
+         */
+        "closePanel": () => Promise<void>;
+        "count": number;
+        "disabled": boolean;
+        "hasLoad": string;
+        "heading": string;
+        "icon": string;
+        "load": boolean;
+        "open": boolean;
+        /**
+          * Programmatic open — does NOT emit insToggle.
+         */
+        "openPanel": () => Promise<void>;
+        /**
+          * Programmatic toggle — does NOT emit insToggle.
+         */
+        "toggle": () => Promise<void>;
     }
     interface InsDrawer {
         "backdropCanClose": boolean;
@@ -974,6 +1028,24 @@ export namespace Components {
         "val": () => Promise<any>;
         "value": string;
     }
+    interface InsMetricTile {
+        "checkLoad": boolean;
+        "clickable": boolean;
+        "hasLoad": string;
+        "hint": string;
+        "icon": string;
+        "label": string;
+        "load": boolean;
+        "loading": boolean;
+        "metricKey": string;
+        "value": string;
+    }
+    interface InsMetricTileGroup {
+        "checkLoad": boolean;
+        "columns": number;
+        "hasLoad": string;
+        "load": boolean;
+    }
     interface InsModal {
         "buttonAlignment": string;
         "checkLoad": boolean;
@@ -1091,6 +1163,17 @@ export namespace Components {
         "resizeIframe": () => Promise<void>;
         "updateRoute": (newRoutes: any[], noRedirect: boolean, iframe: boolean) => Promise<void>;
         "updateRouteLabel": (value: string) => Promise<void>;
+    }
+    interface InsSearchScope {
+        "checkLoad": boolean;
+        "clear": () => Promise<void>;
+        "debounce": number;
+        "hasLoad": string;
+        "load": boolean;
+        "placeholder": string;
+        "scope": string;
+        "scopeOptions": Array<ScopeOption> | string;
+        "value": string;
     }
     interface InsSelect {
         "button": boolean;
@@ -1445,6 +1528,14 @@ export interface InsAccordionLinkCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLInsAccordionLinkElement;
 }
+export interface InsActionMenuCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLInsActionMenuElement;
+}
+export interface InsActionMenuItemCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLInsActionMenuItemElement;
+}
 export interface InsAlertBoxCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLInsAlertBoxElement;
@@ -1501,6 +1592,10 @@ export interface InsCodeEditorCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLInsCodeEditorElement;
 }
+export interface InsConfirmModalCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLInsConfirmModalElement;
+}
 export interface InsCreditCardCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLInsCreditCardElement;
@@ -1508,6 +1603,10 @@ export interface InsCreditCardCustomEvent<T> extends CustomEvent<T> {
 export interface InsDateTimeCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLInsDateTimeElement;
+}
+export interface InsDisclosurePanelCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLInsDisclosurePanelElement;
 }
 export interface InsDrawerCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -1641,6 +1740,14 @@ export interface InsMarkdownEditorCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLInsMarkdownEditorElement;
 }
+export interface InsMetricTileCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLInsMetricTileElement;
+}
+export interface InsMetricTileGroupCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLInsMetricTileGroupElement;
+}
 export interface InsModalCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLInsModalElement;
@@ -1664,6 +1771,10 @@ export interface InsRadioGroupCustomEvent<T> extends CustomEvent<T> {
 export interface InsRendererCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLInsRendererElement;
+}
+export interface InsSearchScopeCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLInsSearchScopeElement;
 }
 export interface InsSelectCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -1780,6 +1891,42 @@ declare global {
     var HTMLInsAccordionLinkElement: {
         prototype: HTMLInsAccordionLinkElement;
         new (): HTMLInsAccordionLinkElement;
+    };
+    interface HTMLInsActionMenuElementEventMap {
+        "insOpenChange": { open: boolean };
+        "didLoad": void;
+    }
+    interface HTMLInsActionMenuElement extends Components.InsActionMenu, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLInsActionMenuElementEventMap>(type: K, listener: (this: HTMLInsActionMenuElement, ev: InsActionMenuCustomEvent<HTMLInsActionMenuElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLInsActionMenuElementEventMap>(type: K, listener: (this: HTMLInsActionMenuElement, ev: InsActionMenuCustomEvent<HTMLInsActionMenuElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLInsActionMenuElement: {
+        prototype: HTMLInsActionMenuElement;
+        new (): HTMLInsActionMenuElement;
+    };
+    interface HTMLInsActionMenuItemElementEventMap {
+        "insSelect": { label: string; value: string };
+        "didLoad": void;
+    }
+    interface HTMLInsActionMenuItemElement extends Components.InsActionMenuItem, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLInsActionMenuItemElementEventMap>(type: K, listener: (this: HTMLInsActionMenuItemElement, ev: InsActionMenuItemCustomEvent<HTMLInsActionMenuItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLInsActionMenuItemElementEventMap>(type: K, listener: (this: HTMLInsActionMenuItemElement, ev: InsActionMenuItemCustomEvent<HTMLInsActionMenuItemElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLInsActionMenuItemElement: {
+        prototype: HTMLInsActionMenuItemElement;
+        new (): HTMLInsActionMenuItemElement;
     };
     interface HTMLInsAdminElement extends Components.InsAdmin, HTMLStencilElement {
     }
@@ -2068,6 +2215,25 @@ declare global {
         prototype: HTMLInsCodeEditorElement;
         new (): HTMLInsCodeEditorElement;
     };
+    interface HTMLInsConfirmModalElementEventMap {
+        "insConfirm": void;
+        "insClose": void;
+        "didLoad": void;
+    }
+    interface HTMLInsConfirmModalElement extends Components.InsConfirmModal, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLInsConfirmModalElementEventMap>(type: K, listener: (this: HTMLInsConfirmModalElement, ev: InsConfirmModalCustomEvent<HTMLInsConfirmModalElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLInsConfirmModalElementEventMap>(type: K, listener: (this: HTMLInsConfirmModalElement, ev: InsConfirmModalCustomEvent<HTMLInsConfirmModalElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLInsConfirmModalElement: {
+        prototype: HTMLInsConfirmModalElement;
+        new (): HTMLInsConfirmModalElement;
+    };
     interface HTMLInsContentElement extends Components.InsContent, HTMLStencilElement {
     }
     var HTMLInsContentElement: {
@@ -2113,6 +2279,24 @@ declare global {
     var HTMLInsDateTimeElement: {
         prototype: HTMLInsDateTimeElement;
         new (): HTMLInsDateTimeElement;
+    };
+    interface HTMLInsDisclosurePanelElementEventMap {
+        "insToggle": { open: boolean; heading: string };
+        "didLoad": void;
+    }
+    interface HTMLInsDisclosurePanelElement extends Components.InsDisclosurePanel, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLInsDisclosurePanelElementEventMap>(type: K, listener: (this: HTMLInsDisclosurePanelElement, ev: InsDisclosurePanelCustomEvent<HTMLInsDisclosurePanelElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLInsDisclosurePanelElementEventMap>(type: K, listener: (this: HTMLInsDisclosurePanelElement, ev: InsDisclosurePanelCustomEvent<HTMLInsDisclosurePanelElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLInsDisclosurePanelElement: {
+        prototype: HTMLInsDisclosurePanelElement;
+        new (): HTMLInsDisclosurePanelElement;
     };
     interface HTMLInsDrawerElementEventMap {
         "insToggle": any;
@@ -2753,6 +2937,41 @@ declare global {
         prototype: HTMLInsMarkdownEditorElement;
         new (): HTMLInsMarkdownEditorElement;
     };
+    interface HTMLInsMetricTileElementEventMap {
+        "didLoad": void;
+        "insTileClick": { metricKey: string };
+    }
+    interface HTMLInsMetricTileElement extends Components.InsMetricTile, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLInsMetricTileElementEventMap>(type: K, listener: (this: HTMLInsMetricTileElement, ev: InsMetricTileCustomEvent<HTMLInsMetricTileElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLInsMetricTileElementEventMap>(type: K, listener: (this: HTMLInsMetricTileElement, ev: InsMetricTileCustomEvent<HTMLInsMetricTileElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLInsMetricTileElement: {
+        prototype: HTMLInsMetricTileElement;
+        new (): HTMLInsMetricTileElement;
+    };
+    interface HTMLInsMetricTileGroupElementEventMap {
+        "didLoad": void;
+    }
+    interface HTMLInsMetricTileGroupElement extends Components.InsMetricTileGroup, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLInsMetricTileGroupElementEventMap>(type: K, listener: (this: HTMLInsMetricTileGroupElement, ev: InsMetricTileGroupCustomEvent<HTMLInsMetricTileGroupElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLInsMetricTileGroupElementEventMap>(type: K, listener: (this: HTMLInsMetricTileGroupElement, ev: InsMetricTileGroupCustomEvent<HTMLInsMetricTileGroupElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLInsMetricTileGroupElement: {
+        prototype: HTMLInsMetricTileGroupElement;
+        new (): HTMLInsMetricTileGroupElement;
+    };
     interface HTMLInsModalElementEventMap {
         "insClose": any;
         "didLoad": any;
@@ -2876,6 +3095,25 @@ declare global {
     var HTMLInsRendererElement: {
         prototype: HTMLInsRendererElement;
         new (): HTMLInsRendererElement;
+    };
+    interface HTMLInsSearchScopeElementEventMap {
+        "insSearch": { value: string; scope: string };
+        "insScopeChange": { scope: string };
+        "didLoad": void;
+    }
+    interface HTMLInsSearchScopeElement extends Components.InsSearchScope, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLInsSearchScopeElementEventMap>(type: K, listener: (this: HTMLInsSearchScopeElement, ev: InsSearchScopeCustomEvent<HTMLInsSearchScopeElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLInsSearchScopeElementEventMap>(type: K, listener: (this: HTMLInsSearchScopeElement, ev: InsSearchScopeCustomEvent<HTMLInsSearchScopeElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLInsSearchScopeElement: {
+        prototype: HTMLInsSearchScopeElement;
+        new (): HTMLInsSearchScopeElement;
     };
     interface HTMLInsSelectElementEventMap {
         "insValueChange": any;
@@ -3258,6 +3496,8 @@ declare global {
         "ins-accordion-item": HTMLInsAccordionItemElement;
         "ins-accordion-item-heading": HTMLInsAccordionItemHeadingElement;
         "ins-accordion-link": HTMLInsAccordionLinkElement;
+        "ins-action-menu": HTMLInsActionMenuElement;
+        "ins-action-menu-item": HTMLInsActionMenuItemElement;
         "ins-admin": HTMLInsAdminElement;
         "ins-alert-box": HTMLInsAlertBoxElement;
         "ins-backdrop": HTMLInsBackdropElement;
@@ -3277,9 +3517,11 @@ declare global {
         "ins-checkbox-card": HTMLInsCheckboxCardElement;
         "ins-checkbox-group": HTMLInsCheckboxGroupElement;
         "ins-code-editor": HTMLInsCodeEditorElement;
+        "ins-confirm-modal": HTMLInsConfirmModalElement;
         "ins-content": HTMLInsContentElement;
         "ins-credit-card": HTMLInsCreditCardElement;
         "ins-date-time": HTMLInsDateTimeElement;
+        "ins-disclosure-panel": HTMLInsDisclosurePanelElement;
         "ins-drawer": HTMLInsDrawerElement;
         "ins-dropdown": HTMLInsDropdownElement;
         "ins-dropdown-item": HTMLInsDropdownItemElement;
@@ -3317,6 +3559,8 @@ declare global {
         "ins-loader": HTMLInsLoaderElement;
         "ins-markdown": HTMLInsMarkdownElement;
         "ins-markdown-editor": HTMLInsMarkdownEditorElement;
+        "ins-metric-tile": HTMLInsMetricTileElement;
+        "ins-metric-tile-group": HTMLInsMetricTileGroupElement;
         "ins-modal": HTMLInsModalElement;
         "ins-notifications": HTMLInsNotificationsElement;
         "ins-notifications-item": HTMLInsNotificationsItemElement;
@@ -3326,6 +3570,7 @@ declare global {
         "ins-radio": HTMLInsRadioElement;
         "ins-radio-group": HTMLInsRadioGroupElement;
         "ins-renderer": HTMLInsRendererElement;
+        "ins-search-scope": HTMLInsSearchScopeElement;
         "ins-select": HTMLInsSelectElement;
         "ins-select-group": HTMLInsSelectGroupElement;
         "ins-select-option": HTMLInsSelectOptionElement;
@@ -3388,6 +3633,29 @@ declare namespace LocalJSX {
         "linkTitle"?: string;
         "load"?: boolean;
         "onDidLoad"?: (event: InsAccordionLinkCustomEvent<void>) => void;
+    }
+    interface InsActionMenu {
+        "ariaLabelText"?: string;
+        "checkLoad"?: boolean;
+        "hasLoad"?: string;
+        "load"?: boolean;
+        "onDidLoad"?: (event: InsActionMenuCustomEvent<void>) => void;
+        "onInsOpenChange"?: (event: InsActionMenuCustomEvent<{ open: boolean }>) => void;
+        "position"?: string;
+        "triggerIcon"?: string;
+        "triggerLabel"?: string;
+    }
+    interface InsActionMenuItem {
+        "checkLoad"?: boolean;
+        "danger"?: boolean;
+        "disabled"?: boolean;
+        "hasLoad"?: string;
+        "icon"?: string;
+        "label"?: string;
+        "load"?: boolean;
+        "onDidLoad"?: (event: InsActionMenuItemCustomEvent<void>) => void;
+        "onInsSelect"?: (event: InsActionMenuItemCustomEvent<{ label: string; value: string }>) => void;
+        "value"?: string;
     }
     interface InsAdmin {
     }
@@ -3646,6 +3914,19 @@ declare namespace LocalJSX {
         "tooltip"?: string;
         "value"?: string;
     }
+    interface InsConfirmModal {
+        "cancelButtonLabel"?: string;
+        "checkLoad"?: boolean;
+        "confirmButtonLabel"?: string;
+        "confirmWord"?: string;
+        "hasLoad"?: string;
+        "heading"?: string;
+        "load"?: boolean;
+        "onDidLoad"?: (event: InsConfirmModalCustomEvent<void>) => void;
+        "onInsClose"?: (event: InsConfirmModalCustomEvent<void>) => void;
+        "onInsConfirm"?: (event: InsConfirmModalCustomEvent<void>) => void;
+        "open"?: boolean;
+    }
     interface InsContent {
     }
     interface InsCreditCard {
@@ -3707,6 +3988,18 @@ declare namespace LocalJSX {
         "readonly"?: boolean;
         "tooltip"?: string;
         "value"?: string;
+    }
+    interface InsDisclosurePanel {
+        "checkLoad"?: boolean;
+        "count"?: number;
+        "disabled"?: boolean;
+        "hasLoad"?: string;
+        "heading"?: string;
+        "icon"?: string;
+        "load"?: boolean;
+        "onDidLoad"?: (event: InsDisclosurePanelCustomEvent<void>) => void;
+        "onInsToggle"?: (event: InsDisclosurePanelCustomEvent<{ open: boolean; heading: string }>) => void;
+        "open"?: boolean;
     }
     interface InsDrawer {
         "backdropCanClose"?: boolean;
@@ -4304,6 +4597,27 @@ declare namespace LocalJSX {
         "tooltip"?: string;
         "value"?: string;
     }
+    interface InsMetricTile {
+        "checkLoad"?: boolean;
+        "clickable"?: boolean;
+        "hasLoad"?: string;
+        "hint"?: string;
+        "icon"?: string;
+        "label"?: string;
+        "load"?: boolean;
+        "loading"?: boolean;
+        "metricKey"?: string;
+        "onDidLoad"?: (event: InsMetricTileCustomEvent<void>) => void;
+        "onInsTileClick"?: (event: InsMetricTileCustomEvent<{ metricKey: string }>) => void;
+        "value"?: string;
+    }
+    interface InsMetricTileGroup {
+        "checkLoad"?: boolean;
+        "columns"?: number;
+        "hasLoad"?: string;
+        "load"?: boolean;
+        "onDidLoad"?: (event: InsMetricTileGroupCustomEvent<void>) => void;
+    }
     interface InsModal {
         "buttonAlignment"?: string;
         "checkLoad"?: boolean;
@@ -4416,6 +4730,19 @@ declare namespace LocalJSX {
         "link"?: string;
         "load"?: boolean;
         "onDidLoad"?: (event: InsRendererCustomEvent<void>) => void;
+    }
+    interface InsSearchScope {
+        "checkLoad"?: boolean;
+        "debounce"?: number;
+        "hasLoad"?: string;
+        "load"?: boolean;
+        "onDidLoad"?: (event: InsSearchScopeCustomEvent<void>) => void;
+        "onInsScopeChange"?: (event: InsSearchScopeCustomEvent<{ scope: string }>) => void;
+        "onInsSearch"?: (event: InsSearchScopeCustomEvent<{ value: string; scope: string }>) => void;
+        "placeholder"?: string;
+        "scope"?: string;
+        "scopeOptions"?: Array<ScopeOption> | string;
+        "value"?: string;
     }
     interface InsSelect {
         "button"?: boolean;
@@ -4759,6 +5086,8 @@ declare namespace LocalJSX {
         "ins-accordion-item": InsAccordionItem;
         "ins-accordion-item-heading": InsAccordionItemHeading;
         "ins-accordion-link": InsAccordionLink;
+        "ins-action-menu": InsActionMenu;
+        "ins-action-menu-item": InsActionMenuItem;
         "ins-admin": InsAdmin;
         "ins-alert-box": InsAlertBox;
         "ins-backdrop": InsBackdrop;
@@ -4778,9 +5107,11 @@ declare namespace LocalJSX {
         "ins-checkbox-card": InsCheckboxCard;
         "ins-checkbox-group": InsCheckboxGroup;
         "ins-code-editor": InsCodeEditor;
+        "ins-confirm-modal": InsConfirmModal;
         "ins-content": InsContent;
         "ins-credit-card": InsCreditCard;
         "ins-date-time": InsDateTime;
+        "ins-disclosure-panel": InsDisclosurePanel;
         "ins-drawer": InsDrawer;
         "ins-dropdown": InsDropdown;
         "ins-dropdown-item": InsDropdownItem;
@@ -4818,6 +5149,8 @@ declare namespace LocalJSX {
         "ins-loader": InsLoader;
         "ins-markdown": InsMarkdown;
         "ins-markdown-editor": InsMarkdownEditor;
+        "ins-metric-tile": InsMetricTile;
+        "ins-metric-tile-group": InsMetricTileGroup;
         "ins-modal": InsModal;
         "ins-notifications": InsNotifications;
         "ins-notifications-item": InsNotificationsItem;
@@ -4827,6 +5160,7 @@ declare namespace LocalJSX {
         "ins-radio": InsRadio;
         "ins-radio-group": InsRadioGroup;
         "ins-renderer": InsRenderer;
+        "ins-search-scope": InsSearchScope;
         "ins-select": InsSelect;
         "ins-select-group": InsSelectGroup;
         "ins-select-option": InsSelectOption;
@@ -4863,6 +5197,8 @@ declare module "@stencil/core" {
             "ins-accordion-item": LocalJSX.InsAccordionItem & JSXBase.HTMLAttributes<HTMLInsAccordionItemElement>;
             "ins-accordion-item-heading": LocalJSX.InsAccordionItemHeading & JSXBase.HTMLAttributes<HTMLInsAccordionItemHeadingElement>;
             "ins-accordion-link": LocalJSX.InsAccordionLink & JSXBase.HTMLAttributes<HTMLInsAccordionLinkElement>;
+            "ins-action-menu": LocalJSX.InsActionMenu & JSXBase.HTMLAttributes<HTMLInsActionMenuElement>;
+            "ins-action-menu-item": LocalJSX.InsActionMenuItem & JSXBase.HTMLAttributes<HTMLInsActionMenuItemElement>;
             "ins-admin": LocalJSX.InsAdmin & JSXBase.HTMLAttributes<HTMLInsAdminElement>;
             "ins-alert-box": LocalJSX.InsAlertBox & JSXBase.HTMLAttributes<HTMLInsAlertBoxElement>;
             "ins-backdrop": LocalJSX.InsBackdrop & JSXBase.HTMLAttributes<HTMLInsBackdropElement>;
@@ -4882,9 +5218,11 @@ declare module "@stencil/core" {
             "ins-checkbox-card": LocalJSX.InsCheckboxCard & JSXBase.HTMLAttributes<HTMLInsCheckboxCardElement>;
             "ins-checkbox-group": LocalJSX.InsCheckboxGroup & JSXBase.HTMLAttributes<HTMLInsCheckboxGroupElement>;
             "ins-code-editor": LocalJSX.InsCodeEditor & JSXBase.HTMLAttributes<HTMLInsCodeEditorElement>;
+            "ins-confirm-modal": LocalJSX.InsConfirmModal & JSXBase.HTMLAttributes<HTMLInsConfirmModalElement>;
             "ins-content": LocalJSX.InsContent & JSXBase.HTMLAttributes<HTMLInsContentElement>;
             "ins-credit-card": LocalJSX.InsCreditCard & JSXBase.HTMLAttributes<HTMLInsCreditCardElement>;
             "ins-date-time": LocalJSX.InsDateTime & JSXBase.HTMLAttributes<HTMLInsDateTimeElement>;
+            "ins-disclosure-panel": LocalJSX.InsDisclosurePanel & JSXBase.HTMLAttributes<HTMLInsDisclosurePanelElement>;
             "ins-drawer": LocalJSX.InsDrawer & JSXBase.HTMLAttributes<HTMLInsDrawerElement>;
             "ins-dropdown": LocalJSX.InsDropdown & JSXBase.HTMLAttributes<HTMLInsDropdownElement>;
             "ins-dropdown-item": LocalJSX.InsDropdownItem & JSXBase.HTMLAttributes<HTMLInsDropdownItemElement>;
@@ -4922,6 +5260,8 @@ declare module "@stencil/core" {
             "ins-loader": LocalJSX.InsLoader & JSXBase.HTMLAttributes<HTMLInsLoaderElement>;
             "ins-markdown": LocalJSX.InsMarkdown & JSXBase.HTMLAttributes<HTMLInsMarkdownElement>;
             "ins-markdown-editor": LocalJSX.InsMarkdownEditor & JSXBase.HTMLAttributes<HTMLInsMarkdownEditorElement>;
+            "ins-metric-tile": LocalJSX.InsMetricTile & JSXBase.HTMLAttributes<HTMLInsMetricTileElement>;
+            "ins-metric-tile-group": LocalJSX.InsMetricTileGroup & JSXBase.HTMLAttributes<HTMLInsMetricTileGroupElement>;
             "ins-modal": LocalJSX.InsModal & JSXBase.HTMLAttributes<HTMLInsModalElement>;
             "ins-notifications": LocalJSX.InsNotifications & JSXBase.HTMLAttributes<HTMLInsNotificationsElement>;
             "ins-notifications-item": LocalJSX.InsNotificationsItem & JSXBase.HTMLAttributes<HTMLInsNotificationsItemElement>;
@@ -4931,6 +5271,7 @@ declare module "@stencil/core" {
             "ins-radio": LocalJSX.InsRadio & JSXBase.HTMLAttributes<HTMLInsRadioElement>;
             "ins-radio-group": LocalJSX.InsRadioGroup & JSXBase.HTMLAttributes<HTMLInsRadioGroupElement>;
             "ins-renderer": LocalJSX.InsRenderer & JSXBase.HTMLAttributes<HTMLInsRendererElement>;
+            "ins-search-scope": LocalJSX.InsSearchScope & JSXBase.HTMLAttributes<HTMLInsSearchScopeElement>;
             "ins-select": LocalJSX.InsSelect & JSXBase.HTMLAttributes<HTMLInsSelectElement>;
             "ins-select-group": LocalJSX.InsSelectGroup & JSXBase.HTMLAttributes<HTMLInsSelectGroupElement>;
             "ins-select-option": LocalJSX.InsSelectOption & JSXBase.HTMLAttributes<HTMLInsSelectOptionElement>;

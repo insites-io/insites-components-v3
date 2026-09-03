@@ -1,0 +1,121 @@
+ins-metric-tile {
+  display: block;
+  min-width: 0;
+
+  .ins-metric-tile-wrap {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    height: 100%;
+    padding: 16px;
+    background: var(--ins-color-white);
+    border: var(--ins-border-thickness, 1px) var(--ins-border-style, solid) var(--ins-border-color);
+    border-radius: 4px;
+    font-family: var(--ins-font-family);
+
+    &.clickable {
+      .ins-metric-tile__body {
+        cursor: pointer;
+      }
+
+      &:hover {
+        border-color: var(--ins-color-primary);
+        box-shadow: var(--ins-shadow-x, 0) var(--ins-shadow-y, 2px) var(--ins-shadow-blur, 8px) var(--ins-shadow-color);
+      }
+    }
+  }
+
+  .ins-metric-tile__body {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    flex: 1 1 auto;
+    min-width: 0;
+
+    // button reset (clickable tiles render as <button>)
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    text-align: left;
+    color: inherit;
+    font: inherit;
+
+    &:focus-visible {
+      outline: 2px solid var(--ins-color-primary);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+  }
+
+  .ins-metric-tile__icon {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ins-color-primary);
+    font-size: 18px;
+    line-height: 1;
+    padding-top: 2px;
+  }
+
+  .ins-metric-tile__content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .ins-metric-tile__label {
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--ins-color-ink40);
+  }
+
+  .ins-metric-tile__value {
+    font-size: 22px;
+    line-height: 28px;
+    font-weight: 600;
+    color: var(--ins-color-ink);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ins-metric-tile__hint {
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--ins-color-ink40);
+  }
+
+  .ins-metric-tile__placeholder {
+    display: block;
+    width: 72px;
+    height: 28px;
+    border-radius: 4px;
+    background: var(--ins-color-ink10);
+    animation: ins-metric-tile-pulse 1.4s ease-in-out infinite;
+  }
+
+  .ins-metric-tile__actions {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+
+    &:empty {
+      display: none;
+    }
+  }
+}
+
+@keyframes ins-metric-tile-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ins-metric-tile .ins-metric-tile__placeholder {
+    animation: none;
+  }
+}

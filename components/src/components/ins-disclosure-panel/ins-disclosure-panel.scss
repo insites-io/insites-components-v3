@@ -1,0 +1,96 @@
+ins-disclosure-panel {
+  display: block;
+  width: 100%;
+  background: var(--ins-color-white);
+  font-family: var(--ins-font-family);
+
+  // Divider line between stacked panels
+  + ins-disclosure-panel {
+    border-top: 1px solid var(--ins-border-color);
+  }
+
+  .ins-disclosure-panel {
+    width: 100%;
+
+    &_header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 16px;
+      margin: 0;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+      font-size: inherit;
+      color: var(--ins-color-ink);
+
+      &:hover:not(:disabled) {
+        background: var(--ins-color-ink5);
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--ins-color-primary);
+        outline-offset: -2px;
+      }
+
+      &:disabled {
+        cursor: not-allowed;
+        color: var(--ins-color-disabled);
+
+        .ins-disclosure-panel_chevron,
+        .ins-disclosure-panel_icon,
+        .ins-disclosure-panel_count {
+          color: var(--ins-color-disabled);
+        }
+      }
+    }
+
+    &_chevron {
+      flex: 0 0 auto;
+      color: var(--ins-color-ink40);
+      transition: transform 0.2s ease;
+    }
+
+    &_icon {
+      flex: 0 0 auto;
+      color: var(--ins-color-ink40);
+    }
+
+    &_heading {
+      font-weight: 600;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    &_count {
+      flex: 0 0 auto;
+      padding: 0 8px;
+      border-radius: var(--ins-border-radius);
+      background: var(--ins-color-ink10);
+      color: var(--ins-color-ink);
+      font-size: 0.85em;
+      line-height: 1.6;
+    }
+
+    &_body {
+      display: none;
+      padding: 0 16px 16px 16px;
+    }
+
+    &.open {
+      > .ins-disclosure-panel_header .ins-disclosure-panel_chevron {
+        transform: rotate(180deg);
+      }
+
+      > .ins-disclosure-panel_body {
+        display: block;
+      }
+    }
+  }
+}
