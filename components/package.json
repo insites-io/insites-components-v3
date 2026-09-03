@@ -1,5 +1,5 @@
 {
-  "name": "insites-components-v2",
+  "name": "insites-components-v3",
   "version": "2.0.0",
   "description": "Stencil Component Starter",
   "main": "dist/index.cjs.js",
@@ -10,7 +10,7 @@
   "types": "dist/types/index.d.ts",
   "collection": "dist/collection/collection-manifest.json",
   "collection:main": "dist/collection/index.js",
-  "unpkg": "dist/insites-components-v2/insites-components-v2.js",
+  "unpkg": "dist/insites-components-v3/insites-components-v3.js",
   "files": [
     "dist/",
     "loader/"
