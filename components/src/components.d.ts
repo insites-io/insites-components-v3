@@ -5,7 +5,9 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { ScopeOption } from "./components/ins-search-scope/ins-search-scope";
 import { Event } from "@stencil/core";
+export { ScopeOption } from "./components/ins-search-scope/ins-search-scope";
 export { Event } from "@stencil/core";
 export namespace Components {
     interface InsAccordion {

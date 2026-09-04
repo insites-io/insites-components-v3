@@ -1,6 +1,6 @@
 import { h, Component, Prop, Element, Event, EventEmitter, Method } from "@stencil/core";
 
-interface ScopeOption {
+export interface ScopeOption { // exported: a type used in a @Prop signature lands in the generated components.d.ts, which must be able to import it
   label: string;
   value: string;
 }
