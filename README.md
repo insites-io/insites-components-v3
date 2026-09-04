@@ -11,7 +11,7 @@ lazy-chunk hashing (identical content, different hash-named file).
 serving Combinate and old client websites from `components.insites.io/v2/latest`,
 frozen indefinitely. This repo (`v3`) is where IIA v6 admin development happens
 going forward — new table variants, promoted CRM patterns, the icon-font merge,
-component consolidation — and it publishes only to a separate `v6/latest` CDN
+component consolidation — and it publishes only to a separate `v3/latest` CDN
 path that no website ever loads. Same custom-element tag names (`ins-*`), same
 Stencil setup; different codebase so the two lines can diverge safely.
 
@@ -47,10 +47,10 @@ Component styles are located in the styles folder, files are named with its comp
 ## Building for Deployment
 To build components or styles, go to its respective folders and run `npm run build`.
 
-## Releasing (publishes to the `v6` CDN path only — never `v2`)
+## Releasing (publishes to the `v3` CDN path only — never `v2`)
 1. Build components and styles
 
-2. Go to release folder and rename the current version to its release version. eg v6.0.0 rename to v6.0.1
+2. Go to release folder and rename the current version to its release version. eg v3.0.0 rename to v3.0.1
 
 3. Delete all `.js` files inside it
 
@@ -58,21 +58,21 @@ To build components or styles, go to its respective folders and run `npm run bui
 
 5. Copy all insites css in `components/assets/css` and replace the files in the css folder in the version folder (point 2).
 
-6. Delete all files in `release/v6/latest` folder
+6. Delete all files in `release/v3/latest` folder
 
 7. Copy all files in the version folder you are going to release (point 2)
 
-8. Get access to the AWS account holding the `ins-styleguide` bucket (not any of the `insites-*` SSO profiles — see Build 0 notes) and go to [ins-styleguide](https://s3.console.aws.amazon.com/s3/buckets/ins-styleguide?region=us-west-2&tab=objects) bucket
+8. Log into the **Styleguide** AWS account (SSO profile `insites`, account 959727866136) and go to the [insites-style-guide](https://s3.console.aws.amazon.com/s3/buckets/insites-style-guide?region=us-west-2&tab=objects) bucket — note: the bucket is `insites-style-guide`, NOT `ins-styleguide` as older docs said. CLI: `aws s3 sync <build> s3://insites-style-guide/v3/latest/ --profile insites`
 
-9. First upload the new version folder, under `v6/`
+9. First upload the new version folder, under `v3/`
 
-10. Then delete all files in the `v6/latest` folder
+10. Then delete all files in the `v3/latest` folder
 
-11. Upload the latest release files inside the `v6/latest` folder
+11. Upload the latest release files inside the `v3/latest` folder
 
-12. Go to [AWS CloudFront](https://console.aws.amazon.com/cloudfront/v3/home?region=us-west-1#/distributions/EKAHJ8SFS25OG/invalidations)
+12. Go to [AWS CloudFront](https://console.aws.amazon.com/cloudfront/v3/home#/distributions/E35G635O6GR2HY/invalidations) — distribution `E35G635O6GR2HY` (the `EKAHJ8SFS25OG` id in older docs does not exist). CLI: `aws cloudfront create-invalidation --distribution-id E35G635O6GR2HY --paths "/v3/*" --profile insites`
 
-13. Create invalidation with this object path `/v6/latest/*`
+13. Create invalidation with this object path `/v3/latest/*`
 
 **Never repeat this process against `v2/*`.** `v2` is frozen for Combinate and
 old client websites — it takes security/data-loss backports only, applied
