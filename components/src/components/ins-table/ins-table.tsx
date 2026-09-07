@@ -1276,7 +1276,7 @@ export class InsTable {
                             class="ibt-table-accordion_row-body"
                             data-opened="false"
                           >
-                            <table>
+                            <table class="ins-table">
                               {this.tableHeaders.map((tableHeader) => {
                                 return (
                                   <tr>
@@ -1413,7 +1413,7 @@ export class InsTable {
                 }`}
               >
                 <div class="ibt-table-wrap__page-nav">
-                  <div class="ibt-table-wrap__pagination">
+                  <div class="ibt-table-wrap__pagination ins-pagination">
                     <span>{this.paginationText}</span>
                     <select
                       class="ibt-table-wrap__pagination--option"
