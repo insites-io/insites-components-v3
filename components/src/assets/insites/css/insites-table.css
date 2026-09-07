@@ -1,61 +1,139 @@
 ﻿:root {
-  --ins-color-ink: #2c3148;
-  --ins-color-ink40: #8c94a4;
-  --ins-color-ink10: #e4e6ec;
-  --ins-color-ink5: #f2f4f8;
-  --ins-color-ink1: #ffffff;
-  --ins-color-white: #fff;
-  --ins-color-blue: #1e86e3;
-  --ins-color-blue2: #1a78cb;
-  --ins-color-blue-20p: #cee2f6;
-  --ins-color-blue-10p: #e8f3fc;
-  --ins-color-green: #24be8d;
-  --ins-color-green2: #20aa7e;
-  --ins-color-green-10p: #e9f8f4;
-  --ins-color-orange: #ffa639;
-  --ins-color-orange2: #ff9b20;
-  --ins-color-orange-10p: #fff6eb;
-  --ins-color-red: #f27474;
-  --ins-color-red2: #f05d5d;
-  --ins-color-red-10p: #f8edee;
+  /* ============================================================
+     IIA v6 design system — canonical token source (--iia-*)
+     Mirrors insites_core/insites_admin/styles/sass/_root.sass so
+     the component bundle resolves v6 standalone in EVERY module,
+     not only where the admin CSS happens to load. Brand #436CF2,
+     Poppins, 4px radius. Dark-mode (-dm-) values are defined for
+     parity; switching is not wired here (the design is light).
+     ============================================================ */
+  --iia-text-1: #000000;
+  --iia-text-2: #323232;
+  --iia-text-3: #575757;
+  --iia-text-buttonlabel: #FFFFFF;
+  --iia-text-white: #FFFFFF;
+  --iia-text-dm-1: #FFFFFF;
+  --iia-text-dm-2: #E0E0E0;
+  --iia-text-dm-3: #E0E0E0;
+  --iia-text-dm-buttonlabel: #1F1F1F;
+  --iia-text-dm-white: #FFFFFF;
+  --iia-main: #436CF2;
+  --iia-main-light: #436CF214;
+  --iia-main-dark: #3159DB;
+  --iia-main-dm: #436CF2;
+  --iia-main-dm-light: #2B3042;
+  --iia-main-dm-dark: #3159DB;
+  --iia-sidebar: #0F0F0F;
+  --iia-sidebar-dm: #141414;
+  --iia-sidebar-hover: #242424;
+  --iia-header: #FDFDFD;
+  --iia-header-dm: #141414;
+  --iia-ui-1: #F8F8F8;
+  --iia-ui-2: #84848F;
+  --iia-ui-3: #DFDFDF;
+  --iia-ui-4: #F7F7F7;
+  --iia-ui-5: #FDFDFD;
+  --iia-ui-dm-1: #2E2E2E;
+  --iia-ui-dm-2: #CCCCCC;
+  --iia-ui-dm-3: #3D3D3D;
+  --iia-ui-dm-4: #0F0F0F;
+  --iia-ui-dm-5: #1F1F1F;
+  --iia-alert-negative: #DF1F1F;
+  --iia-alert-negative-light: #DF1F1F14;
+  --iia-alert-negative-dark: #CC1717;
+  --iia-alert-dm-negative: #E74E3B;
+  --iia-alert-dm-negative-light: #FB30240A;
+  --iia-alert-dm-negative-dark: #E32217;
+  --iia-alert-positive: #048801;
+  --iia-alert-positive-light: #04880114;
+  --iia-alert-positive-dark: #026900;
+  --iia-alert-dm-positive: #439639;
+  --iia-alert-dm-positive-light: #1D980F0A;
+  --iia-alert-dm-positive-dark: #128006;
+  --iia-alert-warning: #EC9C00;
+  --iia-alert-warning-light: #FBAC1314;
+  --iia-alert-warning-dark: #CC8700;
+  --iia-alert-dm-warning: #D9991D;
+  --iia-alert-dm-warning-light: #FBAC130A;
+  --iia-alert-dm-warning-dark: #DB940B;
+
+  /* ============================================================
+     Component bridge — every --ins-* token the v3 components read
+     is now an alias onto the --iia-* system above. This is the
+     migration the reskin skipped: components inherit v6 instead of
+     the old v2 palette, with no per-page overrides. Legacy category
+     accents (pink/purple/turquoise/fuchsia/information) have no v6
+     equivalent and keep their v2 values; they are unused in the
+     redesigned CRM surfaces.
+     ============================================================ */
+  /* Ink / text ramp */
+  --ins-color-ink: var(--iia-text-1);
+  --ins-color-ink40: var(--iia-ui-2);
+  --ins-color-ink10: var(--iia-ui-3);
+  --ins-color-ink5: var(--iia-ui-1);
+  --ins-color-ink1: var(--iia-text-white);
+  --ins-color-white: var(--iia-text-white);
+  /* Primary / accent */
+  --ins-color-blue: var(--iia-main);
+  --ins-color-blue2: var(--iia-main-dark);
+  --ins-color-blue-20p: var(--iia-main-light);
+  --ins-color-blue-10p: var(--iia-main-light);
+  --ins-color-primary: var(--iia-main);
+  /* Success / positive */
+  --ins-color-green: var(--iia-alert-positive);
+  --ins-color-green2: var(--iia-alert-positive-dark);
+  --ins-color-green-10p: var(--iia-alert-positive-light);
+  --ins-color-success: var(--iia-alert-positive);
+  /* Warning / amber (orange + yellow both map to the single v6 warning) */
+  --ins-color-orange: var(--iia-alert-warning);
+  --ins-color-orange2: var(--iia-alert-warning-dark);
+  --ins-color-orange-10p: var(--iia-alert-warning-light);
+  --ins-color-warning: var(--iia-alert-warning);
+  --ins-color-yellow: var(--iia-alert-warning);
+  --ins-color-yellow2: var(--iia-alert-warning-dark);
+  --ins-color-yellow-10p: var(--iia-alert-warning-light);
+  /* Negative / danger */
+  --ins-color-red: var(--iia-alert-negative);
+  --ins-color-red2: var(--iia-alert-negative-dark);
+  --ins-color-red-10p: var(--iia-alert-negative-light);
+  --ins-color-negative: var(--iia-alert-negative);
+  --ins-color-negative-10p: var(--iia-alert-negative-light);
+  /* Neutral greys */
+  --ins-color-grey: var(--iia-ui-3);
+  --ins-color-grey2: var(--iia-ui-3);
+  --ins-color-grey-10p: var(--iia-ui-1);
+  /* Legacy category accents — no v6 equivalent, kept at v2 */
   --ins-color-pink: #ff3366;
   --ins-color-pink2: #ff1a53;
   --ins-color-pink-10p: #feebf0;
-  --ins-color-yellow: #fdd835;
-  --ins-color-yellow2: #fdd31c;
-  --ins-color-yellow-10p: #fffbeb;
   --ins-color-turquoise: #2bbad9;
   --ins-color-turquoise2: #24aac7;
   --ins-color-turquoise-10p: #eaf8fb;
   --ins-color-purple: #694fcd;
   --ins-color-fushcia: #c65bbb;
-  --ins-color-grey: #e4e6ec;
-  --ins-color-grey2: #d5d8e1;
-  --ins-color-grey-10p: #edeef2;
-  --ins-color-primary: #1e86e3;
-  --ins-color-success: #24be8d;
-  --ins-color-warning: #ffa639;
-  --ins-color-negative: #f27474;
-  --ins-color-negative-10p: #fef1f1;
   --ins-color-information1: #ff3366;
   --ins-color-information2: #fdd835;
-  --ins-color-table-odd: #fff;
-  --ins-color-table-even: #fafbfc;
-  --ins-color-disabled_readonly_bg: #fafbfc;
-  --ins-bg-color: #ffffff;
-  --ins-bg-color2: #e4e6ec;
-  --ins-bg-color3: #8c94a4;
-  --ins-bg-color4: #f2f4f8;
-  --ins-bg-color5: #fafbfc;
+  /* Tables / surfaces */
+  --ins-color-table-odd: var(--iia-ui-5);
+  --ins-color-table-even: var(--iia-ui-4);
+  --ins-color-disabled_readonly_bg: var(--iia-ui-4);
+  --ins-bg-color: var(--iia-ui-5);
+  --ins-bg-color2: var(--iia-ui-3);
+  --ins-bg-color3: var(--iia-ui-2);
+  --ins-bg-color4: var(--iia-ui-1);
+  --ins-bg-color5: var(--iia-ui-4);
+  /* Borders */
   --ins-border-radius: 4px;
   --ins-border-thickness: 1px;
   --ins-border-style: solid;
-  --ins-border-color: #e4e6ec;
+  --ins-border-color: var(--iia-ui-3);
+  /* Shadows (geometry + neutral, unchanged) */
   --ins-shadow-x: 1px;
   --ins-shadow-y: 1px;
   --ins-shadow-blur: 2px;
-  --ins-shadow-color: #e4e6ec;
-  --ins-font-family: "Open Sans", sans-serif
+  --ins-shadow-color: var(--iia-ui-3);
+  /* Type */
+  --ins-font-family: "Poppins", sans-serif
 }
 
 [class=hydrated] {
