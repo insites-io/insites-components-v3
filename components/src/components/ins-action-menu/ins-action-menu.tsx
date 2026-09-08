@@ -1,4 +1,4 @@
-import { h, Component, Element, Prop, State, Event, EventEmitter, Method, Listen } from "@stencil/core";
+import { h, Component, Element, Prop, State, Event, EventEmitter, Method, Listen, Host } from "@stencil/core";
 
 let actionMenuIds = 0;
 
@@ -20,6 +20,15 @@ export class InsActionMenu {
   @Prop({ mutable: true }) position: string = 'bottom-end';
   @Prop({ mutable: true }) load: boolean = false;
   @Prop({ mutable: true }) checkLoad: boolean = false;
+
+  // Visual treatment. '' keeps the original rendering. 'record' is the IIA v6 record-page kebab
+  // (CRM Contact v1.4 / Company v1.0): 36px bordered trigger, 240px card panel, flyouts to the left.
+  @Prop({ mutable: true }) variant: string = '';
+  // Nested items open on pointer hover with no delay (the design's channel flyouts). Click and
+  // ArrowRight still work. Off by default: today's submenus open on click only.
+  @Prop({ mutable: true }) hoverSubmenus: boolean = false;
+  // data-tip tooltip on the trigger, drawn by the shared button[data-tip] rule in insites.css.
+  @Prop({ mutable: true }) triggerTip: string = '';
 
   @State() open: boolean = false;
 
@@ -142,6 +151,7 @@ export class InsActionMenu {
     return this.insActionMenuEl.querySelector('.ins-action-menu__panel');
   }
 
+  // Divider items render no button, so they fall out of the focus order here on their own.
   private getLevelButtons(container: Element | null): HTMLButtonElement[] {
     if (!container) return [];
     const buttons: HTMLButtonElement[] = [];
@@ -166,34 +176,40 @@ export class InsActionMenu {
 
   render() {
     return (
-      <div class="ins-action-menu">
-        <button
-          type="button"
-          class={`ins-action-menu__trigger ${this.triggerLabel ? 'has-label' : 'icon-only'}`}
-          aria-haspopup="menu"
-          aria-expanded={this.open ? 'true' : 'false'}
-          aria-controls={this.panelId}
-          aria-label={this.triggerLabel ? undefined : this.ariaLabelText}
-          onClick={() => this.setOpen(!this.open)}
-        >
-          {this.triggerIcon
-            ? <i class={`ins-action-menu__trigger-icon ${this.triggerIcon}`} aria-hidden="true"></i>
-            : null}
-          {this.triggerLabel
-            ? <span class="ins-action-menu__trigger-label">{this.triggerLabel}</span>
-            : null}
-        </button>
+      <Host class={{
+        'ins-action-menu--record': this.variant === 'record',
+        'ins-action-menu--hover-submenus': this.hoverSubmenus
+      }}>
+        <div class="ins-action-menu">
+          <button
+            type="button"
+            class={`ins-action-menu__trigger ${this.triggerLabel ? 'has-label' : 'icon-only'}`}
+            aria-haspopup="menu"
+            aria-expanded={this.open ? 'true' : 'false'}
+            aria-controls={this.panelId}
+            aria-label={this.triggerLabel ? undefined : this.ariaLabelText}
+            data-tip={this.triggerTip ? this.triggerTip : undefined}
+            onClick={() => this.setOpen(!this.open)}
+          >
+            {this.triggerIcon
+              ? <i class={`ins-action-menu__trigger-icon ${this.triggerIcon}`} aria-hidden="true"></i>
+              : null}
+            {this.triggerLabel
+              ? <span class="ins-action-menu__trigger-label">{this.triggerLabel}</span>
+              : null}
+          </button>
 
-        <div
-          class={`ins-action-menu__panel position--${this.position}`}
-          role="menu"
-          id={this.panelId}
-          aria-label={this.triggerLabel ? this.triggerLabel : this.ariaLabelText}
-          hidden={!this.open}
-        >
-          <slot />
+          <div
+            class={`ins-action-menu__panel position--${this.position}`}
+            role="menu"
+            id={this.panelId}
+            aria-label={this.triggerLabel ? this.triggerLabel : this.ariaLabelText}
+            hidden={!this.open}
+          >
+            <slot />
+          </div>
         </div>
-      </div>
+      </Host>
     );
   }
 }

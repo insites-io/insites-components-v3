@@ -92,5 +92,33 @@ ins-disclosure-panel {
         display: block;
       }
     }
+
+    // IIA v6 reference section card (opt-in via the `v6` prop).
+    // Layout and colours are inline in the .tsx, copied from the CRM prototype; only the states
+    // that inline styles cannot express live here. The idle background is inline, so the hover
+    // needs !important, same as the module's ReferenceSection.vue.
+    &.v6 {
+      > .ins-disclosure-panel_header {
+        &:hover:not(:disabled) {
+          background: var(--ins-ui-1) !important;
+        }
+
+        &:disabled {
+          cursor: not-allowed !important;
+          opacity: 0.5;
+        }
+      }
+    }
+  }
+
+  // The v6 card paints its own background, border and radius; the host must not add a white box
+  // behind the rounded corners or the v2 divider between stacked panels (the page stacks cards
+  // with a flex gap instead).
+  &.ins-disclosure-panel--v6 {
+    background: transparent;
+  }
+
+  + ins-disclosure-panel.ins-disclosure-panel--v6 {
+    border-top: none;
   }
 }

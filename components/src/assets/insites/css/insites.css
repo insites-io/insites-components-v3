@@ -13456,3 +13456,494 @@ html {
 body.no-transition * {
   transition: none !important
 }
+
+/* ============================================================================
+   IIA v6 semantic token layer
+   ----------------------------------------------------------------------------
+   The --ins-* semantic tokens the v6 design prototypes consume, aliased onto
+   the raw --iia-* palette this bundle already ships. Moved here from
+   module-v6-crm so the record-page layer below, and the v6 component variants,
+   resolve on every module SPA rather than only inside the CRM. Without these
+   the v6 markup renders with unresolved custom properties.
+   ============================================================================ */
+/* ============================================================
+   IIA v6 design-system semantic tokens — the layer the Claude
+   Design prototypes consume (--ins-*), aliased onto the raw
+   --iia-* palette the component bundle already ships.
+
+   Source: _ds/iia-v6-design-system/tokens/{spacing,typography,colors}.css
+   (Claude Design project cb92701b, read 2026-09-07). Values are the
+   design system's, not invented. Only tokens the app did not already
+   define are added here; existing ones (--ins-text-1/2/3, --ins-ui-*,
+   --ins-border-color, --ins-font-family, --ins-color-primary) are left
+   to the bundle bridge and insites_core _root.sass.
+
+   Light theme only for now — the [data-theme='dark'] re-pointing in the
+   design's colors.css is deliberately not carried (the prototype is light
+   and the app's dark switch is not wired to the bridge yet).
+   ============================================================ */
+:root {
+  /* — Spacing scale (px) — mirrors module-general/_spacers.sass */
+  --ins-space-3xs: 2px;
+  --ins-space-2xs: 4px;
+  --ins-space-xs: 8px;
+  --ins-space-sm: 16px;
+  --ins-space-md: 24px;
+  --ins-space-lg: 32px;
+  --ins-space-xl: 40px;
+  --ins-space-2xl: 48px;
+  --ins-space-3xl: 56px;
+  --ins-space-4xl: 64px;
+  --ins-space-section: 80px;
+
+  /* — Radius */
+  --ins-radius-sm: 2px;
+  --ins-radius: 4px;
+  --ins-radius-lg: 8px;
+  --ins-radius-pill: 999px;
+
+  /* — Elevation */
+  --iia-shadow-color-1: rgba(0, 0, 0, 0.04);
+  --ins-shadow-1: 0 4px 8px 0 var(--iia-shadow-color-1);   /* cards, dropdowns */
+  --ins-shadow-2: 0 4px 12px 0 rgba(0, 0, 0, 0.16);        /* modals, popovers */
+  --ins-shadow-sm: 0 1px 2px 0 var(--iia-shadow-color-1);
+  --ins-shadow-focus: 0 0 0 3px var(--iia-main-light);
+
+  /* — Motion */
+  --ins-duration-instant: 100ms;
+  --ins-duration-fast: 150ms;
+  --ins-duration-normal: 200ms;
+  --ins-duration-slow: 300ms;
+  --ins-duration-slower: 500ms;
+  --ins-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ins-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ins-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* — Type: weights (600 = all headings & button labels) */
+  --ins-weight-light: 300;
+  --ins-weight-regular: 400;
+  --ins-weight-semibold: 600;
+  --ins-weight-bold: 700;
+
+  /* — Type: body / control scale */
+  --ins-text-xs: 12px;   /* captions, dense cells, labels */
+  --ins-text-sm: 14px;   /* DEFAULT body & controls */
+  --ins-text-md: 16px;   /* emphasized body, large controls */
+
+  /* — Type: heading scale */
+  --ins-title-6: 18px;
+  --ins-title-5: 24px;
+  --ins-title-4: 32px;
+  --ins-title-3: 48px;
+  --ins-title-2: 56px;
+  --ins-title-1: 64px;
+
+  /* — Type: leading & tracking */
+  --ins-leading-tight: 1.2;
+  --ins-leading-snug: 1.45;
+  --ins-leading-normal: 1.6;
+  --ins-leading-relaxed: 1.7;
+  --ins-tracking-display: -1px;
+  --ins-tracking-normal: 0;
+
+  /* — Icon glyph sizes. NOT defined anywhere in the design system's
+       own token files (a dangling reference in the prototype); the
+       prototype pairs --iia-glyph-sm with a 16px box, so these are the
+       effective rendered sizes. Adjust if the DS later defines them. */
+  --iia-glyph-xs: 12px;
+  --iia-glyph-sm: 16px;
+
+  /* — Semantic colours (design-system names → raw palette) */
+  --ins-main: var(--iia-main);
+  --ins-main-light: var(--iia-main-light);
+  --ins-main-dark: var(--iia-main-dark);
+  --ins-card: var(--iia-ui-5);
+  --ins-card-hover: var(--iia-ui-1);
+  --ins-main-bg: var(--iia-ui-4);
+  --ins-neutral: var(--iia-text-white);
+  --ins-text-buttonlabel: var(--iia-text-buttonlabel);
+  --ins-alert-positive: var(--iia-alert-positive);
+  --ins-alert-positive-light: var(--iia-alert-positive-light);
+  --ins-alert-positive-dark: var(--iia-alert-positive-dark);
+  --ins-alert-negative: var(--iia-alert-negative);
+  --ins-alert-negative-light: var(--iia-alert-negative-light);
+  --ins-alert-negative-dark: var(--iia-alert-negative-dark);
+  --ins-alert-warning: var(--iia-alert-warning);
+  --ins-alert-warning-light: var(--iia-alert-warning-light);
+  --ins-alert-warning-dark: var(--iia-alert-warning-dark);
+  --ins-overlay: rgba(0, 0, 0, 0.25);
+  --ins-disabled-opacity: 0.5;
+}
+
+/* ============================================================================
+   IIA v6 record-page layer
+   ----------------------------------------------------------------------------
+   The CRM Contact v1.4 / Company v1.0 design prototypes' own stylesheet, moved
+   here from module-v6-crm so a design change is one bundle release instead of a
+   rebuild and deploy per module. Every admin page already links this file, so
+   consumers need no change. Also carries the .ins-table base the Stencil table
+   markup relies on, which was previously duplicated per component.
+   Owns: .crm-*, .fld/.k/.v, .chip, .pill, .fchip, .hm-strip/.hm-cell, .ins-table,
+   .ins-pagination, and the ins-fade-in-up / ins-zoom-in keyframes.
+   ============================================================================ */
+/*
+  crm-record.css (shared by the CRM Contact and Company record pages)
+  Source: "CRM Contact v1.4 - Shane.dc.html" (Claude Design canvas page), single <style> block extracted verbatim,
+  PLUS the rules that exist only in "CRM Company v1.0 - Faizal.dc.html" (its <style> block diffed against Contact's
+  on 2026-09-07). Both pages import this file; the Contact copy (crm-contact.css) was promoted here and deleted.
+  Extraction date: 2026-09-07
+
+  Company-only additions (marked "Company v1.0" below): the .crm-tabhd:has(label.crm-search) wrapped-header rule,
+  and the crmpage 560px block that wraps .crm-tabhd, stacks the tab-header search + action pair and visually hides
+  the .crm-sbprefix search-scope prefix (sr-only). Every other Company rule already existed in the Contact block
+  with identical selectors and thresholds (Company only moved the .crm-toastwrap / .crm-bulkrow rules into an
+  earlier 560px block, which changes nothing), so nothing else was added or duplicated. Company's block lacks
+  Contact's .crm-stickybar rules and the ins-fade-in-up keyframe; both are kept because the Contact page and the
+  shared ReferenceSection / menus rely on them.
+
+  The bare a{} rules are scoped to the two record pages (.view-contact, .view-company) so they cannot restyle
+  anchors elsewhere in the admin.
+
+  Cleaning applied: ONLY the rules below were removed. They target the Claude-Design preview-frame
+  class .om-touch-preview, which does not exist in the Vue app. No rules targeting sc-if / sc-for /
+  x-import / x-dc / dc-import / helmet existed in the stylesheet (verified by search), so nothing else
+  was touched. Nothing renamed, reordered or reformatted. Original comments are all retained, including
+  the two comment lines that introduced the removed .om-touch-preview block.
+
+  Removed selectors (original line number in the Contact <style> block -> selector):
+    L131  .om-touch-preview .crm-relacts
+    L132  .om-touch-preview .crm-relacts > .crm-relkebab
+    L133  .om-touch-preview .crm-relacts:not(.crm-relopen) > *:not(.crm-relkebab)
+    L134  .om-touch-preview .crm-addracts
+    L135  .om-touch-preview .crm-addracts > .crm-relkebab
+    L136  .om-touch-preview .crm-addracts:not(.crm-relopen) > a
+    L137  .om-touch-preview .crm-addracts.crm-relopen
+    L138  .om-touch-preview .crm-addracts.crm-relopen > .crm-relkebab
+    L139  .om-touch-preview .crm-refwrap div:has(> .crm-addracts.crm-relopen)
+    L141  .om-touch-preview .crm-refwrap div:has(> .crm-addracts)
+    L142  .om-touch-preview .crm-addracts.crm-relopen a
+    L145  .om-touch-preview .crm-relacts.crm-relopen
+    L146  .om-touch-preview .crm-relacts.crm-relopen > .crm-relkebab
+    L147  .om-touch-preview .crm-relacts.crm-relopen a
+    L148  .om-touch-preview .crm-relacts.crm-relopen .crm-rellabel
+    L150  .om-touch-preview .crm-relcard .chip
+*/
+
+.view-contact a,.view-company a{color:var(--ins-main)}.view-contact a:hover,.view-company a:hover{color:var(--ins-main-dark)}
+.crm-lnk{padding:4px 8px;margin:-4px -8px;border-radius:var(--ins-radius);text-decoration:none}
+/* Reference field grid: 3 columns, 2 on tablet-width panels, 1 on mobile (container query — preview frames resize the panel, not the viewport) */
+.crm-refwrap{container-type:inline-size}
+/* Record grid: the third at-a-glance rail only appears when the content area is 21in-monitor wide (container query — preview frames resize the panel, not the viewport) */
+.crm-recwrap{container-type:inline-size}
+.crm-recgrid{display:grid;grid-template-columns:minmax(320px,400px) minmax(0,1fr);gap:var(--ins-space-md);align-items:start}
+.crm-recgrid .crm-rail3{display:none}
+/* Tablet & mobile: header metrics move out of the identity card into their own full-width card */
+.crm-pagewrap{container-type:inline-size;container-name:crmpage}
+.crm-hm-card{display:none}
+@container (max-width:900px){.crm-hm-inline{display:none !important}.crm-hm-card{display:block}}
+/* Tablet & mobile: left rail cards stack above the tab panel in one column */
+@container (max-width:900px){.crm-recgrid,.crm-recgrid.crm-wide3{grid-template-columns:minmax(0,1fr)}}
+/* Phone widths: identity stacks under the avatar and the actions menu pins to the card's top right */
+@container crmpage (max-width:560px){
+  .crm-hdr{flex-direction:column;align-items:flex-start !important;gap:var(--ins-space-sm) !important}
+  /* Only the avatar row shares space with the pinned kebab, so the identity block keeps the full width */
+  .crm-hdr > span[aria-hidden="true"]{margin-right:calc(36px + var(--ins-space-sm))}
+  /* Stacked metrics: no stray column dividers, and each row gets its own breathing room */
+  .crm-hm-card{padding:var(--ins-space-sm) !important}
+  .crm-hm-card .hm-strip{gap:var(--ins-space-xs)}
+  .crm-hm-card .hm-strip > div{border-left:none !important;flex-basis:100% !important}
+  .crm-hm-card .hm-cell{padding:var(--ins-space-xs) var(--ins-space-sm) !important}
+  /* Phone widths: filters stack, each control takes the full row */
+  .crm-toolbar{flex-direction:column;align-items:stretch !important}
+  .crm-toolbar > div:not(.crm-btns){width:100%}
+  .crm-toolbar .fchip{width:100%;justify-content:flex-start}
+  /* value sits with the caret on the right, label stays left */
+  .crm-toolbar .fchip strong{margin-left:auto}
+  /* Filter menus span the toolbar row instead of a 170-220px popover */
+  .crm-toolbar [role="menu"]{left:0;right:0;min-width:0 !important}
+  /* Pagination centres its rows-per-page, range and pager instead of splitting them apart */
+  .ins-pagination{justify-content:center}
+  .ins-pagination__spacer{display:none}
+  /* Reference section actions (ADD …, REFRESH) take the full row.
+     The app's section components add their own root element inside .crm-refwrap, so the CTA row sits
+     one level deeper than in the prototype; both depths are matched. */
+  .crm-refwrap > div > button,
+  .crm-refwrap > div > div > button{width:100%;justify-content:center}
+  .crm-addrgrid a[target="_blank"]{width:100%;box-sizing:border-box;justify-content:center}
+  /* Tab header: primary action moves above the total and spans the row */
+  .crm-tabhd{flex-direction:column-reverse;align-items:stretch}
+  .crm-tabhd > button{width:100%;justify-content:center}
+  .crm-refwrap > div:has(> button),
+  .crm-refwrap > div > div:has(> button){flex-direction:column;align-items:stretch}
+  /* higher specificity than the 1100px block below, which also uses !important */
+  .crm-toolbar label.crm-search{width:100%;box-sizing:border-box;flex:0 0 auto !important;max-width:none !important;margin-left:0 !important}
+  .crm-toolbar .crm-btns{width:100%;flex-direction:column;align-items:stretch}
+  .crm-toolbar .crm-btns > button{width:100%;justify-content:center}
+  .crm-hdr > div{width:100%}
+  .crm-hdr-kebab{position:absolute !important;top:var(--ins-space-sm);right:var(--ins-space-sm)}
+}
+/* Narrow panels: tab-toolbar search moves to its own full-width top row; buttons wrap below, right-aligned */
+@container (max-width:1100px){
+  .crm-toolbar{row-gap:var(--ins-space-sm) !important;padding-top:var(--ins-space-sm) !important;padding-bottom:var(--ins-space-sm) !important}
+  .crm-toolbar .crm-ctrls{display:contents !important}
+  .crm-toolbar .crm-btns{order:-2;flex:1 1 100% !important;justify-content:flex-end}
+  /* Search keeps its own width and hugs the right edge of whichever row it lands on */
+  .crm-toolbar .crm-search{flex:0 1 280px !important;max-width:280px !important;margin-left:auto !important}
+}
+/* Company v1.0: the two rules below exist only in the Company prototype's <style> block (Contacts tab header). */
+/* Wrapped tab headers: the action pair keeps to the right of whichever row it lands on.
+   Unconditional — the header wraps on its own width, and the one-row case is already space-between. */
+.crm-tabhd:has(label.crm-search) > div{margin-left:auto}
+/* Phone only: tab-header search drops below the buttons and spans the row; tablet keeps the desktop row.
+   Column direction is forced normal so the 560px column-reverse rule can't invert the order. */
+@container crmpage (max-width:560px){
+  .crm-tabhd{flex-wrap:wrap}
+  .crm-tabhd:has(label.crm-search){flex-direction:column !important;align-items:stretch !important}
+  .crm-tabhd:has(label.crm-search) > div{width:100%}
+  /* Action pairs stack, each button spanning the row */
+  .crm-tabhd:has(label.crm-search) > div{display:flex;flex-direction:column;align-items:stretch;gap:var(--ins-space-xs);margin-left:0}
+  /* The scope prefix is implied by the field's own placeholder, so it drops out to leave room for typing */
+  .crm-tabhd label.crm-search{min-width:0 !important}
+  .crm-sbprefix{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  .crm-tabhd:has(label.crm-search) > div > button{width:100%;justify-content:center}
+  .crm-tabhd > label.crm-search{order:9;width:100%;box-sizing:border-box;flex:0 0 auto !important;max-width:none !important;margin-left:0 !important}
+}
+/* Dev note: production breakpoint is 1600px content width (~21in monitor). The preview's device presets zoom cosmetically without changing CSS width (max ~1430px), so the prototype uses 1400px to make the state demoable. */
+@container (min-width:1340px){.crm-recgrid.crm-wide3{grid-template-columns:minmax(280px,360px) minmax(0,1fr) minmax(250px,300px)}.crm-recgrid.crm-wide3 .crm-rail3{display:flex}}
+/* Left field column stays with the record while the tab panel scrolls; it only scrolls itself when taller than the viewport */
+.crm-fieldcol{position:sticky;top:var(--ins-space-md);align-self:start;max-height:calc(100vh - 144px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+@container (max-width:900px){.crm-fieldcol{position:static;max-height:none;overflow:visible}}
+/* Below the 3-column breakpoint the rail keeps its content: it drops under the left field column instead of disappearing */
+@container (max-width:1339px){
+  .crm-recgrid.crm-wide3 .crm-rail3{display:flex;grid-column:1;grid-row:2}
+  .crm-recgrid.crm-wide3 .crm-tabcol{grid-row:1 / span 2}
+  /* The sticky field column has its own height cap, which pushed the rail past the
+     fold; below the 3-column breakpoint the column flows so they sit together. */
+  .crm-recgrid.crm-wide3 .crm-fieldcol{position:static;max-height:none;overflow:visible}
+}
+@container (max-width:900px){
+  .crm-recgrid.crm-wide3 .crm-rail3{grid-column:1;grid-row:2}
+  .crm-recgrid.crm-wide3 .crm-tabcol{grid-row:3}
+}
+.crm-refgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--crm-grid-gap, var(--ins-space-sm) var(--ins-space-md));padding:var(--crm-grid-pad, var(--ins-space-xs) 0 var(--ins-space-sm))}
+.crm-refcards{gap:var(--ins-space-sm)}
+.crm-rel2{grid-template-columns:repeat(2,minmax(0,1fr))}
+/* Relationship card hover: lift + soft shadow; actions float in as a compact cluster at the
+   card's right edge on their own surface, so the card's links stay visible and clickable. */
+/* Copy buttons line up on the cell's right edge instead of floating after the value */
+/* Copy button rides the text inline, so it follows the last wrapped line (Details card keeps its right-aligned rows) */
+.crm-refwrap div:has(> button[aria-label="Copy value"]){display:block !important;min-width:0;overflow-wrap:anywhere;word-break:break-word}
+.crm-refwrap div:has(> button[aria-label="Copy value"]) > span{overflow-wrap:anywhere;word-break:break-word}
+/* Mono values are clipped by design (nowrap + overflow hidden): keep those rows flex so the clip works */
+.crm-refwrap div:has(> button[aria-label="Copy value"]):has(> span[style*="nowrap"]){display:flex !important;align-items:center;gap:6px}
+.crm-refwrap div:has(> button[aria-label="Copy value"]):has(> span[style*="nowrap"]) > span{min-width:0;white-space:nowrap;word-break:normal;overflow-wrap:normal;text-overflow:ellipsis}
+.crm-refwrap div:has(> button[aria-label="Copy value"]):has(> span[style*="nowrap"]) > button{margin-left:0;flex:none}
+.crm-refwrap button[aria-label="Copy value"]{display:inline-flex !important;vertical-align:middle;margin-left:6px;position:relative;top:-1px}
+/* Pointer devices only: a hover tooltip is dead weight on touch, where a tap fires the action */
+@media (hover:hover){
+button[data-tip]{position:relative}
+button[data-tip]:hover::after,button[data-tip]:focus-visible::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);right:0;z-index:60;white-space:nowrap;padding:4px 8px;border-radius:var(--ins-radius);background:var(--ins-text-1);color:var(--ins-card);font-size:var(--ins-text-xs);font-weight:var(--ins-weight-regular);letter-spacing:0;text-transform:none;pointer-events:none;animation:ins-fade-in-up var(--ins-duration-fast) var(--ins-ease-out)}
+/* Tables and cards clip their overflow, so a tooltip there would be cut off */
+.ins-table button[data-tip]:hover::after,.crm-toastwrap button[data-tip]:hover::after{display:none}
+/* Header-cell buttons keep their tooltip, dropped below so it stays inside the table's scroll box */
+.ins-table thead button[data-tip]:hover::after,.ins-table thead button[data-tip]:focus-visible::after{display:block;bottom:auto;top:calc(100% + 6px)}
+}
+.crm-relcard{transition:box-shadow var(--ins-duration-normal) var(--ins-ease-out),transform var(--ins-duration-normal) var(--ins-ease-out),border-color var(--ins-duration-fast) var(--ins-ease-out)}
+.crm-relcard:hover{box-shadow:0 8px 20px rgba(0,0,0,0.08);transform:translateY(-2px);border-color:transparent;z-index:2}
+.crm-relacts{position:absolute;top:var(--ins-space-xs);right:var(--ins-space-xs);display:flex;gap:var(--ins-space-3xs);padding:3px;background:var(--ins-card);border:1px solid var(--ins-border-color);border-radius:var(--ins-radius);box-shadow:var(--ins-shadow-1);opacity:0;transform:translateY(-4px);transition:opacity var(--ins-duration-fast) var(--ins-ease-out),transform var(--ins-duration-normal) var(--ins-ease-out);pointer-events:none}
+.crm-relcard:hover .crm-relacts,.crm-relacts:focus-within{opacity:1;transform:none;pointer-events:auto}
+/* Address actions stay in flow; on desktop the inline Delete/Edit links need no surface, touch gets the kebab panel */
+.crm-addracts{position:static;opacity:1;transform:none;pointer-events:auto;background:transparent;border:none;box-shadow:none;padding:0}
+@media (hover:hover){
+  .crm-addracts.crm-relopen{background:var(--ins-card);border:1px solid var(--ins-border-color);box-shadow:var(--ins-shadow-2);padding:var(--ins-space-3xs)}
+}
+@media (hover:none){
+  .crm-relacts{opacity:1 !important;transform:none !important;pointer-events:auto !important}
+  .crm-relacts > .crm-relkebab{display:inline-flex !important}
+  .crm-relacts:not(.crm-relopen) > *:not(.crm-relkebab){display:none !important}
+  /* Touch: the collapsed kebab is a real menu trigger, so it keeps the card surface */
+  .crm-addracts{background:var(--ins-card) !important;border:1px solid var(--ins-border-color) !important;box-shadow:var(--ins-shadow-1) !important;padding:3px !important}
+  .crm-addracts > .crm-relkebab{display:inline-flex !important}
+  .crm-addracts:not(.crm-relopen) > a{display:none !important}
+  .crm-addracts.crm-relopen{position:absolute !important;top:0;right:0;z-index:5;flex-direction:column;align-items:stretch;min-width:132px;gap:1px;padding:var(--ins-space-3xs) !important;background:var(--ins-card) !important;border:1px solid var(--ins-border-color) !important;border-radius:var(--ins-radius);box-shadow:var(--ins-shadow-2) !important}
+  .crm-addracts.crm-relopen > .crm-relkebab{display:none !important}
+  /* The open panel leaves the flow, so the row keeps the kebab's footprint and nothing shifts */
+  .crm-refwrap div:has(> .crm-addracts.crm-relopen){padding-right:34px}
+  /* the collapsed kebab sets the row height; hold it so the panel opening never shifts the card */
+  .crm-refwrap div:has(> .crm-addracts){min-height:36px !important}
+  .crm-addracts.crm-relopen a{width:100% !important;box-sizing:border-box;flex:none !important;justify-content:flex-start !important;gap:10px !important;margin:0 !important;padding:0 8px !important;font-size:var(--ins-text-sm) !important;font-weight:var(--ins-weight-regular) !important}
+  .crm-addracts.crm-relopen a{min-height:28px !important;border-radius:var(--ins-radius) !important;text-decoration:none !important}
+  .crm-addracts.crm-relopen a i{font-size:var(--iia-glyph-sm) !important;width:16px;display:inline-flex;justify-content:center}
+  .crm-relacts.crm-relopen{flex-direction:column;align-items:stretch;min-width:132px;gap:1px;padding:var(--ins-space-3xs);box-shadow:var(--ins-shadow-2);z-index:5}
+  .crm-relacts.crm-relopen > .crm-relkebab{display:none !important}
+  .crm-relacts.crm-relopen a{width:100% !important;justify-content:flex-start !important;gap:10px;padding:0 8px}
+  .crm-relacts.crm-relopen .crm-rellabel{display:inline;font-size:var(--ins-text-sm)}
+}
+/* Preview frames simulate size, not touch input: mirror the touch rules under the tablet/mobile frame */
+  /* the collapsed kebab sets the row height; hold it so the panel opening never shifts the card */
+  .crm-addracts.crm-relopen a{min-height:28px !important;border-radius:var(--ins-radius) !important;text-decoration:none !important}
+  .crm-addracts.crm-relopen a i{font-size:var(--iia-glyph-sm) !important;width:16px;display:inline-flex;justify-content:center}
+/* Collapsed kebab floats over the card, so every row keeps the card's 16px right padding */
+@media (hover:none){
+  .crm-relcard .chip{flex:0 0 100% !important;align-self:flex-start;max-width:fit-content}
+}
+.crm-rellabel{display:none}
+@container (max-width:900px){.crm-refgrid{grid-template-columns:repeat(2,1fr)}}
+@container (max-width: 400px){.crm-refgrid{grid-template-columns:1fr}}
+/* Address pairs: below 340px the 280px minimum would overflow the card, so drop to one column */
+@container (max-width:340px){.crm-addrgrid{grid-template-columns:minmax(0,1fr) !important}}
+/* Cells top-align so wrapped names line up with their row's other columns */
+.crm-evtable .ins-table td{vertical-align:top}
+.crm-refwrap .crm-evtable .ins-table td,.crm-refwrap .crm-evtable .ins-table th{overflow-wrap:anywhere}
+/* v5 row-hover View action: reserved space, revealed on row hover */
+.crm-rowview{visibility:hidden;display:block;width:fit-content;margin-top:3px;font-size:var(--ins-text-xs);font-weight:var(--ins-weight-semibold)}
+.crm-evtable tr:hover .crm-rowview{visibility:visible}
+.crm-sep{visibility:hidden;color:var(--ins-border-color)}
+.crm-evtable tr:hover .crm-sep{visibility:visible}
+.crm-lnk:hover{background:var(--ins-main-light)}
+.crm-scroll{scrollbar-width:thin;scrollbar-color:var(--ins-ui-3) transparent}
+.crm-scroll::-webkit-scrollbar{width:8px;height:8px}
+.crm-scroll::-webkit-scrollbar-thumb{background:var(--ins-ui-3);border-radius:var(--ins-radius)}
+/* Tab strip: thin scrollbar when the strip overflows; vertical wheel scrolls it horizontally */
+.crm-tabs{scrollbar-width:thin;scrollbar-color:var(--ins-ui-3) transparent}
+.crm-tabs::-webkit-scrollbar{height:6px}
+.crm-tabs::-webkit-scrollbar-thumb{background:var(--ins-ui-3);border-radius:var(--ins-radius)}
+/* DS Table cells are 16px; pad the outer columns to the card's 24px so the table aligns with the toolbar and tabs */
+.crm-evtable .ins-table th:first-child,.crm-evtable .ins-table td:first-child{padding-left:var(--crm-tblpad, var(--ins-space-md))}
+.crm-evtable .ins-table th:last-child,.crm-evtable .ins-table td:last-child{padding-right:var(--crm-tblpad, var(--ins-space-md))}
+/* v5 sort affordance: an unsorted sortable column shows a grey arrow only while its header is
+   hovered; the active column keeps the DS brand-blue arrow at all times. */
+.ins-table__sort .icon-sort{visibility:hidden}
+.ins-table th.ins-th--sortable:hover .icon-sort{visibility:visible}
+.ins-table__sort .icon-sort:before{content:"\e920"}
+/* Pager prev/next use the angle glyphs (per review), overriding the DS Pagination's chevrons */
+.ins-pagination__pager .icon-chevron-left:before{content:"\f104"}
+.ins-pagination__pager .icon-chevron-right:before{content:"\f105"}
+/* short value: sits on the label's line, right aligned */
+.fld{display:flex;justify-content:space-between;align-items:baseline;gap:var(--ins-space-sm);padding:var(--ins-space-xs) 0}
+.fld:last-child,.fldw:last-child{padding-bottom:0}
+.fld .k{font-size:var(--crm-k-size,var(--ins-text-xs));color:var(--ins-text-3);flex:none}
+.fld .v{font-size:var(--ins-text-sm);color:var(--ins-text-1);text-align:right}
+/* Phone: label above value, left aligned — a two-column row leaves too little
+   width for an email address, which then wraps ragged-left against the label */
+@container crmpage (max-width:560px){
+  /* v5 parity on phones: the toast docks to the bottom, full width, out of the chrome's way */
+  .crm-toastwrap{top:auto !important;right:var(--ins-space-sm) !important;bottom:var(--ins-space-sm);left:var(--ins-space-sm)}
+  .crm-toastwrap .ins-toast{width:100%;max-width:none;box-sizing:border-box}
+  /* Phone only: bulk footer stacks, action controls each span a row, pagination below. Tablet keeps them side by side. */
+  .crm-bulkrow{flex-direction:column;align-items:stretch !important}
+  .crm-bulkrow > div:last-child{width:100%}
+  .crm-bulkrow > div:first-child{flex-direction:column;align-items:stretch;width:100%}
+  .crm-bulkrow > div:first-child > div{width:100%}
+  .crm-bulkrow > div:first-child > div > button{width:100%;justify-content:space-between}
+  .crm-bulkrow > div:first-child > button{width:100%;justify-content:center}
+  .fld{flex-direction:column;align-items:stretch;gap:var(--ins-space-3xs)}
+  .fld .v{text-align:left;justify-content:flex-start !important;align-items:flex-start !important}
+  .fld .v > button[aria-label^="Copy"]{margin-top:3px}
+  .crm-mkv{flex-direction:column !important;align-items:stretch !important;gap:var(--ins-space-3xs) !important}
+  .crm-mkv > span:last-child{text-align:left !important}
+}
+/* long value: own line, left aligned, so it never wraps ragged-left */
+.fldw{display:flex;flex-direction:column;gap:var(--ins-space-3xs);padding:var(--ins-space-xs) 0}
+.fldw .k{font-size:var(--crm-k-size,var(--ins-text-xs));color:var(--ins-text-3)}
+.fldw .v{font-size:var(--ins-text-sm);color:var(--ins-text-1);line-height:var(--ins-leading-snug);overflow-wrap:anywhere}
+.unset{font-size:var(--ins-text-xs);color:var(--ins-text-3);font-style:italic}
+.chip{font-size:var(--ins-text-xs);font-weight:var(--ins-weight-semibold);background:var(--ins-ui-1);color:var(--ins-text-3);border-radius:999px;padding:2px 8px}
+.pill{display:inline-flex;align-items:center;font-size:var(--ins-text-xs);color:var(--ins-text-1);background:var(--ins-ui-1);border-radius:var(--ins-radius);padding:3px 9px}
+.fchip{display:inline-flex;align-items:center;gap:7px;font-size:var(--ins-text-xs);color:var(--ins-text-1);background:var(--ins-ui-3);border-radius:var(--ins-radius);padding:6px 11px;border:none;font-family:inherit;cursor:pointer}
+@keyframes crm-drawer-in{from{transform:translateX(100%)}to{transform:translateX(0)}}
+/* Design-system animation (_ds/tokens/animations.css) used by menus, tooltips, reference bodies; the bundle does not ship it. */
+@keyframes ins-fade-in-up{0%{opacity:0;transform:translate3d(0,16px,0)}100%{opacity:1;transform:translate3d(0,0,0)}}
+/* Design-system animation used by the Company prototype's confirm-delete and configure-metrics dialogs (animation:ins-zoom-in ...); the bundle does not ship it either. */
+@keyframes ins-zoom-in{0%{opacity:0;transform:scale(0.96)}100%{opacity:1;transform:scale(1)}}
+/* Zebra striping (tweak): even rows washed for wide-table scanning */
+.crm-zebra tbody tr:nth-child(odd){background:var(--ins-ui-1)}
+/* Hover paints on the cells, not the row: the sticky first cell is opaque, so a row-level tint
+   would only show in the other columns (and vice versa) */
+.crm-zebra tbody tr:hover{background:transparent !important}
+.crm-zebra tbody tr:hover td{background:linear-gradient(rgba(0,0,0,0.03),rgba(0,0,0,0.03)),var(--ins-card)}
+.crm-zebra tbody tr:nth-child(odd):hover td{background:linear-gradient(rgba(0,0,0,0.03),rgba(0,0,0,0.03)),var(--ins-ui-1)}
+/* Narrow desktop: the primary column stays put while the rest of the table scrolls */
+.crm-evtable .ins-table th:first-child,.crm-evtable .ins-table td:first-child{position:sticky;left:0;z-index:2;background:var(--ins-card);box-shadow:1px 0 0 var(--ins-border-color)}
+/* Selection tables: the 44px checkbox strip carries no identity, so the name column pins beside it */
+.crm-selcols .ins-table th:first-child,.crm-selcols .ins-table td:first-child{box-shadow:none}
+.crm-selcols .ins-table th:nth-child(2),.crm-selcols .ins-table td:nth-child(2){position:sticky;left:44px;z-index:2;background:var(--ins-card);box-shadow:1px 0 0 var(--ins-border-color)}
+.crm-zebra.crm-selcols tbody tr:nth-child(odd) td:nth-child(2){background:var(--ins-ui-1)}
+.crm-zebra.crm-selcols tbody tr:hover td:nth-child(2){background:linear-gradient(rgba(0,0,0,0.03),rgba(0,0,0,0.03)),var(--ins-card)}
+.crm-zebra.crm-selcols tbody tr:nth-child(odd):hover td:nth-child(2){background:linear-gradient(rgba(0,0,0,0.03),rgba(0,0,0,0.03)),var(--ins-ui-1)}
+.crm-zebra tbody tr:nth-child(odd) td:first-child{background:var(--ins-ui-1)}
+.crm-zebra tbody tr:hover td:first-child{background:linear-gradient(rgba(0,0,0,0.03),rgba(0,0,0,0.03)),var(--ins-card)}
+.crm-zebra tbody tr:nth-child(odd):hover td:first-child{background:linear-gradient(rgba(0,0,0,0.03),rgba(0,0,0,0.03)),var(--ins-ui-1)}
+/* Same striping for the collapsed responsive rows (header div is child 1, so rows start even) */
+.crm-mzebra .crm-mrow:nth-child(even){background:var(--ins-ui-1)}
+@container crmpage (max-width:900px){
+  .crm-zebra tbody tr:hover td,.crm-zebra tbody tr:nth-child(odd):hover td{background:var(--ins-card)}
+  .crm-zebra tbody tr:nth-child(odd):hover td{background:var(--ins-ui-1)}
+  .crm-selcols .ins-table tbody tr:hover td:nth-child(2){background:var(--ins-card)}
+  .crm-zebra.crm-selcols tbody tr:nth-child(odd):hover td:nth-child(2){background:var(--ins-ui-1)}
+  .crm-evtable tr:hover .crm-rowview,.crm-evtable tr:hover .crm-sep{visibility:visible}
+}
+/* Search input states: hover darkens border, focus shows the DS brand ring */
+.crm-search{transition:border-color var(--ins-duration-fast) var(--ins-ease-out),box-shadow var(--ins-duration-fast) var(--ins-ease-out)}
+/* Wrapped toolbars: the search keeps to the right of its row instead of dropping to the left */
+.crm-toolbar .crm-search{margin-left:auto}
+.crm-search:hover{border-color:var(--ins-ui-2) !important}
+.crm-search:active,.crm-search:focus-within{border-color:var(--ins-main) !important}
+.crm-search input::-webkit-search-cancel-button{-webkit-appearance:none;display:none}
+.crm-search input::-ms-clear{display:none}
+/* Fixed layout: column widths hold across sort/pagination instead of tracking page content */
+.crm-fixedtable{overflow-x:auto}
+@container (max-width:900px){
+  .crm-fixedtable .ins-table th:first-child,.crm-fixedtable .ins-table td:first-child{position:sticky;left:0;z-index:1;background:var(--ins-card)}
+}
+/* Mobile: the table gives way to a collapsible stacked list */
+.crm-mobile .crm-evtable{display:none}
+.crm-mrow{border-bottom:1px solid var(--ins-border-color)}
+/* The pagination footer draws its own top rule, so the last row must not double it */
+.crm-mzebra .crm-mrow:not(:has(~ .crm-mrow)){border-bottom:none}
+.crm-evtable .ins-table tbody tr:last-child{border-bottom:none}
+.crm-evtable .ins-table tbody tr:last-child td{border-bottom:none}
+.crm-mhead{display:flex;align-items:flex-start;gap:var(--ins-space-sm);width:100%;box-sizing:border-box;padding:var(--ins-space-sm);border:none;background:transparent;font-family:inherit;text-align:left;cursor:pointer}
+/* Multi-line titles: badge, title and caret all start at the row's top edge */
+.crm-mhead > span[aria-hidden="true"]{margin-top:0}
+/* Icon lists: expanded fields line up with the row title, not the icon */
+.crm-micon .crm-mbody{padding-left:calc(var(--ins-space-sm) + 26px + var(--ins-space-sm))}
+.crm-mbody{padding:0 var(--ins-space-sm) var(--ins-space-sm);animation:ins-fade-in-up var(--ins-duration-fast) var(--ins-ease-out)}
+/* Expanded body reads like the Details card: 12px muted label, 14px primary value, xs vertical rhythm */
+.crm-mkv{display:flex;justify-content:space-between;align-items:baseline;gap:var(--ins-space-sm);padding:var(--ins-space-xs) 0;font-size:var(--ins-text-sm)}
+.crm-mkv > span:first-child{flex:none;font-size:var(--crm-k-size,var(--ins-text-xs));color:var(--ins-text-3)}
+.crm-mkv > span:last-child{font-size:var(--ins-text-sm);color:var(--ins-text-1);text-align:right;overflow-wrap:anywhere}
+.crm-fixedtable .ins-table{table-layout:fixed;width:100%;min-width:640px}
+/* Tables whose column set needs more room than the 640px floor scroll instead of crushing cells */
+.crm-fixedtable.crm-widecols .ins-table{min-width:1040px}
+.crm-fixedtable.crm-relcols .ins-table{min-width:920px}
+/* Relationship cells hold single values, so they stay on one line and the column scrolls; only Notes wraps */
+.crm-relcols .ins-table th,.crm-relcols .ins-table td{white-space:nowrap;overflow-wrap:normal}
+.crm-relcols .ins-table th:last-child,.crm-relcols .ins-table td:last-child{white-space:normal;overflow-wrap:anywhere}
+.crm-fixedtable .ins-table td{overflow-wrap:break-word}
+/* Help tooltip: shows on hover, stays open when clicked */
+.crm-tipwrap{position:relative;display:inline-flex}
+.crm-tip{visibility:hidden;opacity:0;transition:opacity var(--ins-duration-fast) var(--ins-ease-out);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);z-index:50;width:max-content;max-width:240px;background:var(--ins-text-1);color:var(--ins-card);font-size:var(--ins-text-xs);line-height:var(--ins-leading-snug);padding:6px 10px;border-radius:var(--ins-radius);box-shadow:var(--ins-shadow-2);pointer-events:none}
+.crm-tipwrap:hover .crm-tip,.crm-tip.open{visibility:visible;opacity:1}
+.crm-tip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--ins-text-1)}
+@keyframes crm-pulse{0%,100%{opacity:1}50%{opacity:0.45}}
+.skel{display:block;background:var(--ins-ui-1);border-radius:4px;animation:crm-pulse 1.4s var(--ins-ease-out) infinite}
+/* Sticky condensed header: zero-height sticky anchor at the page top; the strip slides down out of it once the full header leaves the scroll viewport. Desktop only. */
+.crm-stickybar{position:sticky;top:calc(-1 * var(--ins-space-md));z-index:36;height:0;margin-bottom:calc(-1 * var(--ins-space-md));pointer-events:none}
+.crm-stickybar > div{pointer-events:auto;transition:transform var(--ins-duration-normal) var(--ins-ease-out),visibility 0s linear var(--ins-duration-normal)}
+.crm-stickybar > div[data-on="true"]{transition:transform var(--ins-duration-normal) var(--ins-ease-out),visibility 0s}
+@container crmpage (max-width:900px){.crm-stickybar{display:none}}
+.crm-hot a[href],.crm-hot button:not([disabled]),.crm-hot input,.crm-hot select,.crm-hot textarea,.crm-hot [role="tab"],.crm-hot [role="menuitem"],.crm-hot [role="menuitemradio"],.crm-hot [tabindex="0"]{outline:1.5px dashed #6A8BFF;outline-offset:1px;border-radius:var(--ins-radius)}
+@media (max-width:1180px){
+  .crm-hm-inline.hm-strip{width:100%;order:5;border-top:1px solid var(--ins-border-color);padding-top:var(--ins-space-xs);justify-content:space-between}
+  .crm-hm-inline .hm-cell{border-left:none !important;min-width:0 !important;padding:0 !important;align-items:flex-start !important}
+  .crm-hm-inline .hm-cell span{text-align:left !important}
+}
+/* Confirm modal: stacked full-width actions on phones — two lines of wrapped label otherwise */
+@container crmpage (max-width:560px){
+  /* Primary action sits on top, Cancel below — thumb reach on phones */
+  .crm-confirmcard{padding:var(--ins-space-md) var(--ins-space-md) var(--ins-space-sm) !important}
+  .crm-confirmbtns{width:100%;align-self:stretch;flex-direction:column;align-items:stretch !important}
+  .crm-confirmbtns button{width:100% !important;flex:1 1 auto;justify-content:center}
+  .crm-confirmbtns button:first-child{order:2}
+}

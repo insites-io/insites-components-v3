@@ -119,3 +119,112 @@ ins-metric-tile {
     animation: none;
   }
 }
+
+// ---------------------------------------------------------------------------
+// variant="strip": the v6 record-page header metric cell (.hm-strip > .hm-cell)
+// from the CRM Contact v1.4 / Company v1.0 prototypes. The prototype styles the
+// cell inline; those declarations are reproduced here, token for token, with the
+// design-system value as the fallback so the cell renders the same in modules
+// that do not load the --ins-* semantic layer (design-tokens.css is CRM-only).
+// The host element plays the prototype's per-cell wrapper div; the responsive
+// placement overrides (.crm-hm-inline / .crm-hm-card at 1180 / 900 / 560) live
+// in the shared insites.css record-page layer and match this markup as is.
+// ---------------------------------------------------------------------------
+ins-metric-tile.ins-metric-tile--strip {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  min-width: auto;
+
+  // Card placement: cells share the row instead of hugging their 120px minimum.
+  &.ins-metric-tile--card {
+    flex: 1 1 180px;
+    min-width: 0;
+  }
+
+  .hm-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--ins-space-3xs, 2px);
+    min-width: 120px;
+    margin: 0;
+    padding: 4px var(--ins-space-sm, 16px);
+    border: none;
+    border-radius: 0;
+    background: var(--ins-card, var(--iia-ui-5, #fdfdfd));
+    font-family: inherit;
+    color: inherit;
+    text-align: center;
+    cursor: default;
+    -webkit-appearance: none;
+    appearance: none;
+
+    &:focus-visible {
+      outline: 2px solid var(--ins-color-primary);
+      outline-offset: -2px;
+    }
+  }
+
+  &.ins-metric-tile--card .hm-cell {
+    flex: 1;
+    min-width: 0;
+    border-radius: var(--ins-radius, 4px);
+  }
+
+  // Button affordance is opt-in (prototype default cells: cursor default, hover = card colour).
+  &.ins-metric-tile--clickable .hm-cell {
+    cursor: pointer;
+  }
+
+  .hm-cell-clickable:hover {
+    background: var(--ins-ui-1, var(--iia-ui-1, #f8f8f8));
+  }
+
+  .hm-cell__value {
+    font-size: var(--ins-title-6, 18px);
+    font-weight: var(--ins-weight-semibold, 600);
+    color: var(--ins-text-1, var(--iia-text-1, #000000));
+    line-height: var(--ins-leading-tight, 1.2);
+  }
+
+  .hm-cell__label {
+    font-size: var(--ins-text-xs, 12px);
+    color: var(--ins-text-3, var(--iia-text-3, #575757));
+    text-align: center;
+  }
+
+  .ins-metric-tile__placeholder {
+    width: 48px;
+    height: calc(var(--ins-title-6, 18px) * var(--ins-leading-tight, 1.2));
+  }
+}
+
+// Divider on every cell after the first (prototype: border-left for index > 0).
+// Inline strip: on the cell itself. Card strip: on the wrapper, cell stays borderless.
+ins-metric-tile.ins-metric-tile--strip + ins-metric-tile.ins-metric-tile--strip {
+  .hm-cell {
+    border-left: 1px solid var(--ins-border-color, var(--iia-ui-3, #dfdfdf));
+  }
+
+  &.ins-metric-tile--card {
+    border-left: 1px solid var(--ins-border-color, var(--iia-ui-3, #dfdfdf));
+
+    .hm-cell {
+      border-left: none;
+    }
+  }
+}
+
+// Phone widths, card placement: cells stack and drop their dividers. The shared
+// record-page layer carries this rule as `.crm-hm-card .hm-strip > div`, which
+// targets the prototype's wrapper div; here the wrapper is the tile host, so the
+// same rule is repeated for it. !important mirrors the shared rule so it also
+// beats the divider selector above.
+@container crmpage (max-width: 560px) {
+  .crm-hm-card ins-metric-tile.ins-metric-tile--card {
+    flex-basis: 100% !important;
+    border-left: none !important;
+  }
+}

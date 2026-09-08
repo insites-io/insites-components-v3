@@ -52,10 +52,34 @@ ins-action-menu-item {
     white-space: nowrap;
   }
 
+  .ins-action-menu-item__slot {
+    flex: none;
+    margin-left: auto;
+    font-size: 12px;
+    white-space: nowrap;
+    color: var(--ins-color-ink40);
+  }
+
   .ins-action-menu-item__chevron {
     margin-left: auto;
     font-size: 14px;
     color: var(--ins-color-ink40);
+  }
+
+  // A slot label already pushes the chevron to the edge, so the chevron drops its own auto margin.
+  .ins-action-menu-item__slot + .ins-action-menu-item__chevron {
+    margin-left: 0;
+  }
+
+  .ins-action-menu-item__divider {
+    display: block;
+    height: 1px;
+    margin: 4px 0;
+    background: var(--ins-border-color);
+  }
+
+  &.is-divider {
+    pointer-events: none;
   }
 
   .ins-action-menu-item__submenu {
@@ -73,6 +97,91 @@ ins-action-menu-item {
 
     &[hidden] {
       display: none !important;
+    }
+  }
+}
+
+// Inside <ins-action-menu variant="record">: the IIA v6 record-page rows and channel flyouts. Values are the
+// inline styles of the CRM Contact v1.4 / Company v1.0 prototypes as ported in module-v6-crm RecordActionsMenu.vue.
+// Light DOM, so the parent's variant class cascades here.
+.ins-action-menu--record ins-action-menu-item {
+  .ins-action-menu-item__button {
+    gap: 10px;
+    min-height: 0;
+    padding: 8px var(--ins-space-sm);
+    font-family: inherit;
+    font-size: var(--ins-text-sm);
+    color: var(--ins-text-1);
+
+    &:hover:not(:disabled),
+    &:focus-visible,
+    &[aria-expanded="true"] {
+      background: var(--ins-ui-1);
+    }
+
+    &:disabled {
+      color: var(--ins-text-3);
+    }
+
+    &.danger:not(:disabled) {
+      color: var(--ins-alert-negative);
+
+      .ins-action-menu-item__icon {
+        color: var(--ins-alert-negative);
+      }
+    }
+  }
+
+  .ins-action-menu-item__icon {
+    font-size: var(--ins-text-md);
+    color: var(--ins-text-3);
+  }
+
+  .ins-action-menu-item__label {
+    flex: 1;
+  }
+
+  .ins-action-menu-item__slot {
+    font-size: var(--ins-text-xs);
+    color: var(--ins-text-3);
+  }
+
+  .ins-action-menu-item__chevron {
+    flex: none;
+    font-size: 11px;
+    color: var(--ins-ui-2);
+  }
+
+  .ins-action-menu-item__divider {
+    margin: var(--ins-space-3xs) 0;
+  }
+
+  // Flyout to the LEFT of the panel (right:100%, top:-4px), content-driven width.
+  .ins-action-menu-item__submenu {
+    top: -4px;
+    right: 100%;
+    left: auto;
+    z-index: 101;
+    min-width: 200px;
+    width: max-content;
+    max-width: min(420px, 90vw);
+    margin-right: 2px;
+    padding: var(--ins-space-3xs) 0;
+    background: var(--ins-card);
+    border: 1px solid var(--ins-border-color);
+    border-radius: var(--ins-radius);
+    box-shadow: var(--ins-shadow-2);
+    animation: ins-fade-in-up var(--ins-duration-fast) var(--ins-ease-out);
+
+    // Invisible bridge over the 2px margin plus the panel border, so a hover-opened flyout stays open
+    // while the pointer crosses from the parent row into it.
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: -4px;
+      width: 4px;
     }
   }
 }

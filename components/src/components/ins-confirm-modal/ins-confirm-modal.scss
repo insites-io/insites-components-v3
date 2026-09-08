@@ -1,4 +1,15 @@
+// Type-to-confirm destructive dialog. Values reproduce the inline styles of the design's
+// confirm block (CRM Company v1.0 lines 511-529, handoff-confirm-delete.md) one for one.
+//
+// Token note: the semantic design-system tokens (--ins-card, --ins-space-*, --ins-alert-*,
+// --ins-title-5, --iia-glyph-sm) are declared by each module's design-tokens.css, not by the
+// bundle's insites.css, which ships only the raw --iia-* palette and the legacy --ins-color-*
+// bridge. Every use below carries the raw --iia-* token or the design system's px value as a
+// fallback so the dialog renders the same in a module that does not load those aliases.
+
 ins-confirm-modal {
+  // Overlay. align-items:flex-start plus margin:auto on the card lets a tall card scroll
+  // instead of clipping on short viewports.
   .ins-confirm-modal-backdrop {
     display: none;
     position: fixed;
@@ -6,113 +17,215 @@ ins-confirm-modal {
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 1050;
-    align-items: center;
+    z-index: 85;
+    align-items: flex-start;
     justify-content: center;
-    padding: 16px;
-
-    &::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      background-color: var(--ins-color-ink);
-      opacity: 0.5;
-    }
+    padding: var(--ins-space-md, 24px);
+    overflow-y: auto;
+    background: rgba(15, 15, 15, 0.45);
+    box-sizing: border-box;
 
     &.open {
       display: flex;
     }
   }
 
+  // Card
   .ins-confirm-modal-panel {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    max-width: 480px;
-    padding: 24px;
-    background-color: var(--ins-color-white);
-    border-radius: var(--ins-border-radius);
-    box-shadow: var(--ins-shadow-x) var(--ins-shadow-y) var(--ins-shadow-blur) var(--ins-shadow-color);
+    width: 480px;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin: auto;
+    flex: none;
+    background: var(--ins-card, var(--iia-ui-5, #FDFDFD));
+    border-radius: var(--ins-radius, 4px);
+    box-shadow: var(--ins-shadow-2, 0 4px 12px 0 rgba(0, 0, 0, 0.16));
+    padding: var(--ins-space-lg, 32px) var(--ins-space-lg, 32px) var(--ins-space-md, 24px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    animation: ins-zoom-in var(--ins-duration-fast, 150ms) var(--ins-ease-out, cubic-bezier(0, 0, 0.2, 1));
     font-family: var(--ins-font-family);
-    color: var(--ins-color-ink);
+    color: var(--ins-text-1, var(--iia-text-1, #000));
   }
 
+  // 72px warning triangle
+  .ins-confirm-modal-icon {
+    font-size: 72px;
+    display: block;
+    line-height: 0.8;
+    color: var(--ins-alert-warning, var(--iia-alert-warning, #EC9C00));
+  }
+
+  // Title
   .ins-confirm-modal-heading {
-    margin: 0 0 12px;
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--ins-color-ink);
+    margin: var(--ins-space-md, 24px) 0 0;
+    font-size: var(--ins-title-5, 24px);
+    line-height: var(--ins-leading-tight, 1.2);
+    font-weight: var(--ins-weight-semibold, 600);
+    color: var(--ins-text-1, var(--iia-text-1, #000));
   }
 
+  // Lead copy slot. Consumers may carry their own inline styles (the Vue reference does);
+  // these defaults make plain <p> / <strong> children land on the design's values.
   .ins-confirm-modal-body {
-    margin-bottom: 16px;
-    font-size: 14px;
-    line-height: 1.5;
-    color: var(--ins-color-ink);
+    width: 100%;
+    font-size: var(--ins-text-sm, 14px);
+    color: var(--ins-text-2, var(--iia-text-2, #323232));
+
+    &:empty {
+      display: none;
+    }
+
+    > p {
+      margin: var(--ins-space-xs, 8px) 0 0;
+
+      &:first-child {
+        margin-top: var(--ins-space-sm, 16px);
+      }
+    }
+
+    strong {
+      font-weight: var(--ins-weight-semibold, 600);
+      color: var(--ins-text-1, var(--iia-text-1, #000));
+    }
   }
 
+  // Optional kept-records note
+  .ins-confirm-modal-kept {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: var(--ins-space-sm, 16px);
+    padding: var(--ins-space-sm, 16px);
+    border: 1px solid var(--ins-border-color, var(--iia-ui-3, #DFDFDF));
+    border-radius: var(--ins-radius, 4px);
+    background: var(--ins-ui-1, var(--iia-ui-1, #F8F8F8));
+    text-align: left;
+    display: flex;
+    gap: var(--ins-space-xs, 8px);
+  }
+
+  .ins-confirm-modal-kept-icon {
+    font-size: var(--ins-text-md, 16px);
+    color: var(--ins-alert-positive, var(--iia-alert-positive, #048801));
+    flex: none;
+    line-height: 1.35;
+  }
+
+  .ins-confirm-modal-kept-text {
+    font-size: var(--ins-text-sm, 14px);
+    color: var(--ins-text-2, var(--iia-text-2, #323232));
+    text-wrap: pretty;
+  }
+
+  // Prompt line + 48px input
   .ins-confirm-modal-field {
-    margin-bottom: 20px;
+    width: 100%;
   }
 
   .ins-confirm-modal-label {
     display: block;
-    margin-bottom: 6px;
-    font-size: 13px;
-    color: var(--ins-color-ink40);
+    margin: var(--ins-space-md, 24px) 0 0;
+    font-size: var(--ins-text-sm, 14px);
+    color: var(--ins-text-2, var(--iia-text-2, #323232));
   }
 
   .ins-confirm-modal-input {
     display: block;
+    margin-top: var(--ins-space-xs, 8px);
     width: 100%;
     box-sizing: border-box;
-    padding: 8px 12px;
-    font-size: 14px;
-    font-family: var(--ins-font-family);
-    color: var(--ins-color-ink);
-    background-color: var(--ins-color-white);
-    border: var(--ins-border-thickness) var(--ins-border-style) var(--ins-border-color);
-    border-radius: var(--ins-border-radius);
+    height: 48px;
+    padding: 0 var(--ins-space-sm, 16px);
+    border: 1px solid var(--ins-border-color, var(--iia-ui-3, #DFDFDF));
+    border-radius: var(--ins-radius, 4px);
+    background: var(--ins-card, var(--iia-ui-5, #FDFDFD));
+    font-family: inherit;
+    font-size: var(--ins-text-sm, 14px);
+    color: var(--ins-text-1, var(--iia-text-1, #000));
+    outline: none;
 
     &:focus {
-      outline: none;
-      border-color: var(--ins-color-primary);
+      border-color: var(--ins-main, var(--iia-main, #436CF2));
+      box-shadow: 0 0 0 3px var(--ins-main-light, var(--iia-main-light, #436CF214));
     }
   }
 
+  // Actions: CANCEL (outline brand) then the destructive action, both 44px uppercase
   .ins-confirm-modal-footer {
     display: flex;
-    justify-content: flex-end;
-    gap: 8px;
+    justify-content: center;
+    gap: var(--ins-space-sm, 16px);
+    margin-top: var(--ins-space-md, 24px);
   }
 
   .ins-confirm-modal-cancel,
   .ins-confirm-modal-confirm {
-    padding: 8px 16px;
-    font-size: 14px;
-    font-family: var(--ins-font-family);
-    border-radius: var(--ins-border-radius);
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 44px;
+    padding: 0 var(--ins-space-md, 24px);
+    border-radius: var(--ins-radius, 4px);
+    font-family: inherit;
+    font-size: var(--ins-text-xs, 12px);
+    font-weight: var(--ins-weight-semibold, 600);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     cursor: pointer;
   }
 
+  .ins-confirm-modal-btn-icon {
+    font-size: var(--iia-glyph-sm, 16px);
+  }
+
   .ins-confirm-modal-cancel {
-    background-color: transparent;
-    color: var(--ins-color-ink);
-    border: var(--ins-border-thickness) var(--ins-border-style) var(--ins-border-color);
+    border: 1px solid var(--ins-main, var(--iia-main, #436CF2));
+    background: var(--ins-card, var(--iia-ui-5, #FDFDFD));
+    color: var(--ins-main, var(--iia-main, #436CF2));
+
+    &:hover {
+      background: var(--ins-main-light, var(--iia-main-light, #436CF214));
+    }
   }
 
   .ins-confirm-modal-confirm {
-    background-color: var(--ins-color-negative);
-    color: var(--ins-color-white);
-    border: var(--ins-border-thickness) var(--ins-border-style) var(--ins-color-negative);
+    border: none;
+    background: var(--ins-alert-negative, var(--iia-alert-negative, #DF1F1F));
+    color: var(--iia-text-white, #fff);
+    transition: opacity var(--ins-duration-fast, 150ms) var(--ins-ease-out, cubic-bezier(0, 0, 0.2, 1));
 
-    &:disabled {
-      background-color: var(--ins-color-disabled);
-      border-color: var(--ins-color-disabled);
+    // Gate: never the disabled attribute, so the button stays focusable.
+    &[aria-disabled="true"] {
+      opacity: 0.45;
       cursor: not-allowed;
+    }
+  }
+
+  // Phones: stacked full-width actions, destructive action on top for thumb reach.
+  // Mirrors the shared CSS's @container crmpage (max-width:560px) .crm-confirmbtns rule so the
+  // same stacking happens in a module that has no .crm-pagewrap container.
+  @media (max-width: 560px) {
+    .ins-confirm-modal-panel {
+      padding: var(--ins-space-md, 24px) var(--ins-space-md, 24px) var(--ins-space-sm, 16px);
+    }
+
+    .ins-confirm-modal-footer {
+      width: 100%;
+      align-self: stretch;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .ins-confirm-modal-footer button {
+      width: 100%;
+      flex: 1 1 auto;
+      justify-content: center;
+    }
+
+    .ins-confirm-modal-cancel {
+      order: 2;
     }
   }
 }

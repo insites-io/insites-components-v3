@@ -1,111 +1,267 @@
+// ins-search-scope: the IIA v6 record-page search pill with a field-scope dropdown.
+// Values are the design's inline styles (CRM Company v1.0, Contacts tab header) as carried by
+// module-v6-crm Companies/sections/Contacts/Contacts.vue. Colour, spacing and radius come from the v6
+// design tokens the admin page supplies (design-tokens.css); each falls back to the bundle's legacy
+// --ins-* token so the pill still renders on a page that has not adopted them.
+//
+// The shared record-page layer in insites.css owns .crm-search (hover / focus-within border, webkit cancel
+// button), .crm-sbprefix (sr-only at 560px) and button[data-tip] (tooltip). Nothing here duplicates those.
+
+@keyframes ins-search-scope-spin {
+  to { transform: rotate(360deg); }
+}
+
 ins-search-scope {
+  // the host is the flex item inside .crm-tabhd / .crm-toolbar, so it carries the design's label sizing
   display: block;
+  flex: 1 1 320px;
+  min-width: 260px;
+  max-width: 520px;
+  box-sizing: border-box;
 
   .ins-search-scope {
     display: flex;
     align-items: center;
-    height: 38px;
+    gap: var(--ins-space-xs, 8px);
+    width: 100%;
+    height: 34px;
     box-sizing: border-box;
-    background-color: var(--ins-color-white);
-    border: var(--ins-border-style) var(--ins-border-thickness) var(--ins-border-color);
-    border-radius: var(--ins-border-radius);
-    transition: border-color .25s ease-in-out;
+    padding: 0 10px 0 0;
+    border: 1px solid var(--ins-border-color);
+    border-radius: var(--ins-radius, var(--ins-border-radius));
+    background: var(--ins-card, var(--ins-color-white));
 
-    &:hover {
-      border-color: var(--ins-color-ink40);
-    }
+    &.disabled {
+      opacity: .6;
+      cursor: not-allowed;
 
-    &:focus-within {
-      border-color: var(--ins-color-primary);
+      > * {
+        pointer-events: none;
+      }
     }
   }
 
-  .ins-search-scope-icon {
-    display: flex;
+  .ins-search-scope__scope {
+    position: relative;
+    flex: none;
+  }
+
+  .ins-search-scope__trigger {
+    display: inline-flex;
     align-items: center;
-    padding-left: 10px;
-    color: var(--ins-color-ink40);
-    font-size: 14px;
-    pointer-events: none;
-  }
-
-  .ins-search-scope-input {
-    flex: 1 1 auto;
-    min-width: 0;
-    height: 100%;
-    border: none;
-    background: transparent;
+    gap: 6px;
+    height: 32px;
     margin: 0;
     padding: 0 10px;
-    color: var(--ins-color-ink);
-    font-family: var(--ins-font-family);
-    font-size: 14px;
-    font-weight: 400;
+    border: none;
+    border-right: 1px solid var(--ins-border-color);
+    border-radius: var(--ins-radius, var(--ins-border-radius)) 0 0 var(--ins-radius, var(--ins-border-radius));
+    background: transparent;
+    font-family: inherit;
+    font-size: var(--ins-text-xs, 12px);
+    line-height: 1;
+    color: var(--ins-text-3, var(--ins-color-ink60));
+    cursor: pointer;
+    white-space: nowrap;
+
+    &:hover,
+    &[aria-expanded="true"] {
+      background: var(--ins-ui-1, var(--ins-bg-color2));
+    }
+  }
+
+  .ins-search-scope__field {
+    font-weight: var(--ins-weight-semibold, 600);
+    color: var(--ins-text-1, var(--ins-color-ink));
+  }
+
+  .ins-search-scope__caret {
+    font-size: 11px;
+    color: var(--ins-ui-2, var(--ins-color-ink40));
+  }
+
+  .ins-search-scope__menu {
+    position: absolute;
+    left: 0;
+    top: calc(100% + 6px);
+    z-index: 40;
+    min-width: 190px;
+    box-sizing: border-box;
+    padding: var(--ins-space-3xs, 4px) 0;
+    background: var(--ins-card, var(--ins-color-white));
+    border: 1px solid var(--ins-border-color);
+    border-radius: var(--ins-radius, var(--ins-border-radius));
+    box-shadow: var(--ins-shadow-2, 0 4px 12px rgba(0, 0, 0, .12));
+    animation: ins-fade-in-up var(--ins-duration-fast, 150ms) var(--ins-ease-out, ease-out);
+
+    &[hidden] {
+      display: none !important;
+    }
+  }
+
+  .ins-search-scope__option {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 8px var(--ins-space-sm, 16px);
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: var(--ins-text-sm, 14px);
+    line-height: normal;
+    color: var(--ins-text-1, var(--ins-color-ink));
+    cursor: pointer;
+    text-align: left;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--ins-ui-1, var(--ins-bg-color2));
+    }
+
+    &.is-checked {
+      background: var(--ins-ui-1, var(--ins-bg-color2));
+      color: var(--ins-main, var(--ins-color-primary));
+    }
+  }
+
+  // input[type=search] carries UA and admin form styling (intrinsic height, appearance, ring); every one of
+  // those is reset so the box stays inside the 34px pill (audit M3)
+  .ins-search-scope input[type="search"].ins-search-scope__input {
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+    height: 32px;
+    min-height: 0;
+    margin: 0 0 0 2px;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    outline: none;
+    background: transparent;
     box-shadow: none;
+    font-family: inherit;
+    font-size: var(--ins-text-sm, 14px);
+    line-height: normal;
+    color: var(--ins-text-1, var(--ins-color-ink));
+    appearance: none;
+    -webkit-appearance: none;
 
     &:focus {
-      outline: 0;
+      border: none;
+      outline: none;
       box-shadow: none;
     }
 
     &::placeholder {
-      color: var(--ins-color-ink40);
+      color: var(--ins-text-3, var(--ins-color-ink40));
+      opacity: 1;
     }
 
     &::-webkit-search-decoration,
-    &::-webkit-search-cancel-button {
+    &::-webkit-search-cancel-button,
+    &::-webkit-search-results-button,
+    &::-webkit-search-results-decoration {
       -webkit-appearance: none;
       appearance: none;
+      display: none;
     }
   }
 
-  .ins-search-scope-select-wrap {
-    display: flex;
+  .ins-search-scope__clear,
+  .ins-search-scope__submit {
+    display: inline-flex;
     align-items: center;
-    align-self: stretch;
-    flex: 0 0 auto;
-    position: relative;
-    border-left: var(--ins-border-style) var(--ins-border-thickness) var(--ins-border-color);
-
-    &::after {
-      content: "";
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      width: 6px;
-      height: 6px;
-      margin-top: -5px;
-      border-right: 1.5px solid var(--ins-color-ink40);
-      border-bottom: 1.5px solid var(--ins-color-ink40);
-      transform: rotate(45deg);
-      pointer-events: none;
-    }
-  }
-
-  .ins-search-scope-select {
-    height: 100%;
-    max-width: 180px;
+    justify-content: center;
+    flex: none;
+    margin: 0;
+    padding: 0;
     border: none;
     background: transparent;
-    margin: 0;
-    padding: 0 28px 0 10px;
-    color: var(--ins-color-ink);
-    font-family: var(--ins-font-family);
-    font-size: 14px;
-    font-weight: 400;
+    line-height: 1;
     cursor: pointer;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    border-radius: 0 var(--ins-border-radius) var(--ins-border-radius) 0;
+
+    &[hidden] {
+      display: none !important;
+    }
+
+    i {
+      display: inline-block;
+      font-size: var(--iia-glyph-sm, 14px);
+    }
+  }
+
+  .ins-search-scope__clear {
+    color: var(--ins-ui-2, var(--ins-color-ink40));
 
     &:hover {
-      background-color: var(--ins-bg-color2);
+      color: var(--ins-text-1, var(--ins-color-ink));
+    }
+  }
+
+  .ins-search-scope__submit {
+    color: var(--ins-ui-2, var(--ins-color-ink40));
+
+    &.has-value {
+      color: var(--ins-main, var(--ins-color-primary));
     }
 
-    &:focus {
-      outline: 0;
-      box-shadow: inset 0 0 0 1px var(--ins-color-primary);
+    &:hover {
+      color: var(--ins-main-dark, var(--ins-color-primary));
     }
+  }
+
+  .ins-search-scope__submit-icon.is-spinning {
+    animation: ins-search-scope-spin 1s linear infinite;
+  }
+}
+
+// Container placement. The shared record-page layer sizes `label.crm-search` inside .crm-toolbar and .crm-tabhd
+// (insites.css "IIA v6 record-page layer"); here the flex item is the ins-search-scope host, so the same
+// rules are mirrored onto it. Thresholds and values match the shared layer.
+.crm-toolbar > ins-search-scope,
+.crm-toolbar .crm-ctrls > ins-search-scope {
+  margin-left: auto;
+}
+
+@container (max-width: 1100px) {
+  .crm-toolbar ins-search-scope {
+    flex: 0 1 280px !important;
+    max-width: 280px !important;
+    margin-left: auto !important;
+  }
+}
+
+@container crmpage (max-width: 560px) {
+  .crm-toolbar ins-search-scope,
+  .crm-tabhd > ins-search-scope {
+    width: 100%;
+    flex: 0 0 auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+  }
+
+  // the search drops under the stacked action pair (design: `.crm-tabhd > label.crm-search{order:9}`)
+  .crm-tabhd > ins-search-scope {
+    order: 9;
+  }
+
+  // the menu spans the pill instead of hugging the trigger (design: toolbar menus span the row at phone widths);
+  // the label becomes the positioned ancestor so left/right resolve against the whole pill
+  ins-search-scope .ins-search-scope {
+    position: relative;
+  }
+
+  ins-search-scope .ins-search-scope__scope {
+    position: static;
+  }
+
+  ins-search-scope .ins-search-scope__menu {
+    left: 0;
+    right: 0;
+    min-width: 0 !important;
   }
 }

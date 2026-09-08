@@ -74,3 +74,55 @@ ins-action-menu {
     }
   }
 }
+
+// variant="record": the IIA v6 record-page kebab. Values are the inline styles of the CRM Contact v1.4 /
+// Company v1.0 prototypes (div.crm-hdr-kebab), as ported in module-v6-crm RecordActionsMenu.vue.
+// The --ins-* tokens and the ins-fade-in-up keyframe come from the shared insites.css.
+ins-action-menu.ins-action-menu--record {
+  .ins-action-menu__trigger {
+    width: 36px;
+    min-width: 36px;
+    height: 36px;
+    padding: 0;
+    background: var(--ins-card);
+    border: 1px solid var(--ins-main);
+    border-radius: var(--ins-radius);
+    color: var(--ins-main);
+
+    &.has-label {
+      width: auto;
+      padding: 0 12px;
+      color: var(--ins-main);
+    }
+
+    &:hover,
+    &:focus-visible,
+    &[aria-expanded="true"] {
+      background: var(--ins-main-light);
+      color: var(--ins-main);
+    }
+  }
+
+  .ins-action-menu__trigger-icon {
+    font-size: var(--ins-text-md);
+  }
+
+  .ins-action-menu__panel {
+    top: calc(100% + 6px);
+    width: 240px;
+    min-width: 0;
+    max-width: min(240px, 90vw);
+    padding: var(--ins-space-3xs) 0;
+    background: var(--ins-card);
+    border: 1px solid var(--ins-border-color);
+    border-radius: var(--ins-radius);
+    box-shadow: var(--ins-shadow-2);
+    animation: ins-fade-in-up var(--ins-duration-fast) var(--ins-ease-out);
+
+    &.position--top-end,
+    &.position--top-start {
+      top: auto;
+      bottom: calc(100% + 6px);
+    }
+  }
+}

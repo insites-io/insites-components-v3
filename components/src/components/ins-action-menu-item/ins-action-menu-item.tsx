@@ -22,15 +22,37 @@ export class InsActionMenuItem {
   @Prop({ mutable: true }) load: boolean = false;
   @Prop({ mutable: true }) checkLoad: boolean = false;
 
+  // Renders a 1px rule between item groups instead of a button. No label, no event, skipped by arrow keys.
+  @Prop({ mutable: true }) divider: boolean = false;
+  // Secondary text right-aligned after the label, in the small muted style. The design's channel flyouts
+  // show the value as the label ("shane@insites.io") with the slot here ("Email 1", "Work", "Mobile").
+  @Prop({ mutable: true }) slotLabel: string = '';
+
   @State() subOpen: boolean = false;
   @State() hasSubmenu: boolean = false;
 
   private submenuId: string = `ins-action-menu-submenu-${++actionMenuItemIds}`;
   private focusFirstChildOnRender: boolean = false;
+  private childObserver: MutationObserver | null = null;
 
   componentWillLoad() {
     if (!this.value) this.value = this.label;
-    this.hasSubmenu = !!this.insActionMenuItemEl.querySelector('ins-action-menu-item');
+    this.refreshHasSubmenu();
+  }
+
+  connectedCallback() {
+    // Frameworks add nested items after this element mounts (the CRM's channel rows arrive with the record),
+    // so keep hasSubmenu in step with the light DOM rather than reading it once.
+    if (typeof MutationObserver === 'undefined' || this.childObserver) return;
+    this.childObserver = new MutationObserver(() => this.refreshHasSubmenu());
+    this.childObserver.observe(this.insActionMenuItemEl, { childList: true, subtree: true });
+  }
+
+  disconnectedCallback() {
+    if (this.childObserver) {
+      this.childObserver.disconnect();
+      this.childObserver = null;
+    }
   }
 
   componentDidLoad() {
@@ -54,6 +76,16 @@ export class InsActionMenuItem {
     this.subOpen = false;
   }
 
+  private refreshHasSubmenu(): void {
+    this.hasSubmenu = !!this.insActionMenuItemEl.querySelector('ins-action-menu-item');
+  }
+
+  // Read live from the closest menu so a consumer toggling hover-submenus later is honoured.
+  private hoverMode(): boolean {
+    const menu = this.insActionMenuItemEl.closest('ins-action-menu') as HTMLElement & { hoverSubmenus?: boolean } | null;
+    return !!(menu && menu.hoverSubmenus);
+  }
+
   private handleClick = (): void => {
     if (this.disabled) return;
     if (this.hasSubmenu) {
@@ -61,6 +93,16 @@ export class InsActionMenuItem {
     } else {
       this.insSelect.emit({ label: this.label, value: this.value });
     }
+  };
+
+  private handleMouseEnter = (): void => {
+    if (!this.hasSubmenu || this.disabled || !this.hoverMode()) return;
+    this.toggleSubmenu(true);
+  };
+
+  private handleMouseLeave = (): void => {
+    if (!this.hasSubmenu || !this.hoverMode()) return;
+    this.subOpen = false;
   };
 
   private handleButtonKeydown = (event: KeyboardEvent): void => {
@@ -113,8 +155,21 @@ export class InsActionMenuItem {
   }
 
   render() {
+    if (this.divider) {
+      return (
+        <Host role="none" class="is-divider">
+          <div class="ins-action-menu-item__divider" role="separator" aria-orientation="horizontal"></div>
+        </Host>
+      );
+    }
+
     return (
-      <Host role="none" class={{ 'has-submenu': this.hasSubmenu, 'is-open': this.subOpen }}>
+      <Host
+        role="none"
+        class={{ 'has-submenu': this.hasSubmenu, 'is-open': this.subOpen }}
+        onMouseEnter={this.handleMouseEnter}
+        onMouseLeave={this.handleMouseLeave}
+      >
         <button
           type="button"
           class={`ins-action-menu-item__button ${this.danger ? 'danger' : ''}`}
@@ -130,6 +185,9 @@ export class InsActionMenuItem {
             ? <i class={`ins-action-menu-item__icon ${this.icon}`} aria-hidden="true"></i>
             : null}
           <span class="ins-action-menu-item__label">{this.label}</span>
+          {this.slotLabel
+            ? <span class="ins-action-menu-item__slot">{this.slotLabel}</span>
+            : null}
           {this.hasSubmenu
             ? <i class="ins-action-menu-item__chevron icon-chevron-right" aria-hidden="true"></i>
             : null}

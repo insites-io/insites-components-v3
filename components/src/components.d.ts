@@ -49,19 +49,24 @@ export namespace Components {
         "checkLoad": boolean;
         "closeMenu": () => Promise<void>;
         "hasLoad": string;
+        "hoverSubmenus": boolean;
         "load": boolean;
         "position": string;
         "triggerIcon": string;
         "triggerLabel": string;
+        "triggerTip": string;
+        "variant": string;
     }
     interface InsActionMenuItem {
         "checkLoad": boolean;
         "danger": boolean;
         "disabled": boolean;
+        "divider": boolean;
         "hasLoad": string;
         "icon": string;
         "label": string;
         "load": boolean;
+        "slotLabel": string;
         "value": string;
     }
     interface InsAdmin {
@@ -333,14 +338,46 @@ export namespace Components {
         "val": () => Promise<any>;
         "value": string;
     }
+    /**
+     * Type-to-confirm destructive dialog (IIA v6 CRM record pages).
+     * Design: div[role="dialog"] > div[data-screen-label="Delete confirmation"] in
+     * CRM Company v1.0 and CRM Contact v1.4 (handoff-confirm-delete.md, handoff.md section 5).
+     * Reference implementation: module-v6-crm ConfirmDeleteModal.vue.
+     * The confirm button is never `disabled`. It dims to 0.45 with aria-disabled and the
+     * handler returns early until the field reads the confirm word, so it stays focusable
+     * and screen readers can reach the requirement text. The typed word is compared trimmed
+     * and case-insensitively, so "delete" passes for "DELETE".
+     * Lead copy (the bold spans, the "are you sure" lines) comes in through the default slot.
+     * The kept-records note can come through the slot too, or through the `keptNote` prop.
+     */
     interface InsConfirmModal {
+        /**
+          * Icon-font class on the cancel button. Empty string hides the icon.
+         */
+        "cancelButtonIcon": string;
         "cancelButtonLabel": string;
         "checkLoad": boolean;
+        /**
+          * Icon-font class on the confirm button. Empty string hides the icon.
+         */
+        "confirmButtonIcon": string;
         "confirmButtonLabel": string;
+        /**
+          * Overrides the default prompt line: Please enter "{confirmWord}" to proceed.
+         */
+        "confirmPrompt": string;
         "confirmWord": string;
+        /**
+          * aria-label for the dialog, e.g. "Delete company". When empty the dialog is labelled by its heading.
+         */
+        "dialogLabel": string;
         "hasLoad": string;
         "heading": string;
         "hide": () => Promise<void>;
+        /**
+          * Optional "what is kept" note rendered below the lead copy with a positive check icon.
+         */
+        "keptNote": string;
         "load": boolean;
         "open": boolean;
         "show": () => Promise<void>;
@@ -410,24 +447,43 @@ export namespace Components {
     interface InsDisclosurePanel {
         "checkLoad": boolean;
         /**
-          * Programmatic close — does NOT emit insToggle.
+          * Programmatic close. Does NOT emit insToggle. The body stays mounted.
          */
         "closePanel": () => Promise<void>;
-        "count": number;
+        /**
+          * Number, or a string such as "5 profiles". Hidden when null, undefined or an empty string.
+         */
+        "count": number | string;
         "disabled": boolean;
+        /**
+          * Treat the body as mounted from the start, for panels whose content is read while closed.
+         */
+        "eager": boolean;
         "hasLoad": string;
         "heading": string;
         "icon": string;
+        /**
+          * Whether the body has been opened at least once (or was eager).
+         */
+        "isMounted": () => Promise<boolean>;
+        /**
+          * Current open state. The `open` prop is the synchronous equivalent.
+         */
+        "isOpen": () => Promise<boolean>;
         "load": boolean;
         "open": boolean;
         /**
-          * Programmatic open — does NOT emit insToggle.
+          * Programmatic open. Does NOT emit insToggle. Mounts the body if it was not yet mounted.
          */
         "openPanel": () => Promise<void>;
         /**
-          * Programmatic toggle — does NOT emit insToggle.
+          * Programmatic toggle. Does NOT emit insToggle.
          */
         "toggle": () => Promise<void>;
+        /**
+          * Opt in to the IIA v6 reference section card. Off by default so existing panels do not move.
+         */
+        "v6": boolean;
     }
     interface InsDrawer {
         "backdropCanClose": boolean;
@@ -1031,6 +1087,7 @@ export namespace Components {
         "value": string;
     }
     interface InsMetricTile {
+        "card": boolean;
         "checkLoad": boolean;
         "clickable": boolean;
         "hasLoad": string;
@@ -1041,12 +1098,16 @@ export namespace Components {
         "loading": boolean;
         "metricKey": string;
         "value": string;
+        "variant": 'default' | 'strip';
     }
     interface InsMetricTileGroup {
+        "card": boolean;
         "checkLoad": boolean;
+        "clickable": boolean;
         "columns": number;
         "hasLoad": string;
         "load": boolean;
+        "variant": 'default' | 'strip';
     }
     interface InsModal {
         "buttonAlignment": string;
@@ -1166,15 +1227,31 @@ export namespace Components {
         "updateRoute": (newRoutes: any[], noRedirect: boolean, iframe: boolean) => Promise<void>;
         "updateRouteLabel": (value: string) => Promise<void>;
     }
+    /**
+     * The IIA v6 record-page search pill with a field-scope dropdown.
+     * Ported from module-v6-crm Companies/sections/Contacts/Contacts.vue (design: CRM Company v1.0, Contacts tab header).
+     * Markup mirrors the design so the shared record-page CSS (.crm-search, .crm-sbprefix, button[data-tip]) lands on it:
+     *   label.crm-search > span (trigger + role=menu) + input[type=search] + clear button + submit button
+     * The search only applies on submit (Enter or the search button), matching v5 and the design prototype.
+     * Set `debounce` above 0 to opt in to a live insSearch while typing.
+     */
     interface InsSearchScope {
         "checkLoad": boolean;
         "clear": () => Promise<void>;
+        "clearLabel": string;
+        "closeMenu": () => Promise<void>;
         "debounce": number;
+        "disabled": boolean;
+        "focusInput": () => Promise<void>;
         "hasLoad": string;
         "load": boolean;
+        "loading": boolean;
+        "menuLabel": string;
         "placeholder": string;
         "scope": string;
-        "scopeOptions": Array<ScopeOption> | string;
+        "scopeOptions": Array<ScopeOption | string> | string;
+        "scopePrefix": string;
+        "searchLabel": string;
         "value": string;
     }
     interface InsSelect {
@@ -2222,6 +2299,18 @@ declare global {
         "insClose": void;
         "didLoad": void;
     }
+    /**
+     * Type-to-confirm destructive dialog (IIA v6 CRM record pages).
+     * Design: div[role="dialog"] > div[data-screen-label="Delete confirmation"] in
+     * CRM Company v1.0 and CRM Contact v1.4 (handoff-confirm-delete.md, handoff.md section 5).
+     * Reference implementation: module-v6-crm ConfirmDeleteModal.vue.
+     * The confirm button is never `disabled`. It dims to 0.45 with aria-disabled and the
+     * handler returns early until the field reads the confirm word, so it stays focusable
+     * and screen readers can reach the requirement text. The typed word is compared trimmed
+     * and case-insensitively, so "delete" passes for "DELETE".
+     * Lead copy (the bold spans, the "are you sure" lines) comes in through the default slot.
+     * The kept-records note can come through the slot too, or through the `keptNote` prop.
+     */
     interface HTMLInsConfirmModalElement extends Components.InsConfirmModal, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsConfirmModalElementEventMap>(type: K, listener: (this: HTMLInsConfirmModalElement, ev: InsConfirmModalCustomEvent<HTMLInsConfirmModalElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2284,6 +2373,7 @@ declare global {
     };
     interface HTMLInsDisclosurePanelElementEventMap {
         "insToggle": { open: boolean; heading: string };
+        "insMount": { heading: string };
         "didLoad": void;
     }
     interface HTMLInsDisclosurePanelElement extends Components.InsDisclosurePanel, HTMLStencilElement {
@@ -3100,9 +3190,20 @@ declare global {
     };
     interface HTMLInsSearchScopeElementEventMap {
         "insSearch": { value: string; scope: string };
-        "insScopeChange": { scope: string };
+        "insInput": { value: string; scope: string };
+        "insScopeChange": { scope: string; label: string };
+        "insClear": { scope: string };
+        "insOpenChange": { open: boolean };
         "didLoad": void;
     }
+    /**
+     * The IIA v6 record-page search pill with a field-scope dropdown.
+     * Ported from module-v6-crm Companies/sections/Contacts/Contacts.vue (design: CRM Company v1.0, Contacts tab header).
+     * Markup mirrors the design so the shared record-page CSS (.crm-search, .crm-sbprefix, button[data-tip]) lands on it:
+     *   label.crm-search > span (trigger + role=menu) + input[type=search] + clear button + submit button
+     * The search only applies on submit (Enter or the search button), matching v5 and the design prototype.
+     * Set `debounce` above 0 to opt in to a live insSearch while typing.
+     */
     interface HTMLInsSearchScopeElement extends Components.InsSearchScope, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsSearchScopeElementEventMap>(type: K, listener: (this: HTMLInsSearchScopeElement, ev: InsSearchScopeCustomEvent<HTMLInsSearchScopeElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3640,23 +3741,28 @@ declare namespace LocalJSX {
         "ariaLabelText"?: string;
         "checkLoad"?: boolean;
         "hasLoad"?: string;
+        "hoverSubmenus"?: boolean;
         "load"?: boolean;
         "onDidLoad"?: (event: InsActionMenuCustomEvent<void>) => void;
         "onInsOpenChange"?: (event: InsActionMenuCustomEvent<{ open: boolean }>) => void;
         "position"?: string;
         "triggerIcon"?: string;
         "triggerLabel"?: string;
+        "triggerTip"?: string;
+        "variant"?: string;
     }
     interface InsActionMenuItem {
         "checkLoad"?: boolean;
         "danger"?: boolean;
         "disabled"?: boolean;
+        "divider"?: boolean;
         "hasLoad"?: string;
         "icon"?: string;
         "label"?: string;
         "load"?: boolean;
         "onDidLoad"?: (event: InsActionMenuItemCustomEvent<void>) => void;
         "onInsSelect"?: (event: InsActionMenuItemCustomEvent<{ label: string; value: string }>) => void;
+        "slotLabel"?: string;
         "value"?: string;
     }
     interface InsAdmin {
@@ -3916,13 +4022,45 @@ declare namespace LocalJSX {
         "tooltip"?: string;
         "value"?: string;
     }
+    /**
+     * Type-to-confirm destructive dialog (IIA v6 CRM record pages).
+     * Design: div[role="dialog"] > div[data-screen-label="Delete confirmation"] in
+     * CRM Company v1.0 and CRM Contact v1.4 (handoff-confirm-delete.md, handoff.md section 5).
+     * Reference implementation: module-v6-crm ConfirmDeleteModal.vue.
+     * The confirm button is never `disabled`. It dims to 0.45 with aria-disabled and the
+     * handler returns early until the field reads the confirm word, so it stays focusable
+     * and screen readers can reach the requirement text. The typed word is compared trimmed
+     * and case-insensitively, so "delete" passes for "DELETE".
+     * Lead copy (the bold spans, the "are you sure" lines) comes in through the default slot.
+     * The kept-records note can come through the slot too, or through the `keptNote` prop.
+     */
     interface InsConfirmModal {
+        /**
+          * Icon-font class on the cancel button. Empty string hides the icon.
+         */
+        "cancelButtonIcon"?: string;
         "cancelButtonLabel"?: string;
         "checkLoad"?: boolean;
+        /**
+          * Icon-font class on the confirm button. Empty string hides the icon.
+         */
+        "confirmButtonIcon"?: string;
         "confirmButtonLabel"?: string;
+        /**
+          * Overrides the default prompt line: Please enter "{confirmWord}" to proceed.
+         */
+        "confirmPrompt"?: string;
         "confirmWord"?: string;
+        /**
+          * aria-label for the dialog, e.g. "Delete company". When empty the dialog is labelled by its heading.
+         */
+        "dialogLabel"?: string;
         "hasLoad"?: string;
         "heading"?: string;
+        /**
+          * Optional "what is kept" note rendered below the lead copy with a positive check icon.
+         */
+        "keptNote"?: string;
         "load"?: boolean;
         "onDidLoad"?: (event: InsConfirmModalCustomEvent<void>) => void;
         "onInsClose"?: (event: InsConfirmModalCustomEvent<void>) => void;
@@ -3993,15 +4131,30 @@ declare namespace LocalJSX {
     }
     interface InsDisclosurePanel {
         "checkLoad"?: boolean;
-        "count"?: number;
+        /**
+          * Number, or a string such as "5 profiles". Hidden when null, undefined or an empty string.
+         */
+        "count"?: number | string;
         "disabled"?: boolean;
+        /**
+          * Treat the body as mounted from the start, for panels whose content is read while closed.
+         */
+        "eager"?: boolean;
         "hasLoad"?: string;
         "heading"?: string;
         "icon"?: string;
         "load"?: boolean;
         "onDidLoad"?: (event: InsDisclosurePanelCustomEvent<void>) => void;
+        /**
+          * Fired once, the first time the body is considered mounted (first open, or on load when `open` or `eager`).
+         */
+        "onInsMount"?: (event: InsDisclosurePanelCustomEvent<{ heading: string }>) => void;
         "onInsToggle"?: (event: InsDisclosurePanelCustomEvent<{ open: boolean; heading: string }>) => void;
         "open"?: boolean;
+        /**
+          * Opt in to the IIA v6 reference section card. Off by default so existing panels do not move.
+         */
+        "v6"?: boolean;
     }
     interface InsDrawer {
         "backdropCanClose"?: boolean;
@@ -4600,6 +4753,7 @@ declare namespace LocalJSX {
         "value"?: string;
     }
     interface InsMetricTile {
+        "card"?: boolean;
         "checkLoad"?: boolean;
         "clickable"?: boolean;
         "hasLoad"?: string;
@@ -4612,13 +4766,17 @@ declare namespace LocalJSX {
         "onDidLoad"?: (event: InsMetricTileCustomEvent<void>) => void;
         "onInsTileClick"?: (event: InsMetricTileCustomEvent<{ metricKey: string }>) => void;
         "value"?: string;
+        "variant"?: 'default' | 'strip';
     }
     interface InsMetricTileGroup {
+        "card"?: boolean;
         "checkLoad"?: boolean;
+        "clickable"?: boolean;
         "columns"?: number;
         "hasLoad"?: string;
         "load"?: boolean;
         "onDidLoad"?: (event: InsMetricTileGroupCustomEvent<void>) => void;
+        "variant"?: 'default' | 'strip';
     }
     interface InsModal {
         "buttonAlignment"?: string;
@@ -4733,17 +4891,34 @@ declare namespace LocalJSX {
         "load"?: boolean;
         "onDidLoad"?: (event: InsRendererCustomEvent<void>) => void;
     }
+    /**
+     * The IIA v6 record-page search pill with a field-scope dropdown.
+     * Ported from module-v6-crm Companies/sections/Contacts/Contacts.vue (design: CRM Company v1.0, Contacts tab header).
+     * Markup mirrors the design so the shared record-page CSS (.crm-search, .crm-sbprefix, button[data-tip]) lands on it:
+     *   label.crm-search > span (trigger + role=menu) + input[type=search] + clear button + submit button
+     * The search only applies on submit (Enter or the search button), matching v5 and the design prototype.
+     * Set `debounce` above 0 to opt in to a live insSearch while typing.
+     */
     interface InsSearchScope {
         "checkLoad"?: boolean;
+        "clearLabel"?: string;
         "debounce"?: number;
+        "disabled"?: boolean;
         "hasLoad"?: string;
         "load"?: boolean;
+        "loading"?: boolean;
+        "menuLabel"?: string;
         "onDidLoad"?: (event: InsSearchScopeCustomEvent<void>) => void;
-        "onInsScopeChange"?: (event: InsSearchScopeCustomEvent<{ scope: string }>) => void;
+        "onInsClear"?: (event: InsSearchScopeCustomEvent<{ scope: string }>) => void;
+        "onInsInput"?: (event: InsSearchScopeCustomEvent<{ value: string; scope: string }>) => void;
+        "onInsOpenChange"?: (event: InsSearchScopeCustomEvent<{ open: boolean }>) => void;
+        "onInsScopeChange"?: (event: InsSearchScopeCustomEvent<{ scope: string; label: string }>) => void;
         "onInsSearch"?: (event: InsSearchScopeCustomEvent<{ value: string; scope: string }>) => void;
         "placeholder"?: string;
         "scope"?: string;
-        "scopeOptions"?: Array<ScopeOption> | string;
+        "scopeOptions"?: Array<ScopeOption | string> | string;
+        "scopePrefix"?: string;
+        "searchLabel"?: string;
         "value"?: string;
     }
     interface InsSelect {
@@ -5220,6 +5395,18 @@ declare module "@stencil/core" {
             "ins-checkbox-card": LocalJSX.InsCheckboxCard & JSXBase.HTMLAttributes<HTMLInsCheckboxCardElement>;
             "ins-checkbox-group": LocalJSX.InsCheckboxGroup & JSXBase.HTMLAttributes<HTMLInsCheckboxGroupElement>;
             "ins-code-editor": LocalJSX.InsCodeEditor & JSXBase.HTMLAttributes<HTMLInsCodeEditorElement>;
+            /**
+             * Type-to-confirm destructive dialog (IIA v6 CRM record pages).
+             * Design: div[role="dialog"] > div[data-screen-label="Delete confirmation"] in
+             * CRM Company v1.0 and CRM Contact v1.4 (handoff-confirm-delete.md, handoff.md section 5).
+             * Reference implementation: module-v6-crm ConfirmDeleteModal.vue.
+             * The confirm button is never `disabled`. It dims to 0.45 with aria-disabled and the
+             * handler returns early until the field reads the confirm word, so it stays focusable
+             * and screen readers can reach the requirement text. The typed word is compared trimmed
+             * and case-insensitively, so "delete" passes for "DELETE".
+             * Lead copy (the bold spans, the "are you sure" lines) comes in through the default slot.
+             * The kept-records note can come through the slot too, or through the `keptNote` prop.
+             */
             "ins-confirm-modal": LocalJSX.InsConfirmModal & JSXBase.HTMLAttributes<HTMLInsConfirmModalElement>;
             "ins-content": LocalJSX.InsContent & JSXBase.HTMLAttributes<HTMLInsContentElement>;
             "ins-credit-card": LocalJSX.InsCreditCard & JSXBase.HTMLAttributes<HTMLInsCreditCardElement>;
@@ -5273,6 +5460,14 @@ declare module "@stencil/core" {
             "ins-radio": LocalJSX.InsRadio & JSXBase.HTMLAttributes<HTMLInsRadioElement>;
             "ins-radio-group": LocalJSX.InsRadioGroup & JSXBase.HTMLAttributes<HTMLInsRadioGroupElement>;
             "ins-renderer": LocalJSX.InsRenderer & JSXBase.HTMLAttributes<HTMLInsRendererElement>;
+            /**
+             * The IIA v6 record-page search pill with a field-scope dropdown.
+             * Ported from module-v6-crm Companies/sections/Contacts/Contacts.vue (design: CRM Company v1.0, Contacts tab header).
+             * Markup mirrors the design so the shared record-page CSS (.crm-search, .crm-sbprefix, button[data-tip]) lands on it:
+             *   label.crm-search > span (trigger + role=menu) + input[type=search] + clear button + submit button
+             * The search only applies on submit (Enter or the search button), matching v5 and the design prototype.
+             * Set `debounce` above 0 to opt in to a live insSearch while typing.
+             */
             "ins-search-scope": LocalJSX.InsSearchScope & JSXBase.HTMLAttributes<HTMLInsSearchScopeElement>;
             "ins-select": LocalJSX.InsSelect & JSXBase.HTMLAttributes<HTMLInsSelectElement>;
             "ins-select-group": LocalJSX.InsSelectGroup & JSXBase.HTMLAttributes<HTMLInsSelectGroupElement>;
