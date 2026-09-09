@@ -14303,13 +14303,23 @@ ins-header.iia-hdr-host--raised { z-index: var(--iia-z-header-raised); }
 .iia-hdr [data-tip]:hover::after, .iia-hdr [data-tip]:focus-visible::after {
   opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0);
   transition-delay: 150ms, 150ms, 150ms; /* 150ms hover delay; hide is instant (delays above are 0) */
+  /* The bundle's generic `button[data-tip]:hover::after` (0,2,2) outranks the base rule above (0,2,1)
+     and places its bubble ABOVE the button: bottom, right and an animation. With top set as well the
+     box was over-constrained to its 8px of padding and the label spilled out of it. Neutralise here. */
+  top: calc(100% + 6px); bottom: auto; right: auto; animation: none;
 }
 .iia-hdr [data-tip][data-tip-off]::after { opacity: 0 !important; visibility: hidden !important; }
 /* Right cluster: anchor bubbles to the trigger's right edge, as the legacy data-tip rule did. A centred
    bubble under the last button is a visibility:hidden box that still counts toward scroll width and
    pokes past a phone viewport. */
 .iia-hdr__right [data-tip]::after { left: auto; right: 0; transform: translateY(-6px); }
-.iia-hdr__right [data-tip]:hover::after, .iia-hdr__right [data-tip]:focus-visible::after { transform: translateY(0); }
+.iia-hdr__right [data-tip]:hover::after, .iia-hdr__right [data-tip]:focus-visible::after { transform: translateY(0); left: auto; right: 0; }
+/* Rail toggle: a centred bubble would start 20px off the left edge; anchor it to the toggle's left edge. */
+.iia-hdr__toggle[data-tip]::after { left: 0; right: auto; transform: translateY(-6px); }
+.iia-hdr__toggle[data-tip]:hover::after, .iia-hdr__toggle[data-tip]:focus-visible::after { left: 0; right: auto; transform: translateY(0); }
+/* Bubbles hang below the 56px bar over the rail (z 40) and the content; the header sits at z 30, so a
+   showing bubble would paint behind the rail. Raise the header for as long as one of its tips shows. */
+ins-header.iia-hdr-host:has([data-tip]:hover:not([data-tip-off]), [data-tip]:focus-visible) { z-index: var(--iia-z-header-raised); }
 /* DS tooltip bubble is dark; invert it against dark chrome in dark mode (design). */
 [data-theme="dark"] .iia-hdr [data-tip]::after { background: var(--iia-header); color: var(--iia-sidebar); }
 /* Design review: no focus rings in the prototype; focus is carried by background/colour states above. */
