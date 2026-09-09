@@ -88,6 +88,7 @@ export class InsHeader {
   @State() prodDontShow: boolean = false;
   @State() envQuery: string = '';
   @State() crumbs: Array<{ label: string; link?: string; app?: boolean; withSubmenu?: boolean }> = [];
+  @State() hash: string = (typeof window !== 'undefined' && window.location.hash) || '';
   @State() mobile: boolean = false;   // < 768
   @State() narrow: boolean = false;   // < 1024
   @State() tight: boolean = false;    // < 640
@@ -302,6 +303,12 @@ export class InsHeader {
     this.crumbs = Array.isArray(e.detail && e.detail.crumbs) ? e.detail.crumbs : [];
   }
 
+  /** The dashboard route (`#/`) never routes through the rail, so the bar also watches the hash. */
+  @Listen('hashchange', { target: 'window' })
+  onHashChange() {
+    if (this.isV6) this.hash = window.location.hash || '';
+  }
+
   @Listen('keydown', { target: 'document' })
   onDocKey(e: KeyboardEvent) {
     if (!this.isV6) return;
@@ -505,14 +512,29 @@ export class InsHeader {
     return n.split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase();
   }
 
+  private static isHomeCrumb(x: any) {
+    if (!x) return false;
+    // A module crumb with a submenu has an empty link, so emptiness alone never means home.
+    const link = String(x.link || '').replace(/^#/, '');
+    return /dashboard/i.test(link) || /^(home|dashboard)$/i.test(String(x.label || '').trim());
+  }
+
   private crumbView() {
-    // ins-renderer stores [module, ...subs]. Home is implicit.
-    const c = this.crumbs || [];
+    // Design: the bar exists only off the dashboard, and reads Home > module > sub. The bar draws
+    // its own Home, so a leading home entry from the rail is dropped, and the leaf that
+    // ins-renderer records twice on a nested route is collapsed.
+    const hash = this.hash.replace(/^#/, '');
+    if (hash === '' || hash === '/' || /^\/dashboard\/?$/i.test(hash)) return null;
+    const raw = (this.crumbs || []).filter(Boolean);
+    const c = raw.filter((x, i) => {
+      if (i === 0 && InsHeader.isHomeCrumb(x)) return false;
+      const prev = raw[i - 1];
+      return !(prev && prev.label === x.label && (prev.link || '') === (x.link || ''));
+    });
     if (!c.length) return null;
     const module = c[0];
     const last = c[c.length - 1];
-    const isDashboard = c.length === 1 && (!module.link || module.link === '#' || module.link === '#/' || /dashboard/i.test(module.label || ''));
-    if (isDashboard) return null;
+    if (c.length === 1 && InsHeader.isHomeCrumb(module)) return null;
     return { module, last, hasSub: c.length > 1 };
   }
 
