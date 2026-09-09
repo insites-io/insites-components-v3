@@ -13573,6 +13573,59 @@ body.no-transition * {
   --ins-alert-warning-dark: var(--iia-alert-warning-dark);
   --ins-overlay: rgba(0, 0, 0, 0.25);
   --ins-disabled-opacity: 0.5;
+
+  /* --------------------------------------------------------------------------
+     Admin Shell additions (TW#26371963). The v1.5 shell design consumes 52
+     semantic tokens; an audit against every stylesheet an admin page loads found
+     15 undefined anywhere. These are those 15. Values are the design system's own,
+     from tokens/colors.css in Claude Design project 98f44421 (read 2026-09-09),
+     not invented.
+
+     None of the 15 is redefined by the design system's own [data-theme='dark']
+     block, so all are correctly light-only. Do not add dark variants without a
+     design change to match.
+
+     WHERE THE REST LIVE, because it is not obvious and it caught this audit out
+     once: the chrome semantic tier (--ins-sidebar, --ins-header-bg,
+     --ins-header-text, --ins-header-text-hovered) and the [data-theme='dark']
+     remap of --ins-text-*/--ins-ui-* are defined in
+     components.insites.io/dist/styles/app.min.css, the legacy unversioned dist
+     artifact, which loads AFTER this file and therefore wins at equal
+     specificity. Tokens it already defines cannot be overridden from here. None
+     of the 15 below collides with it. That ownership split is a governance risk
+     recorded on TW#26711229 rather than something to work around here.
+     -------------------------------------------------------------------------- */
+
+  /* Rail hover wash. The raw value already exists; only the semantic alias was missing. */
+  --ins-sidebar-hover: var(--iia-sidebar-hover);
+
+  /* Accent raws the app never carried. The design system defines these literals itself. */
+  --iia-color-teal: #0B9499;
+  --iia-color-teal-light: #0B949914;
+  --iia-color-teal-dark: #097D81;
+  --iia-color-purple: #5213C9;
+  --iia-color-purple-light: #5213C914;
+  --iia-color-purple-dark: #360C83;
+
+  --ins-teal: var(--iia-color-teal);
+  --ins-teal-light: var(--iia-color-teal-light);
+  --ins-teal-dark: var(--iia-color-teal-dark);
+  --ins-purple: var(--iia-color-purple);
+  --ins-purple-light: var(--iia-color-purple-light);
+  --ins-purple-dark: var(--iia-color-purple-dark);
+
+  /* Categorical chart ramp. Literals in the design system too: no raw tier behind
+     these, and the order is the ramp, so do not reorder them. Consumed by the
+     dashboard lane (TW#20845317) rather than the shell, added here with the rest
+     so the semantic tier matches the design system in one pass. */
+  --ins-chart-1: #436CF2;
+  --ins-chart-2: #0BB780;
+  --ins-chart-3: #EC9C00;
+  --ins-chart-4: #5213C9;
+  --ins-chart-5: #0B9499;
+  --ins-chart-6: #DF1F1F;
+  --ins-chart-7: #0095FF;
+  --ins-chart-8: #84848F;
 }
 
 /* ============================================================================
