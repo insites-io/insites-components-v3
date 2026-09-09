@@ -293,6 +293,15 @@ export class InsSidebar {
 
   async checkHash(deeplink?: boolean){
     let route = this.checkIfRoot(true);
+    if (!route && this.isV6) {
+      // Design: Dashboard carries the marker on the root route. The seeded index menu marks no item as
+      // the landing page, so the legacy root handler activates nothing; fall back to the dashboard row.
+      const items = Array.from(this.sidebarItemEls) as any[];
+      if (!items.some(el => el.landingPage)) {
+        const dash = items.find(el => (el.getAttribute('icon') || '') === 'icon-dashboard') || items.find(el => /^(dashboard|home)$/i.test(el.label || ''));
+        if (dash) await dash.activate();
+      }
+    }
     if (route === "#/app/my-profile" ||
       (this.insHeaderUserEl && this.insHeaderUserEl.profileLink === route)
     ){

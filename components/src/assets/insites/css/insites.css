@@ -13674,8 +13674,10 @@ body.no-transition * {
   --iia-group-label-dm: #737373;
 
   /* Environment tints behind the switcher's current-instance row (8%). */
-  --iia-instance-staging-light: rgba(0, 149, 255, 0.08);
-  --iia-instance-production-light: rgba(11, 183, 128, 0.08);
+  --iia-instance-staging-light: rgba(0, 149, 255, 0.05);
+  --iia-instance-production-light: rgba(11, 183, 128, 0.05);
+  --iia-instance-staging-text: #0071C2;      /* switcher group labels: text-safe env inks (design literals) */
+  --iia-instance-production-text: #087A56;
 
   /* Accessibility fix carried by the design, with its own reasoning: amber cannot
      reach 4.5:1 on white at any weight (#EC9C00 is 2.25:1, --iia-alert-warning-dark
@@ -14141,8 +14143,11 @@ ins-header.iia-hdr-host--raised { z-index: var(--iia-z-header-raised); }
   height: 56px; background: var(--ins-chrome-bg); color: var(--ins-chrome-fg);
   display: grid; grid-template-columns: 1fr minmax(200px, 480px) 1fr; align-items: center;
   gap: var(--ins-space-sm); padding: 0 var(--ins-space-sm); position: relative; box-sizing: border-box;
-  font-family: var(--ins-font-family); font-size: var(--ins-text-sm);
+  font-family: var(--ins-font-family); font-size: var(--ins-text-sm); line-height: var(--ins-leading-normal);
 }
+/* The design inherits the DS body leading (1.6) everywhere in the chrome; the admin page's Foundation reset
+   gives <button> a line-height of 1, which shortened every button-based row and label by 3-8px. */
+.iia-hdr button, .iia-hdr a, .iia-menu button, .iia-menu a, .iia-switcher button, .iia-switcher a, .iia-flyout a, .iia-dialog button { line-height: inherit; }
 .iia-hdr--no-chat { grid-template-columns: auto 1fr; padding: 0 6px; }
 .iia-hdr__left { display: flex; align-items: center; gap: var(--ins-space-sm); justify-self: start; min-width: 0; }
 .iia-hdr--no-chat .iia-hdr__left { gap: 0; }
@@ -14184,7 +14189,7 @@ ins-header.iia-hdr-host--raised { z-index: var(--iia-z-header-raised); }
 .iia-chat:focus-visible { outline: none; border-color: var(--ins-chrome-focus); }
 .iia-chat > i { font-size: var(--ins-text-md); }
 .iia-chat__presence { margin-left: auto; display: flex; align-items: center; gap: 6px; font-size: var(--ins-text-xs); color: var(--ins-chrome-fg); }
-.iia-chat__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ins-instance-production); }
+.iia-chat__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ins-alert-positive); }
 .iia-chat__badge {
   position: absolute; top: -6px; right: -8px; min-width: 16px; height: 16px; box-sizing: border-box; padding: 0 4px; border-radius: var(--ins-radius-pill);
   background: var(--iia-badge-negative); color: var(--iia-text-white); font-size: 10px; line-height: 1; font-weight: var(--ins-weight-semibold);
@@ -14211,15 +14216,15 @@ ins-header.iia-hdr-host--raised { z-index: var(--iia-z-header-raised); }
 .iia-scrim--center { align-items: center; }
 
 .iia-switcher {
-  position: absolute; right: 0; top: calc(100% + 12px); width: 472px; max-height: min(70vh, 560px);
+  position: absolute; right: 0; top: calc(100% + var(--ins-space-2xs)); width: 472px; max-height: min(70vh, 560px);
   display: flex; flex-direction: column; background: var(--ins-card); border: 1px solid var(--ins-border-color); border-radius: var(--ins-radius);
-  box-shadow: var(--ins-shadow-2); z-index: calc(var(--iia-z-menu) + 1); outline: none; color: var(--ins-text-2);
+  box-shadow: var(--ins-shadow-2); z-index: calc(var(--iia-z-menu) + 1); outline: none; color: var(--ins-text-2); line-height: var(--ins-leading-normal);
   animation: ins-fade-in-up var(--ins-duration-fast) var(--ins-ease-out);
 }
 /* Double class on purpose: the mobile media rule below sets `top: calc(100% + 6px)` on .iia-switcher at
    the same specificity and later in the file; on a fixed element that percentage is the viewport, which
    put the docked panel below the screen. */
-.iia-switcher.iia-switcher--docked { position: fixed; left: 0; right: 0; top: 56px; width: auto; max-height: calc(100vh - 56px); border-radius: 0 0 var(--ins-radius) var(--ins-radius); }
+.iia-switcher.iia-switcher--docked { position: fixed; left: 12px; right: 12px; top: 62px; width: auto; max-height: calc(100vh - 74px); border-radius: var(--ins-radius); }
 .iia-switcher__title { flex: none; padding: 12px 16px; border-bottom: 1px solid var(--ins-border-color); font-size: 14px; font-weight: var(--ins-weight-semibold); color: var(--ins-text-1); }
 .iia-switcher__search { flex: none; padding: 8px 12px; border-bottom: 1px solid var(--ins-border-color); }
 .iia-switcher__searchbox { display: flex; align-items: center; gap: var(--ins-space-xs); padding: 7px 10px; border: 1px solid var(--ins-border-color); border-radius: var(--ins-radius); background: var(--ins-main-bg); }
@@ -14230,7 +14235,10 @@ ins-header.iia-hdr-host--raised { z-index: var(--iia-z-header-raised); }
 .iia-switcher__empty { padding: 20px 12px; text-align: center; font-size: var(--ins-text-sm); color: var(--ins-text-3); }
 .iia-switcher__group { position: relative; border-top: 1px solid var(--ins-border-color); margin: 4px 0 0; }
 .iia-switcher__group--first { border-top: none; margin: 0; }
-.iia-switcher__grouplabel { padding: 10px 12px 6px; font-size: var(--iia-text-2xs); font-weight: var(--ins-weight-semibold); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ins-text-3); }
+/* Design: group labels carry the environment's text-safe ink, 12px above (8px in the first group), 4px below. */
+.iia-switcher__grouplabel { padding: 12px 12px 4px; font-size: var(--iia-text-2xs); font-weight: var(--ins-weight-semibold); letter-spacing: 0.06em; text-transform: uppercase; color: var(--iia-instance-staging-text); }
+.iia-switcher__group--first .iia-switcher__grouplabel { padding-top: 8px; }
+.iia-switcher__group--production .iia-switcher__grouplabel { color: var(--iia-instance-production-text); }
 .iia-switcher__row {
   position: relative; display: flex; align-items: center; gap: var(--ins-space-xs); width: 100%; box-sizing: border-box; min-height: 52px; padding: 8px 8px 8px 12px;
   border-radius: var(--ins-radius); background: transparent; font-family: inherit; font-size: var(--ins-text-sm); cursor: pointer; text-align: left; color: var(--ins-text-2);
@@ -14242,7 +14250,7 @@ ins-header.iia-hdr-host--raised { z-index: var(--iia-z-header-raised); }
 .iia-switcher__row.is-current.is-staging { background: var(--iia-instance-staging-light); }
 .iia-switcher__text { flex: 1; min-width: 0; position: relative; }
 .iia-switcher__name { display: block; font-weight: var(--ins-weight-semibold); color: var(--ins-text-1); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.iia-switcher__domain { display: inline-flex; max-width: 100%; min-height: 20px; align-items: center; gap: var(--ins-space-2xs); margin-top: 1px; font-size: var(--ins-text-xs); color: var(--ins-text-3); text-decoration: none; border-radius: 2px; }
+.iia-switcher__domain { display: inline-flex; max-width: 100%; align-items: center; gap: var(--ins-space-2xs); margin-top: 1px; font-size: var(--ins-text-xs); color: var(--ins-text-3); text-decoration: none; border-radius: 2px; }
 .iia-switcher__domain:hover { color: var(--ins-main); }
 .iia-switcher__domain > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .iia-switcher__domain i { flex: none; font-size: var(--ins-text-xs); color: var(--ins-ui-2); position: relative; top: -1px; }
@@ -14253,7 +14261,7 @@ ins-header.iia-hdr-host--raised { z-index: var(--iia-z-header-raised); }
 .iia-switcher__switch { flex: none; display: flex; justify-content: flex-end; width: 76px; }
 .iia-switcher__switch ins-button .ins-button { height: 32px; min-width: 76px; text-transform: uppercase; }
 .iia-switcher__foot { flex: none; padding: 10px 16px; border-top: 1px solid var(--ins-border-color); font-size: var(--ins-text-xs); line-height: 1.5; color: var(--ins-text-3); }
-.iia-switcher__foot a { color: var(--ins-main); text-decoration: underline; text-underline-offset: 2px; }
+.iia-switcher__foot a { color: var(--ins-main); text-decoration: underline; text-underline-offset: 2px; border-radius: 2px; }
 .iia-switcher__foot a:hover { color: var(--ins-main-dark); }
 @media (max-width: 1023px) {
   .iia-switcher__row { min-height: 60px; }
@@ -14264,7 +14272,7 @@ ins-header.iia-hdr-host--raised { z-index: var(--iia-z-header-raised); }
 /* ---- header menus (help, account) ---------------------------------------- */
 .iia-menu {
   position: absolute; right: 0; top: calc(100% + 12px); background: var(--ins-card); border: 1px solid var(--ins-border-color); border-radius: var(--ins-radius);
-  box-shadow: var(--ins-shadow-2); z-index: var(--iia-z-menu); color: var(--ins-text-2); font-family: var(--ins-font-family);
+  box-shadow: var(--ins-shadow-2); z-index: var(--iia-z-menu); color: var(--ins-text-2); font-family: var(--ins-font-family); line-height: var(--ins-leading-normal);
   animation: ins-fade-in-up var(--ins-duration-fast) var(--ins-ease-out); transform-origin: top right;
 }
 @media (max-width: 767px) { .iia-menu, .iia-switcher { top: calc(100% + 6px); } }
@@ -14293,42 +14301,55 @@ ins-header.iia-hdr-host--raised { z-index: var(--iia-z-header-raised); }
 
 /* ---- tooltips on chrome (shared data-tip, design timing) ----------------- */
 .iia-hdr [data-tip] { position: relative; }
-.iia-hdr [data-tip]::after {
-  content: attr(data-tip); position: absolute; top: calc(100% + 6px); left: 50%; transform: translateX(-50%) translateY(-6px);
-  z-index: var(--iia-z-menu); white-space: nowrap; padding: 4px 8px; border-radius: var(--ins-radius); background: var(--ins-text-1); color: var(--ins-card);
-  font-size: var(--ins-text-xs); font-weight: var(--ins-weight-regular); letter-spacing: 0; text-transform: none; pointer-events: none;
-  opacity: 0; visibility: hidden;
+/* Geometry is the DS Tooltip's (placement=bottom): bubble 8px under the trigger, 6px 10px padding, 12px/1.4
+   type on --iia-sidebar, --ins-shadow-2, a 10px arrow, centred on the trigger, 4px rise on show. */
+.iia-hdr [data-tip]::after, .iia-hdr [data-tip]::before {
+  position: absolute; left: 50%; z-index: var(--iia-z-menu); pointer-events: none; opacity: 0; visibility: hidden;
   transition: opacity var(--ins-duration-fast) var(--ins-ease-out) 0s, transform var(--ins-duration-fast) var(--ins-ease-out) 0s, visibility 0s linear 0s;
 }
-.iia-hdr [data-tip]:hover::after, .iia-hdr [data-tip]:focus-visible::after {
-  opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0);
-  transition-delay: 150ms, 150ms, 150ms; /* 150ms hover delay; hide is instant (delays above are 0) */
-  /* The bundle's generic `button[data-tip]:hover::after` (0,2,2) outranks the base rule above (0,2,1)
-     and places its bubble ABOVE the button: bottom, right and an animation. With top set as well the
-     box was over-constrained to its 8px of padding and the label spilled out of it. Neutralise here. */
-  top: calc(100% + 6px); bottom: auto; right: auto; animation: none;
+.iia-hdr [data-tip]::after {
+  content: attr(data-tip); top: calc(100% + 8px); transform: translateX(-50%) translateY(-4px);
+  white-space: nowrap; padding: 6px 10px; border-radius: var(--ins-radius); background: var(--iia-sidebar); color: var(--iia-text-white); box-shadow: var(--ins-shadow-2);
+  font-size: var(--ins-text-xs); line-height: 1.4; font-weight: var(--ins-weight-regular); letter-spacing: 0; text-transform: none;
 }
-.iia-hdr [data-tip][data-tip-off]::after { opacity: 0 !important; visibility: hidden !important; }
-/* Right cluster: anchor bubbles to the trigger's right edge, as the legacy data-tip rule did. A centred
-   bubble under the last button is a visibility:hidden box that still counts toward scroll width and
-   pokes past a phone viewport. */
-.iia-hdr__right [data-tip]::after { left: auto; right: 0; transform: translateY(-6px); }
-.iia-hdr__right [data-tip]:hover::after, .iia-hdr__right [data-tip]:focus-visible::after { transform: translateY(0); left: auto; right: 0; }
-/* Rail toggle: a centred bubble would start 20px off the left edge; anchor it to the toggle's left edge. */
-.iia-hdr__toggle[data-tip]::after { left: 0; right: auto; transform: translateY(-6px); }
-.iia-hdr__toggle[data-tip]:hover::after, .iia-hdr__toggle[data-tip]:focus-visible::after { left: 0; right: auto; transform: translateY(0); }
+.iia-hdr [data-tip]::before { content: ''; top: calc(100% - 2px); width: 0; height: 0; border: 5px solid transparent; border-bottom-color: var(--iia-sidebar); transform: translateX(-5px) translateY(-4px); }
+.iia-hdr [data-tip]:hover::after, .iia-hdr [data-tip]:focus-visible::after, .iia-hdr [data-tip]:hover::before, .iia-hdr [data-tip]:focus-visible::before {
+  opacity: 1; visibility: visible;
+  transition-delay: 150ms, 150ms, 150ms; /* 150ms hover delay; hide is instant (delays above are 0) */
+}
+.iia-hdr [data-tip]:hover::after, .iia-hdr [data-tip]:focus-visible::after {
+  transform: translateX(-50%) translateY(0);
+  /* The bundle's generic `button[data-tip]:hover::after` (0,2,2) outranks the base rule above (0,2,1):
+     it places its bubble ABOVE the button (bottom, right, an animation) and restyles it (4px 8px padding,
+     --ins-text-1 fill, z 60). Every visual the design specifies is restated here at (0,3,2). */
+  top: calc(100% + 8px); bottom: auto; right: auto; animation: none; left: 50%;
+  padding: 6px 10px; background: var(--iia-sidebar); color: var(--iia-text-white); box-shadow: var(--ins-shadow-2); z-index: var(--iia-z-menu);
+  font-size: var(--ins-text-xs); line-height: 1.4; border-radius: var(--ins-radius);
+}
+[data-theme="dark"] .iia-hdr [data-tip]:hover::after, [data-theme="dark"] .iia-hdr [data-tip]:focus-visible::after { background: var(--iia-header); color: var(--iia-sidebar); }
+.iia-hdr [data-tip]:hover::before, .iia-hdr [data-tip]:focus-visible::before { transform: translateX(-5px) translateY(0); }
+.iia-hdr [data-tip][data-tip-off]::after, .iia-hdr [data-tip][data-tip-off]::before { opacity: 0 !important; visibility: hidden !important; }
+/* Bubbles are centred on every trigger, as the DS Tooltip is; the admin page's <html> has overflow-x hidden,
+   so a bubble that pokes past a phone viewport never adds scroll width. */
 /* Bubbles hang below the 56px bar over the rail (z 40) and the content; the header sits at z 30, so a
    showing bubble would paint behind the rail. Raise the header for as long as one of its tips shows. */
 ins-header.iia-hdr-host:has([data-tip]:hover:not([data-tip-off]), [data-tip]:focus-visible) { z-index: var(--iia-z-header-raised); }
 /* DS tooltip bubble is dark; invert it against dark chrome in dark mode (design). */
 [data-theme="dark"] .iia-hdr [data-tip]::after { background: var(--iia-header); color: var(--iia-sidebar); }
+[data-theme="dark"] .iia-hdr [data-tip]::before { border-bottom-color: var(--iia-header); }
 /* Design review: no focus rings in the prototype; focus is carried by background/colour states above. */
 
 /* ---- breadcrumb bar ------------------------------------------------------- */
-.iia-crumbs { flex: none; display: flex; height: 40px; background: var(--ins-header-bg); border-bottom: 1px solid var(--ins-border-color); align-items: center; padding: 0 var(--ins-space-md); gap: var(--ins-space-xs); font-size: var(--ins-text-xs); color: var(--ins-text-3); font-family: var(--ins-font-family); }
+/* Design: the bar sits INSIDE the content column, beside the rail (rail runs from y=56). ins-header owns it,
+   so it is positioned from the header host's box and follows the rail width; the shell gets
+   `iia-shell--crumbs` from the header while a bar is showing, which pads the content column down 40px. */
+.iia-crumbs { position: absolute; top: 56px; left: 216px; right: 0; z-index: 1; display: flex; height: 40px; box-sizing: border-box; background: var(--ins-header-bg); border-bottom: 1px solid var(--ins-border-color); align-items: center; padding: 0 var(--ins-space-md); gap: var(--ins-space-xs); font-size: var(--ins-text-xs); line-height: var(--ins-leading-normal); color: var(--ins-text-3); font-family: var(--ins-font-family); transition: left var(--ins-duration-normal) var(--ins-ease-out); }
+body.mini .iia-crumbs { left: 64px; }
+@media (max-width: 767px) { body.mini .iia-crumbs { left: 56px; } }
+.iia-shell--v6.iia-shell--crumbs .iia-shell__main { padding-top: 40px; }
 .iia-crumbs__nav { min-width: 0; display: flex; align-items: center; gap: var(--ins-space-xs); }
 .iia-crumbs__home { display: flex; align-items: center; gap: 6px; color: var(--ins-text-3); border-radius: var(--ins-radius); text-decoration: none; }
-.iia-crumbs__home i { font-size: var(--iia-glyph-sm); }
+.iia-crumbs__home i { font-size: var(--ins-chrome-glyph-sm); }
 .iia-crumbs__home:hover, .iia-crumbs__link:hover { color: var(--ins-main); }
 .iia-crumbs__sep { font-size: var(--iia-glyph-2xs); color: var(--ins-ui-2); }
 .iia-crumbs__link { color: var(--ins-text-3); max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; border-radius: var(--ins-radius); text-decoration: none; }
@@ -14367,7 +14388,7 @@ ins-header.iia-hdr-host:has([data-tip]:hover:not([data-tip-off]), [data-tip]:foc
 ins-sidebar.iia-rail {
   --iia-rail-w: 216px; --iia-rail-w-collapsed: 64px;
   flex: none; position: relative; width: var(--iia-rail-w); background: var(--ins-chrome-bg); display: flex; flex-direction: column;
-  transition: width var(--ins-duration-normal) var(--ins-ease-out); z-index: var(--iia-z-rail); font-family: var(--ins-font-family); align-self: stretch;
+  transition: width var(--ins-duration-normal) var(--ins-ease-out); z-index: var(--iia-z-rail); font-family: var(--ins-font-family); line-height: var(--ins-leading-normal); align-self: stretch;
 }
 ins-sidebar.iia-rail--collapsed { width: var(--iia-rail-w-collapsed); }
 @media (max-width: 767px) { ins-sidebar.iia-rail { --iia-rail-w-collapsed: 56px; } }
@@ -14432,7 +14453,7 @@ ins-sidebar.iia-rail ins-sidebar-item.hide-for-medium { display: none !important
 .iia-flyout {
   position: fixed; min-width: 208px; max-height: min(70vh, 460px); overflow-y: auto; background: var(--ins-chrome-surface); border: 1px solid var(--ins-chrome-border);
   border-radius: var(--ins-radius); box-shadow: var(--ins-shadow-2); padding: var(--ins-space-2xs); z-index: var(--iia-z-flyout);
-  animation: ins-fade-in-up var(--ins-duration-fast) var(--ins-ease-out); font-family: var(--ins-font-family);
+  animation: ins-fade-in-up var(--ins-duration-fast) var(--ins-ease-out); font-family: var(--ins-font-family); line-height: var(--ins-leading-normal);
 }
 .iia-flyout__pill { position: absolute; left: 4px; right: 4px; top: 0; border-radius: var(--iia-radius-pill-sm); background: var(--iia-rail-pill); pointer-events: none; }
 .iia-flyout__label { font-size: 12px; font-weight: var(--ins-weight-semibold); letter-spacing: normal; text-transform: none; color: var(--iia-group-label); padding: var(--ins-space-xs) var(--ins-space-xs) var(--ins-space-2xs) 12px; }

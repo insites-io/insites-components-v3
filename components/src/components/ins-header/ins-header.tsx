@@ -519,6 +519,14 @@ export class InsHeader {
     return /dashboard/i.test(link) || /^(home|dashboard)$/i.test(String(x.label || '').trim());
   }
 
+  componentDidRender() {
+    if (!this.isV6) return;
+    // Design: the breadcrumb bar lives in the content column beside the rail. The bar is positioned from
+    // this host; the shell pads its content column down while a bar is showing.
+    const shell = document.querySelector('.iia-shell--v6');
+    if (shell) shell.classList.toggle('iia-shell--crumbs', !!this.crumbView());
+  }
+
   private crumbView() {
     // Design: the bar exists only off the dashboard, and reads Home > module > sub. The bar draws
     // its own Home, so a leading home entry from the rail is dropped, and the leaf that
@@ -629,7 +637,7 @@ export class InsHeader {
                     <div class="iia-switcher__pill" aria-hidden="true" style={{ height: `${this.envHoverH}px`, transform: `translateY(${this.envHoverY}px)`, opacity: this.envHoverOn ? '1' : '0', transition: this.pillTransition() }}></div>
                     {noMatches ? <div class="iia-switcher__empty">No instances match "{this.envQuery}". Try part of the name or URL.</div> : null}
                     {groups.map((grp, gi) => (
-                      <div role="group" aria-label={grp.label} class={{ 'iia-switcher__group': true, 'iia-switcher__group--first': gi === 0 }}>
+                      <div role="group" aria-label={grp.label} class={{ 'iia-switcher__group': true, 'iia-switcher__group--first': gi === 0, 'iia-switcher__group--production': grp.label === 'Production' }}>
                         <div class="iia-switcher__grouplabel">{grp.label}</div>
                         {grp.items.map((inst) => {
                           const current = inst.id === this.instanceId;
