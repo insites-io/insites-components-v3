@@ -15,7 +15,11 @@ Unchanged from the original: 240px fixed rail with the logo at the top, collapsi
 content column under the 56px header rather than a fixed strip: 216px expanded, 64px collapsed
 (56px below 768px), `--ins-chrome-bg`, no logo (the header carries it). One shared hover pill
 slides between rows, the active module shows a 2px `--ins-main` marker and its icon cross-fades
-from Phosphor regular to fill, and a module with a sub-menu opens a fixed flyout beside the rail
+from Phosphor regular to fill. Before the first render the rail arranges its top-level items into
+the design's groups (Dashboard; Work; Build; Sell; Configure), each labelled group opening with a
+1px rule and a 12px label; the collapsed rail keeps only the rules. The grouping is keyed by each
+item's `icon` class in `utils/phosphor-shell-icons`, so partials stay untouched, and any module the
+design does not place lands in an unlabelled trailing group. A module with a sub-menu opens a fixed flyout beside the rail
 on hover (tap below 1024px). Only the Dashboard item carries a divider after it.
 
 Nothing about the items' API changes. Each item's existing `icon="icon-…"` class is resolved to a

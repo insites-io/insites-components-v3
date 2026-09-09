@@ -14370,7 +14370,15 @@ ins-sidebar.iia-rail--collapsed { width: var(--iia-rail-w-collapsed); }
 @media (max-width: 767px) { .iia-shell--v6 .iia-shell__body { padding-left: 56px; } }
 .iia-rail__scroll { position: relative; flex: 1; min-height: 0; padding: var(--ins-space-xs) 0 var(--ins-space-sm); display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; }
 @media (min-height: 980px) { .iia-rail__scroll { padding: var(--ins-space-sm) 0 var(--ins-space-md); } }
-.iia-rail__scroll > div { display: contents; } /* module partials wrap items in a bare <div> */
+.iia-rail__scroll > div:not([class]) { display: contents; } /* any bare <div> a module partial left around its items; never the pill or a group */
+/* Rail groups (design groupsDef): Dashboard alone, then Work / Build / Sell / Configure, each labelled group opening with a rule. */
+.iia-rail__group { display: block; }
+.iia-rail__divider { display: block; height: 1px; margin: var(--ins-space-xs) 12px 0; background: var(--iia-rail-divider); transition: background var(--ins-duration-fast) var(--ins-ease-out); }
+.iia-rail__group-head { display: flex; align-items: flex-end; height: 33px; padding: 0 12px 4px 20px; overflow: hidden; transition: height var(--ins-duration-normal) var(--ins-ease-out), padding var(--ins-duration-normal) var(--ins-ease-out); }
+.iia-rail__group-label { display: inline; font-size: 12px; font-weight: var(--ins-weight-semibold); letter-spacing: normal; color: var(--iia-group-label); white-space: nowrap; }
+[data-theme="dark"] .iia-rail__group-label { color: var(--iia-group-label-dm); }
+.iia-rail--collapsed .iia-rail__group-head { height: 0; padding: 0; }
+.iia-rail--collapsed .iia-rail__group-label { display: none; }
 .iia-rail__pill { position: absolute; left: 4px; right: 12px; top: 0; border-radius: var(--iia-radius-pill-sm); background: var(--iia-rail-pill); pointer-events: none; }
 .iia-rail--collapsed .iia-rail__pill { left: 12px; }
 .iia-rail__fade { position: absolute; left: 0; right: 0; bottom: 0; height: 24px; pointer-events: none; background: linear-gradient(to bottom, transparent, var(--ins-chrome-bg)); }
@@ -14405,8 +14413,6 @@ ins-sidebar.iia-rail ins-sidebar-item.hide-for-medium { display: none !important
 .iia-rail-item__label.is-hidden { display: none; transform: translateX(-12px); }
 .iia-rail-item__chevron { margin-left: auto; flex: none; color: var(--ins-chrome-fg-subtle); }
 .iia-rail-item__children { display: none; }
-/* Only the Dashboard item carries a divider after it (design: dividerAfter on dashboard). */
-.iia-rail-item__divider { display: block; height: 1px; margin: var(--ins-space-xs) 12px 0; background: var(--iia-rail-divider); transition: background var(--ins-duration-fast) var(--ins-ease-out); }
 @media (prefers-reduced-motion: reduce) {
   .iia-rail-item__marker, .iia-rail-item__glyph, .iia-rail-item__group, ins-sidebar.iia-rail, .iia-rail-item__link { transition: none; }
   .iia-rail-item__marker { transform: translateY(-50%) scaleY(1); }

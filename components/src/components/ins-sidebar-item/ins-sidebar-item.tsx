@@ -280,6 +280,16 @@ export class InsSidebarItem {
     if (this.railObserver) this.railObserver.disconnect();
   }
 
+  connectedCallback(){
+    // The v6 rail regroups its items into wrapper divs, which moves this element once. Re-arm the
+    // class observer so collapse and flyout state keep flowing after the move.
+    if (this.railObserver && this.railEl) {
+      this.v6Collapsed = this.railEl.classList.contains('iia-rail--collapsed');
+      this.v6FlyoutOpen = this.railEl.classList.contains('iia-rail--flyout-open');
+      this.railObserver.observe(this.railEl, { attributes: true, attributeFilter: ['class'] });
+    }
+  }
+
   @Method()
   async formatRoute() {
     return this.locFormatRoute();
@@ -326,8 +336,15 @@ export class InsSidebarItem {
       if (this.railEl) this.railEl.toggleFlyout(this.insSidebarItemEl as any);
       return;
     }
-    if (this.externalLink) return; // real anchor, new tab
-    this.routePageHandler(e);
+    // Plain and `app` items: let the anchor navigate. The legacy render has no click handler on
+    // these either; ins-sidebar's onhashchange matches the new hash to this item and routes it.
+    // Calling routePageHandler(event) here preventDefault-ed the anchor and killed navigation.
+    if (this.externalLink) return;
+    // Two cases produce no hashchange the rail could resolve: Dashboard (`href="#"`, and no item
+    // carries landing-page on the seeded index menu) and a re-click on the current page. Route
+    // those here without the event, so the anchor still navigates and the marker still moves.
+    const target = this.app ? this.formattedRoute : (this.link || '#');
+    if (target === '#' || target === '' || target === window.location.hash) this.routePageHandler();
   };
 
   private v6KeyDown = (e: KeyboardEvent) => {
@@ -381,7 +398,6 @@ export class InsSidebarItem {
         </a>
         {/* Children stay in the light DOM for routing; the flyout renders them. */}
         <div class="iia-rail-item__children" hidden><slot /></div>
-        {isDashboard ? <span class="iia-rail-item__divider" aria-hidden="true"></span> : null}
       </Host>
     );
   }

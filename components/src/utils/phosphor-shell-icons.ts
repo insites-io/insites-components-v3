@@ -99,3 +99,31 @@ export const glyphForLegacyIcon = (iconClass: string | undefined | null): Phosph
   const name = LEGACY_ICON_TO_GLYPH[iconClass.trim()];
   return name ? PHOSPHOR_SHELL_ICONS[name] || null : null;
 };
+
+/**
+ * Rail groups from the design's `groupsDef` (Admin Shell v1.5): Dashboard alone, then four
+ * labelled groups. Keyed by the same legacy icon class as the glyph map, for the same reason:
+ * the module partials never change. Order inside a group is the design's module order.
+ * A module whose icon is not listed falls into an unlabelled trailing group, so nothing a
+ * partial emits can disappear.
+ */
+export interface RailGroupDef { id: string; label: string; icons: string[] }
+
+export const RAIL_GROUPS: RailGroupDef[] = [
+  { id: 'primary',   label: '',          icons: ['icon-dashboard'] },
+  { id: 'work',      label: 'Work',      icons: ['icon-crm', 'icon-filter', 'icon-task-list'] },
+  { id: 'build',     label: 'Build',     icons: ['icon-folder1', 'icon-folder-1', 'icon-site-manager', 'icon-database', 'icon-completed-outcomes'] },
+  { id: 'sell',      label: 'Sell',      icons: ['icon-credit-card', 'icon-map-pin', 'icon-calendar'] },
+  { id: 'configure', label: 'Configure', icons: ['icon-cpu', 'icon-lock-1', 'icon-integrations', 'icon-settings-1'] },
+];
+
+/** Group id and in-group rank for a legacy icon class, or null when the design does not place it. */
+export const railGroupForLegacyIcon = (iconClass: string | undefined | null): { id: string; rank: number } | null => {
+  if (!iconClass) return null;
+  const key = iconClass.trim();
+  for (const g of RAIL_GROUPS) {
+    const rank = g.icons.indexOf(key);
+    if (rank >= 0) return { id: g.id, rank };
+  }
+  return null;
+};

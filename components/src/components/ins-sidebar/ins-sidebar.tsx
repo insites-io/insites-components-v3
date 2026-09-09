@@ -1,4 +1,5 @@
 import { h, Component, Prop, Event, EventEmitter, State, Method, Listen, Element, Host } from "@stencil/core";
+import { RAIL_GROUPS, railGroupForLegacyIcon } from "../../utils/phosphor-shell-icons";
 
 /**
  * IIA v6 shell rail (TW#26371963) is an ADDITIVE variant of this component.
@@ -82,7 +83,59 @@ export class InsSidebar {
       this.narrowMq = window.matchMedia('(max-width: 1023px)');
       this.narrow = this.narrowMq.matches;
       this.narrowMq.addEventListener('change', this.onNarrow);
+      this.groupRailItems();
     }
+  }
+
+  /**
+   * v6: arrange the slotted top-level items into the design's groups before the first render.
+   * The partials emit a flat list in install order (and the index menu wraps its items in a bare
+   * <div>); the design shows Dashboard, then Work / Build / Sell / Configure with a rule and a
+   * label above each. Done on the light DOM here, once, so the slot simply renders the wrappers.
+   */
+  private groupRailItems(){
+    const host = this.insSidebarEl;
+    const all = Array.from(host.querySelectorAll('ins-sidebar-item')) as HTMLElement[];
+    const top = all.filter(el => el.parentElement && !el.parentElement.closest('ins-sidebar-item'));
+    if (!top.length || host.querySelector(':scope > .iia-rail__group')) return;
+
+    const buckets = RAIL_GROUPS.map(g => ({ ...g, els: [] as Array<{ el: HTMLElement; rank: number }> }));
+    const rest: HTMLElement[] = [];
+    const hidden: HTMLElement[] = [];
+    top.forEach(el => {
+      if (el.classList.contains('hide-for-medium')) { hidden.push(el); return; }
+      const hit = railGroupForLegacyIcon(el.getAttribute('icon'));
+      const b = hit ? buckets.find(x => x.id === hit.id) : null;
+      if (b) b.els.push({ el, rank: hit.rank }); else rest.push(el);
+    });
+
+    const wrappers = Array.from(host.children).filter(ch => ch.tagName === 'DIV' && !ch.className) as HTMLElement[];
+    const frag = document.createDocumentFragment();
+    const makeGroup = (label: string, rule: boolean, els: HTMLElement[], ariaLabel?: string) => {
+      const g = document.createElement('div');
+      g.className = 'iia-rail__group';
+      g.setAttribute('role', 'group');
+      g.setAttribute('aria-label', label || ariaLabel || 'Primary');
+      if (rule) {
+        const d = document.createElement('div'); d.className = 'iia-rail__divider'; d.setAttribute('aria-hidden', 'true'); g.appendChild(d);
+      }
+      if (label) {
+        const head = document.createElement('div'); head.className = 'iia-rail__group-head'; head.setAttribute('aria-hidden', 'true');
+        const span = document.createElement('span'); span.className = 'iia-rail__group-label'; span.textContent = label;
+        head.appendChild(span); g.appendChild(head);
+      }
+      els.forEach(el => g.appendChild(el));
+      frag.appendChild(g);
+    };
+    buckets.forEach(b => {
+      if (!b.els.length) return;
+      b.els.sort((x, y) => x.rank - y.rank);
+      makeGroup(b.label, !!b.label, b.els.map(x => x.el));
+    });
+    if (rest.length) makeGroup('', true, rest, 'More');       // modules the design does not place
+    if (hidden.length) makeGroup('', false, hidden, 'Account'); // mobile-only rows, hidden by CSS at every width
+    wrappers.forEach(w => { if (!w.querySelector('ins-sidebar-item')) w.remove(); });
+    host.appendChild(frag);
   }
 
   componentDidLoad(){
@@ -375,13 +428,14 @@ export class InsSidebar {
     const link = host.querySelector('.iia-rail-item__link') as HTMLElement || host;
     const r = link.getBoundingClientRect();
     const railRight = this.insSidebarEl.getBoundingClientRect().right;
-    // Keep the panel on screen: clamp so max-height (min(70vh,460px)) fits below.
-    const maxH = Math.min(window.innerHeight * 0.7, 460);
-    const top = Math.max(8, Math.min(r.top, window.innerHeight - maxH - 8));
-    this.flyoutLeft = railRight;
-    this.flyoutTop = top;
     this.flyoutFor = host;
     this.refreshFlyoutSubs();
+    // Design: h = min(rows * 36 + 40, 460); top = max(8, min(rowTop, viewport - h - 8)). Clamping on
+    // the real height keeps a short list beside its row instead of floating up to where a
+    // 460px panel would have to sit.
+    const h = Math.min(this.flyoutSubs.length * 36 + 40, Math.min(window.innerHeight * 0.7, 460));
+    this.flyoutLeft = railRight;
+    this.flyoutTop = Math.max(8, Math.min(r.top, window.innerHeight - h - 8));
     this.flyHoverOn = false;
     this.insFlyoutChange.emit({ open: true, label: host.label });
   }
@@ -412,11 +466,11 @@ export class InsSidebar {
     this.flyHoverOn = true;
   };
 
-  private flySubGo = (e: MouseEvent, sub: HTMLInsSidebarItemElement) => {
-    if (sub.externalLink) return; // plain anchor, opens in a new tab
-    e.preventDefault();
-    // Route through the child item so crumbs, activation and the renderer behave exactly as before.
-    sub.routePageHandler(e);
+  private flySubGo = (_e: MouseEvent, _sub: HTMLInsSidebarItemElement) => {
+    // Legacy nested rows are plain anchors with no click handler: the browser follows the href,
+    // the hash changes, and this component's onhashchange matches the item and emits the crumbs
+    // (which is also what drives the renderer for `app` items). Intercepting the click here with
+    // routePageHandler(event) preventDefault-ed the navigation and left the page where it was.
     this.closeFlyout();
   };
 
