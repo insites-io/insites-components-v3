@@ -13626,6 +13626,99 @@ body.no-transition * {
   --ins-chart-6: #DF1F1F;
   --ins-chart-7: #0095FF;
   --ins-chart-8: #84848F;
+
+  /* --------------------------------------------------------------------------
+     Admin Shell chrome patch (TW#26371963). The v1.5 design declares 41 custom
+     properties of its own, on top of the 52 design-system ones above, and its
+     comment calls them a "proposed token patch for tokens/colors.css". None of
+     them appear in any handoff document, so they are only discoverable by reading
+     the design source. 38 were undefined in production; these are those, values
+     verbatim from handoff/admin-shell/AdminShell.dc.html.
+
+     The chrome family exists because the shell is dark in BOTH themes while the
+     app around it is not. Only the surface values re-point under dark, in the
+     block below.
+     -------------------------------------------------------------------------- */
+
+  --ins-chrome-bg: var(--iia-sidebar);
+  --ins-chrome-hover: var(--iia-sidebar-hover);
+  --ins-chrome-surface: #1A1A1A;
+  --ins-chrome-border: #2E2E2E;
+  --ins-chrome-rule: #2E323B;
+  --ins-chrome-desk: #2E2E2E;
+  --ins-chrome-fg: #FFFFFF;
+  --ins-chrome-fg-muted: #B8B8B8;
+  --ins-chrome-fg-subtle: #9BA1AC;
+  --ins-chrome-focus: #8FA9FF;
+
+  /* Chrome glyph sizes. NOT --iia-glyph-sm/xs, deliberately. The design declares
+     those two at 13px and 11px, but production defines them at 16px and 12px and
+     they have 171 consumers across the bundle and the module SPAs. Re-pointing
+     them would resize icons on every screen in the product, which is a fleet-wide
+     density decision and not this task's to make. Scoped to the chrome instead. */
+  --ins-chrome-glyph-sm: 13px;
+  --ins-chrome-glyph-xs: 11px;
+
+  /* Glyph sizes the app never defined, so these are safe additions. */
+  --iia-glyph-2xs: 9px;
+  --iia-glyph-lg: 18px;
+  --iia-glyph-xl: 24px;
+  --iia-text-2xs: 10px;
+
+  /* Rail surfaces and the collapsed-state group label. */
+  --iia-rail-fg: #EDEDED;
+  --iia-rail-fg-muted: #A3A3A3;
+  --iia-rail-divider: #1F1F1F;
+  --iia-rail-pill: rgba(255, 255, 255, 0.06);
+  --iia-group-label: #8F8F8F;
+  --iia-group-label-dm: #737373;
+
+  /* Environment tints behind the switcher's current-instance row (8%). */
+  --iia-instance-staging-light: rgba(0, 149, 255, 0.08);
+  --iia-instance-production-light: rgba(11, 183, 128, 0.08);
+
+  /* Accessibility fix carried by the design, with its own reasoning: amber cannot
+     reach 4.5:1 on white at any weight (#EC9C00 is 2.25:1, --iia-alert-warning-dark
+     is 2.99:1). This ink is 4.61:1 and is for warning TEXT only, never fills. */
+  --iia-alert-warning-text: #A06A00;
+  --iia-alert-dm-warning-text: #E5A93A;
+  --ins-alert-warning-text: var(--iia-alert-warning-text);
+
+  --iia-badge-negative: var(--ins-alert-negative);
+  --iia-overlay-scrim: rgba(15, 15, 15, 0.45);
+  --iia-radius-pill-sm: 6px;
+
+  /* Layering scale. The shell stacks nine deep, so these are a scale rather than
+     ad-hoc values: raised variants exist because the rail and header swap above
+     each other while a flyout is open. */
+  --iia-z-header: 30;
+  --iia-z-rail: 40;
+  --iia-z-menu: 50;
+  --iia-z-rail-raised: 70;
+  --iia-z-flyout: 80;
+  --iia-z-header-raised: 80;
+  --iia-z-overlay: 100;
+  --iia-z-scrim: 110;
+  --iia-z-drawer: 115;
+  --iia-z-switcher: 200;
+}
+
+/* Chrome surfaces re-point for dark; the chrome never goes light. Placed after
+   :root so it wins at equal specificity when the attribute is present, which is
+   how both the design and dist/styles/app.min.css do it.
+
+   NOT included, deliberately: the design also re-points --ins-text-buttonlabel to
+   white under dark. dist/styles/app.min.css sets that token under dark too and
+   loads after this file, so an override here would be dead. Shell markup should
+   use --ins-chrome-fg for a white chrome label instead of relying on it. */
+[data-theme="dark"] {
+  --ins-chrome-bg: var(--iia-sidebar-dm);
+  --ins-chrome-hover: var(--iia-ui-dm-1);
+  --ins-chrome-surface: var(--iia-ui-dm-5);
+  --ins-chrome-border: var(--iia-ui-dm-3);
+  --ins-chrome-rule: var(--iia-ui-dm-3);
+  --ins-alert-warning-text: var(--iia-alert-dm-warning-text);
+  --iia-badge-negative: #C93A28;
 }
 
 /* ============================================================================
