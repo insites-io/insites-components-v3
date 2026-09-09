@@ -15,12 +15,14 @@ fly out to the right.
 border on a `--ins-card` surface, 240px card panel (`top: calc(100% + 6px)`, `--ins-shadow-2`,
 `ins-fade-in-up`), rows at `--ins-text-sm` with `--ins-ui-1` hover, danger rows in `--ins-alert-negative`,
 dividers, and channel flyouts to the LEFT (`right: 100%`, `top: -4px`, 200px to `min(420px, 90vw)`).
-`hover-submenus` opens those flyouts on pointer hover with no delay. `trigger-tip` sets `data-tip` on
-the trigger for the shared tooltip rule. The `--ins-*` tokens and the `ins-fade-in-up` keyframe come from
+Flyouts open on click or ArrowRight. There is deliberately no hover-to-open option: the Company v1.0
+handover tested hover and rejected it as an accessibility failure, and hover combined with click is worse
+than either, because entering the row opens the flyout so the click that follows toggles it shut
+(TW#26673778). `trigger-tip` sets `data-tip` on the trigger for the shared tooltip rule. The `--ins-*` tokens and the `ins-fade-in-up` keyframe come from
 the shared `insites.css`; nothing is duplicated here.
 
 ```html
-<ins-action-menu variant="record" hover-submenus aria-label-text="Contact actions" trigger-tip="Contact actions">
+<ins-action-menu variant="record" aria-label-text="Contact actions" trigger-tip="Contact actions">
   <ins-action-menu-item label="Email contact" icon="icon-email-1">
     <ins-action-menu-item label="shane@insites.io" slot-label="Email 1" value="email::0"></ins-action-menu-item>
     <ins-action-menu-item label="shane@combinate.me" slot-label="Email 2" value="email::1"></ins-action-menu-item>
@@ -55,7 +57,6 @@ Listen for `insSelect` (`detail.value`) on the menu; it closes itself after a se
 | `ariaLabelText` | `aria-label-text` |             | `string`  | `'Actions'`            |
 | `checkLoad`     | `check-load`      |             | `boolean` | `false`                |
 | `hasLoad`       | `has-load`        |             | `string`  | `undefined`            |
-| `hoverSubmenus` | `hover-submenus`  |             | `boolean` | `false`                |
 | `load`          | `load`            |             | `boolean` | `false`                |
 | `position`      | `position`        |             | `string`  | `'bottom-end'`         |
 | `triggerIcon`   | `trigger-icon`    |             | `string`  | `'icon-more-vertical'` |

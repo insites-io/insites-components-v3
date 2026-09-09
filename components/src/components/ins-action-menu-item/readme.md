@@ -12,9 +12,9 @@ Additive props for the IIA v6 record pages:
   channel flyouts put the address in `label` ("shane@insites.io") and the slot here ("Email 1").
 
 Inside `<ins-action-menu variant="record">` the row picks up the record-page treatment from the parent's
-class (light DOM cascade); inside `<ins-action-menu hover-submenus>` a submenu row opens on pointer hover
-and closes when the pointer leaves the row and its flyout. Nested children added after mount are picked
-up (a MutationObserver keeps `hasSubmenu` current).
+class (light DOM cascade). A submenu row opens on click or ArrowRight and closes on a second click or
+ArrowLeft; it never opens on hover, for the reason given in `ins-action-menu`'s readme. Nested children
+added after mount are picked up (a MutationObserver keeps `hasSubmenu` current).
 
 <!-- Auto Generated Below -->
 

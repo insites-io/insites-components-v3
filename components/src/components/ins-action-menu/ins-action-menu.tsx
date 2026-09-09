@@ -24,9 +24,10 @@ export class InsActionMenu {
   // Visual treatment. '' keeps the original rendering. 'record' is the IIA v6 record-page kebab
   // (CRM Contact v1.4 / Company v1.0): 36px bordered trigger, 240px card panel, flyouts to the left.
   @Prop({ mutable: true }) variant: string = '';
-  // Nested items open on pointer hover with no delay (the design's channel flyouts). Click and
-  // ArrowRight still work. Off by default: today's submenus open on click only.
-  @Prop({ mutable: true }) hoverSubmenus: boolean = false;
+  // There is deliberately no hover-to-open option for nested items. The CRM Company v1.0 handover
+  // tested hover and rejected it as an accessibility failure, and pairing hover with click is worse
+  // than either alone: entering the row opens the flyout, so the click that follows toggles it shut.
+  // Submenus open on click or ArrowRight only. See TW#26673778.
   // data-tip tooltip on the trigger, drawn by the shared button[data-tip] rule in insites.css.
   @Prop({ mutable: true }) triggerTip: string = '';
 
@@ -177,8 +178,7 @@ export class InsActionMenu {
   render() {
     return (
       <Host class={{
-        'ins-action-menu--record': this.variant === 'record',
-        'ins-action-menu--hover-submenus': this.hoverSubmenus
+        'ins-action-menu--record': this.variant === 'record'
       }}>
         <div class="ins-action-menu">
           <button

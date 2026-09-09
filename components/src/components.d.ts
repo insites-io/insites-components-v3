@@ -49,7 +49,6 @@ export namespace Components {
         "checkLoad": boolean;
         "closeMenu": () => Promise<void>;
         "hasLoad": string;
-        "hoverSubmenus": boolean;
         "load": boolean;
         "position": string;
         "triggerIcon": string;
@@ -3741,7 +3740,6 @@ declare namespace LocalJSX {
         "ariaLabelText"?: string;
         "checkLoad"?: boolean;
         "hasLoad"?: string;
-        "hoverSubmenus"?: boolean;
         "load"?: boolean;
         "onDidLoad"?: (event: InsActionMenuCustomEvent<void>) => void;
         "onInsOpenChange"?: (event: InsActionMenuCustomEvent<{ open: boolean }>) => void;

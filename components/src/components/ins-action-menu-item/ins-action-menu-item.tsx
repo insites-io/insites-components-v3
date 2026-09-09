@@ -80,12 +80,6 @@ export class InsActionMenuItem {
     this.hasSubmenu = !!this.insActionMenuItemEl.querySelector('ins-action-menu-item');
   }
 
-  // Read live from the closest menu so a consumer toggling hover-submenus later is honoured.
-  private hoverMode(): boolean {
-    const menu = this.insActionMenuItemEl.closest('ins-action-menu') as HTMLElement & { hoverSubmenus?: boolean } | null;
-    return !!(menu && menu.hoverSubmenus);
-  }
-
   private handleClick = (): void => {
     if (this.disabled) return;
     if (this.hasSubmenu) {
@@ -93,16 +87,6 @@ export class InsActionMenuItem {
     } else {
       this.insSelect.emit({ label: this.label, value: this.value });
     }
-  };
-
-  private handleMouseEnter = (): void => {
-    if (!this.hasSubmenu || this.disabled || !this.hoverMode()) return;
-    this.toggleSubmenu(true);
-  };
-
-  private handleMouseLeave = (): void => {
-    if (!this.hasSubmenu || !this.hoverMode()) return;
-    this.subOpen = false;
   };
 
   private handleButtonKeydown = (event: KeyboardEvent): void => {
@@ -167,8 +151,6 @@ export class InsActionMenuItem {
       <Host
         role="none"
         class={{ 'has-submenu': this.hasSubmenu, 'is-open': this.subOpen }}
-        onMouseEnter={this.handleMouseEnter}
-        onMouseLeave={this.handleMouseLeave}
       >
         <button
           type="button"
