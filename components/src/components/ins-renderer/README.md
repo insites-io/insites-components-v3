@@ -1,6 +1,12 @@
 # ins-renderer
 
+The content column. Receives the crumb trail from the rail via `updateRoute()`, stores it in
+`localStorage.ins_breadcrumbs`, drives the app iframe for `app` routes, and renders the page title.
 
+`insRouteChange` fires on every `updateRoute()` with `{ crumbs, route }`. The IIA v6 shell header
+listens for it to draw the breadcrumb bar (TW#26371963); in that shell the crumbs this component
+draws inside the column are hidden by CSS, and the legacy 240px/75px offsets are zeroed because the
+rail is a flex sibling rather than a fixed strip.
 
 <!-- Auto Generated Below -->
 
@@ -20,9 +26,10 @@
 
 ## Events
 
-| Event     | Description | Type                |
-| --------- | ----------- | ------------------- |
-| `didLoad` |             | `CustomEvent<void>` |
+| Event            | Description                                                                                                                                                                                                  | Type                                          |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------- |
+| `didLoad`        |                                                                                                                                                                                                              | `CustomEvent<void>`                           |
+| `insRouteChange` | Fires on every route change with the current crumb trail. Additive (TW#26371963): the v6 shell header renders the breadcrumb bar from this instead of the renderer drawing crumbs inside the content column. | `CustomEvent<{ crumbs: any[]; route: any; }>` |
 
 
 ## Methods

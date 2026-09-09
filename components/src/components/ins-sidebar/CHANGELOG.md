@@ -1,3 +1,6 @@
+# Unreleased
+- [TW#26371963](https://pm.cbo.me/#tasks/26371963) Add `variant="v6"`, the IIA v6 Admin Shell rail from the v1.5 design: 216px expanded / 64px collapsed (56px below 768px), one shared hover pill that slides between rows, a 2px active marker, Phosphor outline-to-fill icons resolved centrally from each item's existing `icon` class, and hover flyouts for sub-menus (tap below 1024px). New methods `railItemEnter`, `railItemLeave`, `toggleFlyout`, `closeFlyout`, `isCollapsed`; new event `insFlyoutChange`. Additive: the default render, hash routing, `minimise()`/`maximise()` and the `routePage` listener are unchanged, so no module rail partial needs editing. Two null guards on the legacy tooltip lookup, which the v6 DOM does not contain.
+
 # 1.0.11 (07-16-2018)
 ### Bug fixes
 - add style height calc

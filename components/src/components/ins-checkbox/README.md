@@ -82,6 +82,7 @@ Type: `Promise<void>`
 
 ### Used by
 
+ - [ins-header](../ins-header)
  - [ins-table](../ins-table)
 
 ### Depends on
@@ -92,6 +93,7 @@ Type: `Promise<void>`
 ```mermaid
 graph TD;
   ins-checkbox --> ins-input-tooltip
+  ins-header --> ins-checkbox
   ins-table --> ins-checkbox
   style ins-checkbox fill:#f9f,stroke:#333,stroke-width:4px
 ```

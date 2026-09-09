@@ -588,14 +588,71 @@ export namespace Components {
         "imgTitle": string;
         "thumbnail": string;
     }
+    /**
+     * IIA v6 shell header (TW#26371963) is an ADDITIVE variant of this component.
+     * `variant="v6"` renders the Admin Shell v1.5 top bar: 56px dark chrome carrying the
+     * rail toggle, logo, the support pill, the environment chip with the instance
+     * switcher, view-frontend, theme toggle, help menu and account menu, plus the 40px
+     * breadcrumb bar beneath it, the keyboard-shortcuts dialog and the production
+     * confirmation. The default render is unchanged. `toggleSidebar()` keeps its
+     * contract because adminScripts and ins-sidebar-item both call it.
+     * The instance switcher is presentational this release: the roster comes from
+     * `instances` (JSON) or, absent that, the single current instance built from the
+     * instance-* attributes. There is no Console endpoint that lists a user's
+     * instances yet, so Switch emits `insInstanceSwitch` and navigates nowhere.
+     * Tooltips use the shared `data-tip` mechanism rather than a nested component; the
+     * design's 150ms delay / instant hide / suppress-after-click live in CSS on the
+     * `iia-hdr` scope.
+     */
     interface InsHeader {
         "checkLoad": boolean;
+        "consoleHref": string;
+        "docsHref": string;
+        /**
+          * 'staging' | 'production' — this instance's tier.
+         */
+        "environment": string;
+        "frontendHref": string;
         "hasLoad": string;
         "hasMenuToggle": boolean;
+        /**
+          * Whether help panels are currently dismissed (restore row is actionable).
+         */
+        "helpPanelsDismissed": boolean;
+        /**
+          * Show the "Show help panels" restore row in the account menu.
+         */
+        "helpRestore": boolean;
+        "homeHref": string;
+        "instanceDomain": string;
+        "instanceId": string;
+        "instanceName": string;
+        /**
+          * Optional JSON roster: [{ id, name, env, domain }]. Absent: the current instance alone.
+         */
+        "instances": string;
         "load": boolean;
+        "lockEndpoint": string;
+        "lockFormName": string;
+        "logoAlt": string;
+        "logoSrc": string;
+        "logoutHref": string;
+        "profileHref": string;
         "supportLink": string;
+        /**
+          * Presence label on the support pill.
+         */
+        "supportPresence": string;
+        "supportReplyLine": string;
+        "themeEndpoint": string;
         "toggleNav": () => Promise<void>;
         "toggleSidebar": () => Promise<void>;
+        "userEmail": string;
+        "userName": string;
+        /**
+          * '' keeps the original rendering. 'v6' is the Admin Shell v1.5 header.
+         */
+        "variant": string;
     }
     interface InsHeaderUser {
         "app": boolean;
@@ -1316,15 +1373,46 @@ export namespace Components {
         "showOption": () => Promise<void>;
         "value": string;
     }
+    /**
+     * IIA v6 shell rail (TW#26371963) is an ADDITIVE variant of this component.
+     * `variant="v6"` renders the Admin Shell v1.5 rail: 216px expanded / 64px collapsed
+     * (56px below 768px), shared sliding hover pill, 2px active marker, Phosphor
+     * outline-to-fill icons, hover flyouts for sub-menus. The default render, the hash
+     * routing, `minimise()`/`maximise()` and the `routePage` listener are unchanged,
+     * so every module partial that emits <ins-sidebar-item> keeps working with no
+     * edit, which is the decision recorded on that task. Child items detect the
+     * variant through `closest('ins-sidebar[variant="v6"]')`.
+     * Collapsed state still rides `body.mini` + `minimised`, because ins-sidebar-item
+     * and the legacy ins-header toggle both key off those. The v6 CSS reads the
+     * `iia-rail--collapsed` host class that mirrors `minimised`.
+     */
     interface InsSidebar {
         "checkLoad": boolean;
+        "closeFlyout": () => Promise<void>;
         "deactivateSidebarItems": () => Promise<void>;
         "fullLogo": string;
         "hasLoad": string;
         "iconLogo": string;
+        /**
+          * v6: whether the rail is collapsed.
+         */
+        "isCollapsed": () => Promise<boolean>;
         "load": boolean;
         "maximise": () => Promise<void>;
         "minimise": () => Promise<void>;
+        /**
+          * Called by top-level ins-sidebar-item on pointer enter (v6).
+         */
+        "railItemEnter": (itemEl: HTMLElement) => Promise<void>;
+        "railItemLeave": () => Promise<void>;
+        /**
+          * Called by a top-level ins-sidebar-item with a submenu when clicked (v6).
+         */
+        "toggleFlyout": (host: HTMLInsSidebarItemElement) => Promise<void>;
+        /**
+          * '' keeps the original rendering. 'v6' is the Admin Shell v1.5 rail.
+         */
+        "variant": string;
     }
     interface InsSidebarFooter {
         "checkLoad": boolean;
@@ -1347,6 +1435,20 @@ export namespace Components {
         "showMenu": () => Promise<void>;
         "toggleMenu": () => Promise<void>;
     }
+    /**
+     * IIA v6 rail item (TW#26371963). No new props: when the closest <ins-sidebar>
+     * carries variant="v6" this item renders the Admin Shell v1.5 row instead of the
+     * legacy one. Its public API and every method the module partials and the hash
+     * router rely on are unchanged, so the ten module rail partials and the two
+     * migration-seeded instance partials keep working untouched.
+     * In v6 a top-level item with a submenu does NOT render its children inline; the
+     * parent rail reads them and shows a flyout. Nested items render nothing
+     * themselves, but stay in the DOM so routing, crumbs and activation keep working
+     * through routePageHandler()/activate() exactly as before.
+     * The icon: the legacy `icon="icon-…"` class is resolved centrally to a Phosphor
+     * glyph (utils/phosphor-shell-icons). Unmapped classes fall back to the font icon,
+     * so an unknown module still renders.
+     */
     interface InsSidebarItem {
         "activate": () => Promise<boolean>;
         "activateParent": () => Promise<boolean>;
@@ -2512,7 +2614,29 @@ declare global {
     };
     interface HTMLInsHeaderElementEventMap {
         "didLoad": any;
+        "insInstanceSwitch": { from: string; to: string; env: string };
+        "insThemeChange": { theme: string };
+        "insLockScreen": void;
+        "insHelpRestore": void;
+        "insShortcutsOpen": void;
+        "insSupportOpen": void;
     }
+    /**
+     * IIA v6 shell header (TW#26371963) is an ADDITIVE variant of this component.
+     * `variant="v6"` renders the Admin Shell v1.5 top bar: 56px dark chrome carrying the
+     * rail toggle, logo, the support pill, the environment chip with the instance
+     * switcher, view-frontend, theme toggle, help menu and account menu, plus the 40px
+     * breadcrumb bar beneath it, the keyboard-shortcuts dialog and the production
+     * confirmation. The default render is unchanged. `toggleSidebar()` keeps its
+     * contract because adminScripts and ins-sidebar-item both call it.
+     * The instance switcher is presentational this release: the roster comes from
+     * `instances` (JSON) or, absent that, the single current instance built from the
+     * instance-* attributes. There is no Console endpoint that lists a user's
+     * instances yet, so Switch emits `insInstanceSwitch` and navigates nowhere.
+     * Tooltips use the shared `data-tip` mechanism rather than a nested component; the
+     * design's 150ms delay / instant hide / suppress-after-click live in CSS on the
+     * `iia-hdr` scope.
+     */
     interface HTMLInsHeaderElement extends Components.InsHeader, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsHeaderElementEventMap>(type: K, listener: (this: HTMLInsHeaderElement, ev: InsHeaderCustomEvent<HTMLInsHeaderElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3172,6 +3296,7 @@ declare global {
     };
     interface HTMLInsRendererElementEventMap {
         "didLoad": void;
+        "insRouteChange": { crumbs: any[]; route: any };
     }
     interface HTMLInsRendererElement extends Components.InsRenderer, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsRendererElementEventMap>(type: K, listener: (this: HTMLInsRendererElement, ev: InsRendererCustomEvent<HTMLInsRendererElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3266,7 +3391,21 @@ declare global {
     interface HTMLInsSidebarElementEventMap {
         "insSidebarAction": any;
         "didLoad": void;
+        "insFlyoutChange": { open: boolean; label: string };
     }
+    /**
+     * IIA v6 shell rail (TW#26371963) is an ADDITIVE variant of this component.
+     * `variant="v6"` renders the Admin Shell v1.5 rail: 216px expanded / 64px collapsed
+     * (56px below 768px), shared sliding hover pill, 2px active marker, Phosphor
+     * outline-to-fill icons, hover flyouts for sub-menus. The default render, the hash
+     * routing, `minimise()`/`maximise()` and the `routePage` listener are unchanged,
+     * so every module partial that emits <ins-sidebar-item> keeps working with no
+     * edit, which is the decision recorded on that task. Child items detect the
+     * variant through `closest('ins-sidebar[variant="v6"]')`.
+     * Collapsed state still rides `body.mini` + `minimised`, because ins-sidebar-item
+     * and the legacy ins-header toggle both key off those. The v6 CSS reads the
+     * `iia-rail--collapsed` host class that mirrors `minimised`.
+     */
     interface HTMLInsSidebarElement extends Components.InsSidebar, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsSidebarElementEventMap>(type: K, listener: (this: HTMLInsSidebarElement, ev: InsSidebarCustomEvent<HTMLInsSidebarElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3327,6 +3466,20 @@ declare global {
         "didLoad": void;
         "didHover": { x: number; y: number; label: string; state: boolean };
     }
+    /**
+     * IIA v6 rail item (TW#26371963). No new props: when the closest <ins-sidebar>
+     * carries variant="v6" this item renders the Admin Shell v1.5 row instead of the
+     * legacy one. Its public API and every method the module partials and the hash
+     * router rely on are unchanged, so the ten module rail partials and the two
+     * migration-seeded instance partials keep working untouched.
+     * In v6 a top-level item with a submenu does NOT render its children inline; the
+     * parent rail reads them and shows a flyout. Nested items render nothing
+     * themselves, but stay in the DOM so routing, crumbs and activation keep working
+     * through routePageHandler()/activate() exactly as before.
+     * The icon: the legacy `icon="icon-…"` class is resolved centrally to a Phosphor
+     * glyph (utils/phosphor-shell-icons). Unmapped classes fall back to the font icon,
+     * so an unknown module still renders.
+     */
     interface HTMLInsSidebarItemElement extends Components.InsSidebarItem, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsSidebarItemElementEventMap>(type: K, listener: (this: HTMLInsSidebarItemElement, ev: InsSidebarItemCustomEvent<HTMLInsSidebarItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -4258,13 +4411,76 @@ declare namespace LocalJSX {
         "onInsGalleryUpdate"?: (event: InsGalleryImageCustomEvent<{ thumbnail: string; image: string }>) => void;
         "thumbnail"?: string;
     }
+    /**
+     * IIA v6 shell header (TW#26371963) is an ADDITIVE variant of this component.
+     * `variant="v6"` renders the Admin Shell v1.5 top bar: 56px dark chrome carrying the
+     * rail toggle, logo, the support pill, the environment chip with the instance
+     * switcher, view-frontend, theme toggle, help menu and account menu, plus the 40px
+     * breadcrumb bar beneath it, the keyboard-shortcuts dialog and the production
+     * confirmation. The default render is unchanged. `toggleSidebar()` keeps its
+     * contract because adminScripts and ins-sidebar-item both call it.
+     * The instance switcher is presentational this release: the roster comes from
+     * `instances` (JSON) or, absent that, the single current instance built from the
+     * instance-* attributes. There is no Console endpoint that lists a user's
+     * instances yet, so Switch emits `insInstanceSwitch` and navigates nowhere.
+     * Tooltips use the shared `data-tip` mechanism rather than a nested component; the
+     * design's 150ms delay / instant hide / suppress-after-click live in CSS on the
+     * `iia-hdr` scope.
+     */
     interface InsHeader {
         "checkLoad"?: boolean;
+        "consoleHref"?: string;
+        "docsHref"?: string;
+        /**
+          * 'staging' | 'production' — this instance's tier.
+         */
+        "environment"?: string;
+        "frontendHref"?: string;
         "hasLoad"?: string;
         "hasMenuToggle"?: boolean;
+        /**
+          * Whether help panels are currently dismissed (restore row is actionable).
+         */
+        "helpPanelsDismissed"?: boolean;
+        /**
+          * Show the "Show help panels" restore row in the account menu.
+         */
+        "helpRestore"?: boolean;
+        "homeHref"?: string;
+        "instanceDomain"?: string;
+        "instanceId"?: string;
+        "instanceName"?: string;
+        /**
+          * Optional JSON roster: [{ id, name, env, domain }]. Absent: the current instance alone.
+         */
+        "instances"?: string;
         "load"?: boolean;
+        "lockEndpoint"?: string;
+        "lockFormName"?: string;
+        "logoAlt"?: string;
+        "logoSrc"?: string;
+        "logoutHref"?: string;
         "onDidLoad"?: (event: InsHeaderCustomEvent<any>) => void;
+        "onInsHelpRestore"?: (event: InsHeaderCustomEvent<void>) => void;
+        "onInsInstanceSwitch"?: (event: InsHeaderCustomEvent<{ from: string; to: string; env: string }>) => void;
+        "onInsLockScreen"?: (event: InsHeaderCustomEvent<void>) => void;
+        "onInsShortcutsOpen"?: (event: InsHeaderCustomEvent<void>) => void;
+        "onInsSupportOpen"?: (event: InsHeaderCustomEvent<void>) => void;
+        "onInsThemeChange"?: (event: InsHeaderCustomEvent<{ theme: string }>) => void;
+        "profileHref"?: string;
         "supportLink"?: string;
+        /**
+          * Presence label on the support pill.
+         */
+        "supportPresence"?: string;
+        "supportReplyLine"?: string;
+        "themeEndpoint"?: string;
+        "userEmail"?: string;
+        "userName"?: string;
+        /**
+          * '' keeps the original rendering. 'v6' is the Admin Shell v1.5 header.
+         */
+        "variant"?: string;
     }
     interface InsHeaderUser {
         "app"?: boolean;
@@ -4888,6 +5104,10 @@ declare namespace LocalJSX {
         "link"?: string;
         "load"?: boolean;
         "onDidLoad"?: (event: InsRendererCustomEvent<void>) => void;
+        /**
+          * Fires on every route change with the current crumb trail. Additive (TW#26371963): the v6 shell header renders the breadcrumb bar from this instead of the renderer drawing crumbs inside the content column.
+         */
+        "onInsRouteChange"?: (event: InsRendererCustomEvent<{ crumbs: any[]; route: any }>) => void;
     }
     /**
      * The IIA v6 record-page search pill with a field-scope dropdown.
@@ -4972,6 +5192,19 @@ declare namespace LocalJSX {
         "onInsSelectOptionClicked"?: (event: InsSelectOptionCustomEvent<{ value: string; label: string }>) => void;
         "value"?: string;
     }
+    /**
+     * IIA v6 shell rail (TW#26371963) is an ADDITIVE variant of this component.
+     * `variant="v6"` renders the Admin Shell v1.5 rail: 216px expanded / 64px collapsed
+     * (56px below 768px), shared sliding hover pill, 2px active marker, Phosphor
+     * outline-to-fill icons, hover flyouts for sub-menus. The default render, the hash
+     * routing, `minimise()`/`maximise()` and the `routePage` listener are unchanged,
+     * so every module partial that emits <ins-sidebar-item> keeps working with no
+     * edit, which is the decision recorded on that task. Child items detect the
+     * variant through `closest('ins-sidebar[variant="v6"]')`.
+     * Collapsed state still rides `body.mini` + `minimised`, because ins-sidebar-item
+     * and the legacy ins-header toggle both key off those. The v6 CSS reads the
+     * `iia-rail--collapsed` host class that mirrors `minimised`.
+     */
     interface InsSidebar {
         "checkLoad"?: boolean;
         "fullLogo"?: string;
@@ -4979,7 +5212,15 @@ declare namespace LocalJSX {
         "iconLogo"?: string;
         "load"?: boolean;
         "onDidLoad"?: (event: InsSidebarCustomEvent<void>) => void;
+        /**
+          * v6: fires when a rail flyout opens or closes.
+         */
+        "onInsFlyoutChange"?: (event: InsSidebarCustomEvent<{ open: boolean; label: string }>) => void;
         "onInsSidebarAction"?: (event: InsSidebarCustomEvent<any>) => void;
+        /**
+          * '' keeps the original rendering. 'v6' is the Admin Shell v1.5 rail.
+         */
+        "variant"?: string;
     }
     interface InsSidebarFooter {
         "checkLoad"?: boolean;
@@ -5000,6 +5241,20 @@ declare namespace LocalJSX {
         "icon"?: string;
         "label"?: string;
     }
+    /**
+     * IIA v6 rail item (TW#26371963). No new props: when the closest <ins-sidebar>
+     * carries variant="v6" this item renders the Admin Shell v1.5 row instead of the
+     * legacy one. Its public API and every method the module partials and the hash
+     * router rely on are unchanged, so the ten module rail partials and the two
+     * migration-seeded instance partials keep working untouched.
+     * In v6 a top-level item with a submenu does NOT render its children inline; the
+     * parent rail reads them and shows a flyout. Nested items render nothing
+     * themselves, but stay in the DOM so routing, crumbs and activation keep working
+     * through routePageHandler()/activate() exactly as before.
+     * The icon: the legacy `icon="icon-…"` class is resolved centrally to a Phosphor
+     * glyph (utils/phosphor-shell-icons). Unmapped classes fall back to the font icon,
+     * so an unknown module still renders.
+     */
     interface InsSidebarItem {
         "app"?: boolean;
         "checkLoad"?: boolean;
@@ -5418,6 +5673,22 @@ declare module "@stencil/core" {
             "ins-filter-item": LocalJSX.InsFilterItem & JSXBase.HTMLAttributes<HTMLInsFilterItemElement>;
             "ins-gallery": LocalJSX.InsGallery & JSXBase.HTMLAttributes<HTMLInsGalleryElement>;
             "ins-gallery-image": LocalJSX.InsGalleryImage & JSXBase.HTMLAttributes<HTMLInsGalleryImageElement>;
+            /**
+             * IIA v6 shell header (TW#26371963) is an ADDITIVE variant of this component.
+             * `variant="v6"` renders the Admin Shell v1.5 top bar: 56px dark chrome carrying the
+             * rail toggle, logo, the support pill, the environment chip with the instance
+             * switcher, view-frontend, theme toggle, help menu and account menu, plus the 40px
+             * breadcrumb bar beneath it, the keyboard-shortcuts dialog and the production
+             * confirmation. The default render is unchanged. `toggleSidebar()` keeps its
+             * contract because adminScripts and ins-sidebar-item both call it.
+             * The instance switcher is presentational this release: the roster comes from
+             * `instances` (JSON) or, absent that, the single current instance built from the
+             * instance-* attributes. There is no Console endpoint that lists a user's
+             * instances yet, so Switch emits `insInstanceSwitch` and navigates nowhere.
+             * Tooltips use the shared `data-tip` mechanism rather than a nested component; the
+             * design's 150ms delay / instant hide / suppress-after-click live in CSS on the
+             * `iia-hdr` scope.
+             */
             "ins-header": LocalJSX.InsHeader & JSXBase.HTMLAttributes<HTMLInsHeaderElement>;
             "ins-header-user": LocalJSX.InsHeaderUser & JSXBase.HTMLAttributes<HTMLInsHeaderUserElement>;
             "ins-heading": LocalJSX.InsHeading & JSXBase.HTMLAttributes<HTMLInsHeadingElement>;
@@ -5470,10 +5741,37 @@ declare module "@stencil/core" {
             "ins-select": LocalJSX.InsSelect & JSXBase.HTMLAttributes<HTMLInsSelectElement>;
             "ins-select-group": LocalJSX.InsSelectGroup & JSXBase.HTMLAttributes<HTMLInsSelectGroupElement>;
             "ins-select-option": LocalJSX.InsSelectOption & JSXBase.HTMLAttributes<HTMLInsSelectOptionElement>;
+            /**
+             * IIA v6 shell rail (TW#26371963) is an ADDITIVE variant of this component.
+             * `variant="v6"` renders the Admin Shell v1.5 rail: 216px expanded / 64px collapsed
+             * (56px below 768px), shared sliding hover pill, 2px active marker, Phosphor
+             * outline-to-fill icons, hover flyouts for sub-menus. The default render, the hash
+             * routing, `minimise()`/`maximise()` and the `routePage` listener are unchanged,
+             * so every module partial that emits <ins-sidebar-item> keeps working with no
+             * edit, which is the decision recorded on that task. Child items detect the
+             * variant through `closest('ins-sidebar[variant="v6"]')`.
+             * Collapsed state still rides `body.mini` + `minimised`, because ins-sidebar-item
+             * and the legacy ins-header toggle both key off those. The v6 CSS reads the
+             * `iia-rail--collapsed` host class that mirrors `minimised`.
+             */
             "ins-sidebar": LocalJSX.InsSidebar & JSXBase.HTMLAttributes<HTMLInsSidebarElement>;
             "ins-sidebar-footer": LocalJSX.InsSidebarFooter & JSXBase.HTMLAttributes<HTMLInsSidebarFooterElement>;
             "ins-sidebar-footer-button": LocalJSX.InsSidebarFooterButton & JSXBase.HTMLAttributes<HTMLInsSidebarFooterButtonElement>;
             "ins-sidebar-footer-menu": LocalJSX.InsSidebarFooterMenu & JSXBase.HTMLAttributes<HTMLInsSidebarFooterMenuElement>;
+            /**
+             * IIA v6 rail item (TW#26371963). No new props: when the closest <ins-sidebar>
+             * carries variant="v6" this item renders the Admin Shell v1.5 row instead of the
+             * legacy one. Its public API and every method the module partials and the hash
+             * router rely on are unchanged, so the ten module rail partials and the two
+             * migration-seeded instance partials keep working untouched.
+             * In v6 a top-level item with a submenu does NOT render its children inline; the
+             * parent rail reads them and shows a flyout. Nested items render nothing
+             * themselves, but stay in the DOM so routing, crumbs and activation keep working
+             * through routePageHandler()/activate() exactly as before.
+             * The icon: the legacy `icon="icon-…"` class is resolved centrally to a Phosphor
+             * glyph (utils/phosphor-shell-icons). Unmapped classes fall back to the font icon,
+             * so an unknown module still renders.
+             */
             "ins-sidebar-item": LocalJSX.InsSidebarItem & JSXBase.HTMLAttributes<HTMLInsSidebarItemElement>;
             "ins-sort": LocalJSX.InsSort & JSXBase.HTMLAttributes<HTMLInsSortElement>;
             "ins-sparkline": LocalJSX.InsSparkline & JSXBase.HTMLAttributes<HTMLInsSparklineElement>;

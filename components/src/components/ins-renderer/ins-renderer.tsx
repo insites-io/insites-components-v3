@@ -4,6 +4,12 @@ import { h, Component, Prop, Method, Element, Event, EventEmitter, State } from 
 export class InsRenderer {
   @Element() insRendererEl: HTMLElement;
   @Event() didLoad: EventEmitter<void>;
+  /**
+   * Fires on every route change with the current crumb trail. Additive (TW#26371963):
+   * the v6 shell header renders the breadcrumb bar from this instead of the renderer
+   * drawing crumbs inside the content column.
+   */
+  @Event() insRouteChange: EventEmitter<{ crumbs: any[]; route: any }>;
   @Prop() hasLoad: string;
 
   @State() insBreadCrumbsEl: any; // unused, kept this pass: removing a @State member changes the compiled component manifest — schedule with a reviewed release
@@ -35,6 +41,7 @@ export class InsRenderer {
       this.route = newRoutes[last];
       this.updateBreadcrumbs(newRoutes, noRedirect);
       this.updateElements();
+      this.insRouteChange.emit({ crumbs: newRoutes, route: this.route });
 
       if (this.route.app) {
         if (!noRedirect || iframe) {

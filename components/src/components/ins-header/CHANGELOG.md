@@ -1,3 +1,6 @@
+# Unreleased
+- [TW#26371963](https://pm.cbo.me/#tasks/26371963) Add `variant="v6"`, the IIA v6 Admin Shell top bar from the v1.5 design: 56px dark chrome with rail toggle, logo, support pill, environment chip with a grouped instance switcher and production confirmation, view-frontend, theme toggle, help menu, account menu, the 40px breadcrumb bar (fed by `ins-renderer`'s `insRouteChange`) and the keyboard-shortcuts dialog. New props `logoSrc`, `environment`, `instanceName`, `instanceDomain`, `instanceId`, `instances`, `userName`, `userEmail`, `profileHref`, `logoutHref`, `docsHref`, `consoleHref`, `frontendHref`, `themeEndpoint`, `lockEndpoint`, `lockFormName`, `helpRestore`, `helpPanelsDismissed`, `supportPresence`; new events `insInstanceSwitch`, `insThemeChange`, `insLockScreen`, `insHelpRestore`, `insShortcutsOpen`, `insSupportOpen`. `toggleSidebar()` keeps its contract. Below 1280px the rail collapses to a 64px column and an expanded rail is a drawer; the desktop preference survives the crossing in both directions. The switcher is presentational this release: no Console instance-list endpoint exists yet, so Switch emits and navigates nowhere. The default render is unchanged; two null guards added on the legacy nav lookups.
+
 # v2.10.3
 - [TW#18504517](https://pm.cbo.me/#tasks/18504517) Removed sidebar menu item 48px fixed height
 

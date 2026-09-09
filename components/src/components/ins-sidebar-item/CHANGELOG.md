@@ -1,3 +1,5 @@
+# Unreleased
+- [TW#26371963](https://pm.cbo.me/#tasks/26371963) Render the IIA v6 rail row when the closest `ins-sidebar` carries `variant="v6"`. No new props: the existing `icon` class is mapped to a Phosphor glyph through `utils/phosphor-shell-icons` (unmapped classes keep the font icon), nested items stay in the DOM for routing but are drawn by the parent's flyout, and `routePageHandler()`/`activate()` behave exactly as before. `toggleMenuNav()` now tolerates a header without `.full-width-navs`, and `showSubMenu()` no longer un-collapses the rail in v6.
 
 # 1.0.22 (07-17-2018)
 ### Bug Fixes
