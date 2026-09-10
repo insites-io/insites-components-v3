@@ -114,6 +114,18 @@ design's 150ms delay / instant hide / suppress-after-click live in CSS on the
 
 ## Methods
 
+### `lockScreen() => Promise<void>`
+
+Locks the admin session: emits `insLockScreen`, ends the session through `lockEndpoint` and shows the
+host's lock screen. The v1.5 design has no lock row, so the v6 chrome renders none; a host that keeps
+the lock feature calls this method from its own trigger.
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `toggleNav() => Promise<void>`
 
 

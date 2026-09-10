@@ -406,10 +406,16 @@ export class InsHeader {
     this.suppressTip(e);
   };
 
-  private lockScreen = () => {
+  /**
+   * Locks the admin session: emits `insLockScreen`, ends the session through `lockEndpoint` and shows the
+   * host's lock screen. The v1.5 design has no lock row, so the v6 chrome renders none; a host that keeps
+   * the lock feature calls this method from its own trigger.
+   */
+  @Method()
+  async lockScreen(): Promise<void> {
     this.closeMenus();
     this.insLockScreen.emit();
-    fetch(this.lockEndpoint, { method: 'DELETE', headers: this.csrfHeaders(), body: JSON.stringify({ form_configuration_name: this.lockFormName }), credentials: 'same-origin' })
+    await fetch(this.lockEndpoint, { method: 'DELETE', headers: this.csrfHeaders(), body: JSON.stringify({ form_configuration_name: this.lockFormName }), credentials: 'same-origin' })
       .then(r => {
         if (r.status === 204) {
           const wrap = document.getElementById('lockScreenWrap');
@@ -417,7 +423,7 @@ export class InsHeader {
           document.body.classList.add('locked');
         }
       }).catch(() => {});
-  };
+  }
 
   private openSupport = (e?: Event) => {
     this.closeMenus();
@@ -751,11 +757,8 @@ export class InsHeader {
                         <i class="icon-message-circle iia-menu__fonticon" aria-hidden="true"></i>Message support
                       </button>,
                     ] : null}
-                    {/* Not in the v1.5 design: the rail footer's lock action has no other home in the shell, and the brief
-                        says nothing reachable today may be lost. Kept as a row; flagged on the task for a design call. */}
-                    <button type="button" role="menuitem" class="iia-menu__row" onClick={this.lockScreen} onMouseEnter={(e) => this.slidePill(this.umListEl, e.currentTarget as HTMLElement, (y, hh) => { this.umHoverY = y; this.umHoverH = hh; this.umHoverOn = true; })}>
-                      {this.icon('lock', 16, 'iia-menu__glyph')}Lock screen
-                    </button>
+                    {/* The v5 rail footer's "Lock screen" row is not in the v1.5 design and is not rendered. The action
+                        stays reachable through the lockScreen() method for a host that wants to wire it. TW#26371963. */}
                     <a role="menuitem" class="iia-menu__row" href={this.logoutHref} onMouseEnter={(e) => this.slidePill(this.umListEl, e.currentTarget as HTMLElement, (y, hh) => { this.umHoverY = y; this.umHoverH = hh; this.umHoverOn = true; })}>
                       {this.icon('sign-out', 16, 'iia-menu__glyph')}Log out
                     </a>

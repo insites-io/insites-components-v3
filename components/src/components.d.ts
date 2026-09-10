@@ -634,6 +634,10 @@ export namespace Components {
         "load": boolean;
         "lockEndpoint": string;
         "lockFormName": string;
+        /**
+          * Locks the admin session: emits `insLockScreen`, ends the session through `lockEndpoint` and shows the host's lock screen. The v1.5 design has no lock row, so the v6 chrome renders none; a host that keeps the lock feature calls this method from its own trigger.
+         */
+        "lockScreen": () => Promise<void>;
         "logoAlt": string;
         "logoSrc": string;
         "logoutHref": string;
