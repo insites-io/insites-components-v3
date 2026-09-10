@@ -616,7 +616,7 @@ export namespace Components {
         "hasLoad": string;
         "hasMenuToggle": boolean;
         /**
-          * Whether help panels are currently dismissed (restore row is actionable).
+          * Whether help panels are currently dismissed (restore row is actionable). Read from the preference store on load; a host may still set it.
          */
         "helpPanelsDismissed": boolean;
         /**
@@ -641,6 +641,10 @@ export namespace Components {
         "logoAlt": string;
         "logoSrc": string;
         "logoutHref": string;
+        /**
+          * Administrator-preferences endpoint: holds the dismissed help panels and the production-switch "Don't show me again" choice, per administrator, across devices.
+         */
+        "preferencesEndpoint": string;
         "profileHref": string;
         "supportLink": string;
         /**
@@ -681,6 +685,38 @@ export namespace Components {
         "maxlength": string;
         "name": string;
         "withoutLine": boolean;
+    }
+    /**
+     * ins-help-panel — the IIA v6 shell's dismissible help panel (Admin Shell v1.5 design, TW#26371963).
+     * A card that explains the screen it sits on, with a small graphic, a heading, a body and a
+     * "Dismiss permanently" control. Dismissal is stored per administrator through the
+     * administrator-preferences endpoint, so a panel dismissed once stays dismissed on every device.
+     * The account menu's "Show help panels" row (ins-header) restores every dismissed panel at once.
+     * Storage: one preference row, key `help_panels:dismissed`, value a JSON array of panel keys.
+     * The header reads the same row to decide whether its restore row is live, and clears it on restore.
+     *   <ins-help-panel panel-key="dashboard" heading="…" body="…"></ins-help-panel>
+     * Copy comes from the page (`heading` / `body`, or the default slot for richer body content); the
+     * shell owns the frame, the graphic, the persistence and the restore round trip.
+     */
+    interface InsHelpPanel {
+        /**
+          * Plain-text body. Use the default slot instead for markup.
+         */
+        "body": string;
+        /**
+          * Toast copy shown by the header when the panel is dismissed.
+         */
+        "dismissedMessage": string;
+        /**
+          * 'dashboard' draws the design's animated cards graphic; 'none' draws no graphic.
+         */
+        "graphic": string;
+        "heading": string;
+        /**
+          * Stable key for this panel, e.g. "dashboard". Required; without it nothing can be remembered.
+         */
+        "panelKey": string;
+        "preferencesEndpoint": string;
     }
     interface InsImagePicker {
         "buttonColor": string;
@@ -1828,6 +1864,10 @@ export interface InsHeadingCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLInsHeadingElement;
 }
+export interface InsHelpPanelCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLInsHelpPanelElement;
+}
 export interface InsImagePickerCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLInsImagePickerElement;
@@ -2690,6 +2730,35 @@ declare global {
     var HTMLInsHeadingElement: {
         prototype: HTMLInsHeadingElement;
         new (): HTMLInsHeadingElement;
+    };
+    interface HTMLInsHelpPanelElementEventMap {
+        "insHelpDismiss": { key: string; message: string };
+    }
+    /**
+     * ins-help-panel — the IIA v6 shell's dismissible help panel (Admin Shell v1.5 design, TW#26371963).
+     * A card that explains the screen it sits on, with a small graphic, a heading, a body and a
+     * "Dismiss permanently" control. Dismissal is stored per administrator through the
+     * administrator-preferences endpoint, so a panel dismissed once stays dismissed on every device.
+     * The account menu's "Show help panels" row (ins-header) restores every dismissed panel at once.
+     * Storage: one preference row, key `help_panels:dismissed`, value a JSON array of panel keys.
+     * The header reads the same row to decide whether its restore row is live, and clears it on restore.
+     *   <ins-help-panel panel-key="dashboard" heading="…" body="…"></ins-help-panel>
+     * Copy comes from the page (`heading` / `body`, or the default slot for richer body content); the
+     * shell owns the frame, the graphic, the persistence and the restore round trip.
+     */
+    interface HTMLInsHelpPanelElement extends Components.InsHelpPanel, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLInsHelpPanelElementEventMap>(type: K, listener: (this: HTMLInsHelpPanelElement, ev: InsHelpPanelCustomEvent<HTMLInsHelpPanelElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLInsHelpPanelElementEventMap>(type: K, listener: (this: HTMLInsHelpPanelElement, ev: InsHelpPanelCustomEvent<HTMLInsHelpPanelElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLInsHelpPanelElement: {
+        prototype: HTMLInsHelpPanelElement;
+        new (): HTMLInsHelpPanelElement;
     };
     interface HTMLInsImagePickerElementEventMap {
         "insValueChange": any;
@@ -3793,6 +3862,7 @@ declare global {
         "ins-header": HTMLInsHeaderElement;
         "ins-header-user": HTMLInsHeaderUserElement;
         "ins-heading": HTMLInsHeadingElement;
+        "ins-help-panel": HTMLInsHelpPanelElement;
         "ins-image-picker": HTMLInsImagePickerElement;
         "ins-info-table": HTMLInsInfoTableElement;
         "ins-input": HTMLInsInputElement;
@@ -4448,7 +4518,7 @@ declare namespace LocalJSX {
         "hasLoad"?: string;
         "hasMenuToggle"?: boolean;
         /**
-          * Whether help panels are currently dismissed (restore row is actionable).
+          * Whether help panels are currently dismissed (restore row is actionable). Read from the preference store on load; a host may still set it.
          */
         "helpPanelsDismissed"?: boolean;
         /**
@@ -4476,6 +4546,10 @@ declare namespace LocalJSX {
         "onInsShortcutsOpen"?: (event: InsHeaderCustomEvent<void>) => void;
         "onInsSupportOpen"?: (event: InsHeaderCustomEvent<void>) => void;
         "onInsThemeChange"?: (event: InsHeaderCustomEvent<{ theme: string }>) => void;
+        /**
+          * Administrator-preferences endpoint: holds the dismissed help panels and the production-switch "Don't show me again" choice, per administrator, across devices.
+         */
+        "preferencesEndpoint"?: string;
         "profileHref"?: string;
         "supportLink"?: string;
         /**
@@ -4515,6 +4589,42 @@ declare namespace LocalJSX {
         "onDidLoad"?: (event: InsHeadingCustomEvent<any>) => void;
         "onInsChange"?: (event: InsHeadingCustomEvent<{ name: string; old_label: string; new_label: string }>) => void;
         "withoutLine"?: boolean;
+    }
+    /**
+     * ins-help-panel — the IIA v6 shell's dismissible help panel (Admin Shell v1.5 design, TW#26371963).
+     * A card that explains the screen it sits on, with a small graphic, a heading, a body and a
+     * "Dismiss permanently" control. Dismissal is stored per administrator through the
+     * administrator-preferences endpoint, so a panel dismissed once stays dismissed on every device.
+     * The account menu's "Show help panels" row (ins-header) restores every dismissed panel at once.
+     * Storage: one preference row, key `help_panels:dismissed`, value a JSON array of panel keys.
+     * The header reads the same row to decide whether its restore row is live, and clears it on restore.
+     *   <ins-help-panel panel-key="dashboard" heading="…" body="…"></ins-help-panel>
+     * Copy comes from the page (`heading` / `body`, or the default slot for richer body content); the
+     * shell owns the frame, the graphic, the persistence and the restore round trip.
+     */
+    interface InsHelpPanel {
+        /**
+          * Plain-text body. Use the default slot instead for markup.
+         */
+        "body"?: string;
+        /**
+          * Toast copy shown by the header when the panel is dismissed.
+         */
+        "dismissedMessage"?: string;
+        /**
+          * 'dashboard' draws the design's animated cards graphic; 'none' draws no graphic.
+         */
+        "graphic"?: string;
+        "heading"?: string;
+        /**
+          * Fired on dismiss, bubbling to the document, so ins-header can light its restore row and toast.
+         */
+        "onInsHelpDismiss"?: (event: InsHelpPanelCustomEvent<{ key: string; message: string }>) => void;
+        /**
+          * Stable key for this panel, e.g. "dashboard". Required; without it nothing can be remembered.
+         */
+        "panelKey"?: string;
+        "preferencesEndpoint"?: string;
     }
     interface InsImagePicker {
         "buttonColor"?: string;
@@ -5562,6 +5672,7 @@ declare namespace LocalJSX {
         "ins-header": InsHeader;
         "ins-header-user": InsHeaderUser;
         "ins-heading": InsHeading;
+        "ins-help-panel": InsHelpPanel;
         "ins-image-picker": InsImagePicker;
         "ins-info-table": InsInfoTable;
         "ins-input": InsInput;
@@ -5701,6 +5812,19 @@ declare module "@stencil/core" {
             "ins-header": LocalJSX.InsHeader & JSXBase.HTMLAttributes<HTMLInsHeaderElement>;
             "ins-header-user": LocalJSX.InsHeaderUser & JSXBase.HTMLAttributes<HTMLInsHeaderUserElement>;
             "ins-heading": LocalJSX.InsHeading & JSXBase.HTMLAttributes<HTMLInsHeadingElement>;
+            /**
+             * ins-help-panel — the IIA v6 shell's dismissible help panel (Admin Shell v1.5 design, TW#26371963).
+             * A card that explains the screen it sits on, with a small graphic, a heading, a body and a
+             * "Dismiss permanently" control. Dismissal is stored per administrator through the
+             * administrator-preferences endpoint, so a panel dismissed once stays dismissed on every device.
+             * The account menu's "Show help panels" row (ins-header) restores every dismissed panel at once.
+             * Storage: one preference row, key `help_panels:dismissed`, value a JSON array of panel keys.
+             * The header reads the same row to decide whether its restore row is live, and clears it on restore.
+             *   <ins-help-panel panel-key="dashboard" heading="…" body="…"></ins-help-panel>
+             * Copy comes from the page (`heading` / `body`, or the default slot for richer body content); the
+             * shell owns the frame, the graphic, the persistence and the restore round trip.
+             */
+            "ins-help-panel": LocalJSX.InsHelpPanel & JSXBase.HTMLAttributes<HTMLInsHelpPanelElement>;
             "ins-image-picker": LocalJSX.InsImagePicker & JSXBase.HTMLAttributes<HTMLInsImagePickerElement>;
             "ins-info-table": LocalJSX.InsInfoTable & JSXBase.HTMLAttributes<HTMLInsInfoTableElement>;
             "ins-input": LocalJSX.InsInput & JSXBase.HTMLAttributes<HTMLInsInputElement>;

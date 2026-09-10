@@ -14365,6 +14365,39 @@ body.mini .iia-crumbs { left: 64px; }
 .iia-crumbs__current { color: var(--ins-text-1); font-weight: var(--ins-weight-semibold); white-space: nowrap; }
 /* A module heading with a submenu and no route of its own (the v5 pages' "CRM" crumb): plain text, not a dead link. */
 .iia-crumbs__text { color: var(--ins-text-3); max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ---- help panel (ins-help-panel; design L336–355) ------------------------- */
+ins-help-panel { display: block; }
+ins-help-panel[hidden] { display: none; }
+.iia-help { display: flex; flex-direction: row; gap: var(--ins-space-md); align-items: center; background: var(--ins-card); border: 1px solid var(--ins-border-color); border-radius: var(--ins-radius); padding: var(--ins-space-md); position: relative; margin-bottom: var(--ins-space-md); font-family: var(--ins-font-family); line-height: var(--ins-leading-normal); animation: ins-fade-in-up var(--ins-duration-normal) var(--ins-ease-out); }
+.iia-help__graphic { flex: none; }
+.iia-help__text { min-width: 0; padding-right: var(--ins-space-lg); align-self: stretch; }
+.iia-help__heading { font-size: var(--ins-text-md); font-weight: var(--ins-weight-semibold); color: var(--ins-text-1); }
+.iia-help__body { margin: var(--ins-space-2xs) 0 var(--ins-space-xs); font-size: var(--ins-text-sm); line-height: var(--ins-leading-snug); color: var(--ins-text-3); max-width: 640px; text-wrap: pretty; }
+.iia-help__dismiss { position: absolute; top: var(--ins-space-xs); right: var(--ins-space-xs); width: 28px; height: 28px; border: none; border-radius: var(--ins-radius); background: transparent; color: var(--ins-ui-2); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-size: var(--ins-chrome-glyph-sm); }
+.iia-help__dismiss:hover { background: var(--ins-ui-1); color: var(--ins-text-1); }
+.iia-help__dismiss:focus-visible { outline: 2px solid var(--ins-main); outline-offset: 1px; }
+@media (max-width: 767px) { .iia-help { flex-direction: column; align-items: flex-start; } .iia-help__text { padding-right: 0; } }
+/* The graphic's build animation (design L109–114). */
+@keyframes iia-bar-build { 0% { transform: scaleY(0); opacity: 0; } 8% { opacity: 1; } 16% { transform: scaleY(1.09); opacity: 1; } 24% { transform: scaleY(1); } 86% { transform: scaleY(1); opacity: 1; } 95%, 100% { transform: scaleY(0); opacity: 0; } }
+@keyframes iia-wipe-build { 0% { transform: scaleX(0); } 14%, 86% { transform: scaleX(1); } 95%, 100% { transform: scaleX(0); } }
+.iia-dash-el { transform-box: fill-box; animation-duration: 4s; animation-timing-function: var(--ins-ease-out); animation-iteration-count: infinite; }
+.iia-dash-bar { transform-origin: bottom; animation-name: iia-bar-build; }
+.iia-dash-wipe { transform-origin: left center; animation-name: iia-wipe-build; }
+@media (prefers-reduced-motion: reduce) { .iia-dash-el { animation: none; } }
+
+/* ---- toast (DS Toast markup + the design's timer bar; region L84–94) ------ */
+.iia-toast-region { position: fixed; top: calc(56px + var(--ins-space-sm)); right: var(--ins-space-sm); z-index: var(--iia-z-scrim); display: flex; flex-direction: column; align-items: flex-end; gap: var(--ins-space-xs); pointer-events: none; }
+.iia-toast { pointer-events: auto; position: relative; overflow: hidden; display: flex; gap: 12px; align-items: flex-start; background: var(--ins-card); border-radius: var(--ins-radius); box-shadow: var(--ins-shadow-2); padding: 14px 16px; font-family: var(--ins-font-family); min-width: 280px; max-width: 380px; border-left: 3px solid var(--ins-alert-positive); animation: ins-fade-in-up var(--ins-duration-slow) var(--ins-ease-out); }
+.iia-toast .ins-toast__icon { flex: none; font-size: 18px; line-height: 1; margin-top: 1px; color: var(--ins-alert-positive); }
+.iia-toast .ins-toast__body { flex: 1; min-width: 0; }
+.iia-toast__msg { margin: 0; font-size: var(--ins-text-sm); line-height: var(--ins-leading-snug); color: var(--ins-text-1); }
+.iia-toast .ins-toast__close { flex: none; cursor: pointer; color: var(--ins-ui-2); background: none; border: 0; font-size: 14px; padding: 2px; }
+.iia-toast .ins-toast__close:hover { color: var(--ins-text-2); }
+.iia-toast__timer { position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: var(--ins-alert-positive); transform-origin: left center; animation: iia-toast-timer 4s linear forwards; }
+@keyframes iia-toast-timer { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+@media (max-width: 640px) { .iia-toast-region { top: auto; bottom: var(--ins-space-sm); left: var(--ins-space-sm); right: var(--ins-space-sm); align-items: stretch; } .iia-toast { width: 100%; max-width: none; box-sizing: border-box; } }
+@media (prefers-reduced-motion: reduce) { .iia-toast__timer { animation: none; } }
 @media (max-width: 767px) { .iia-crumbs__link { max-width: 90px; } }
 
 /* ---- dialogs (shortcuts, production confirmation) ------------------------ */

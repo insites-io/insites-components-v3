@@ -56,8 +56,12 @@ export class InsHeader {
   @Prop() lockFormName: string = 'modules/insites_core/lock_admin';
   /** Show the "Show help panels" restore row in the account menu. */
   @Prop() helpRestore: boolean = true;
-  /** Whether help panels are currently dismissed (restore row is actionable). */
+  /** Whether help panels are currently dismissed (restore row is actionable). Read from the preference
+   *  store on load; a host may still set it. */
   @Prop({ mutable: true }) helpPanelsDismissed: boolean = false;
+  /** Administrator-preferences endpoint: holds the dismissed help panels and the production-switch
+   *  "Don't show me again" choice, per administrator, across devices. */
+  @Prop() preferencesEndpoint: string = '/insites/core/administrator-preferences';
   /** Presence label on the support pill. */
   @Prop() supportPresence: string = 'Online';
   @Prop() supportReplyLine: string = 'Replies in ~2h';
@@ -86,6 +90,11 @@ export class InsHeader {
   @State() shortcutsOpen: boolean = false;
   @State() prodConfirm: { id: string; name: string } | null = null;
   @State() prodDontShow: boolean = false;
+  /** The one toast the shell shows (design: green tick, message, timer bar). */
+  @State() toast: { text: string; kind: string; id: number } | null = null;
+  private toastTimer: any = null;
+  private static readonly PREF_HELP = 'help_panels:dismissed';
+  private static readonly PREF_PROD_WARNING = 'switcher:skip_production_warning';
   @State() envQuery: string = '';
   @State() crumbs: Array<{ label: string; link?: string; app?: boolean; withSubmenu?: boolean }> = [];
   @State() hash: string = (typeof window !== 'undefined' && window.location.hash) || '';
@@ -158,6 +167,7 @@ export class InsHeader {
       };
     } else {
       this.bindIntercom();
+      this.readPreferences();
       // ins-sidebar's own load check stamps body.mini below 1260px without telling anyone, and may run
       // before componentWillLoad read it; re-sync, then apply the 1280px overlay rule on top.
       this.sidebarMini = document.body.classList.contains('mini');
@@ -448,11 +458,66 @@ export class InsHeader {
     try { ic('onUnreadCountChange', (n: number) => { this.unread = n || 0; }); } catch (err) { /* ignore */ }
   }
 
+  // ---- administrator preferences (help panels, production warning) --------
+
+  private async readPref(key: string): Promise<string | null> {
+    try {
+      const r = await fetch(`${this.preferencesEndpoint}?key=${encodeURIComponent(key)}`, { credentials: 'same-origin', headers: { 'Accept': 'application/json' } });
+      if (!r.ok) return null;
+      const j = await r.json();
+      const row = j && j.items && Array.isArray(j.items.results) ? j.items.results[0] : null;
+      return row && row.value != null ? String(row.value) : null;
+    } catch (e) { return null; }
+  }
+
+  private writePref(key: string, value: string) {
+    return fetch(this.preferencesEndpoint, {
+      method: 'POST', credentials: 'same-origin', headers: this.csrfHeaders(),
+      body: JSON.stringify({ payload: { key, value } }),
+    }).catch(() => { /* the in-memory state already reflects the choice */ });
+  }
+
+  private async readPreferences() {
+    const [help, prod] = await Promise.all([this.readPref(InsHeader.PREF_HELP), this.readPref(InsHeader.PREF_PROD_WARNING)]);
+    if (help != null) {
+      try { const list = JSON.parse(help); this.helpPanelsDismissed = Array.isArray(list) && list.length > 0; } catch (e) { /* keep host value */ }
+    }
+    if (prod != null) this.prodDontShow = prod === 'true';
+  }
+
+  /** A help panel on the page was dismissed: light the restore row and confirm with the design's toast. */
+  @Listen('insHelpDismiss', { target: 'document' })
+  onHelpDismiss(e: CustomEvent<{ key: string; message: string }>) {
+    if (!this.isV6) return;
+    this.helpPanelsDismissed = true;
+    this.showToast((e.detail && e.detail.message) || 'Help hidden for you. Restore it from your account menu, under Show help panels.');
+  }
+
   private restoreHelp = () => {
     if (!this.helpPanelsDismissed) return;
     this.helpPanelsDismissed = false;
     this.closeMenus();
+    this.writePref(InsHeader.PREF_HELP, '[]');
     this.insHelpRestore.emit();
+    this.showToast('All dismissed help panels restored');
+  };
+
+  private setProdDontShow = (on: boolean) => {
+    this.prodDontShow = on;
+    this.writePref(InsHeader.PREF_PROD_WARNING, on ? 'true' : 'false');
+  };
+
+  // ---- toast (design: green tick, message, timer bar; docks to the bottom on phones) ----
+
+  private showToast(text: string, kind: string = 'success') {
+    if (this.toastTimer) clearTimeout(this.toastTimer);
+    this.toast = { text, kind, id: Date.now() };
+    this.toastTimer = setTimeout(() => { this.toast = null; }, 4000);
+  }
+
+  private hideToast = () => {
+    if (this.toastTimer) clearTimeout(this.toastTimer);
+    this.toast = null;
   };
 
   // ---- instance roster ---------------------------------------------------
@@ -491,8 +556,12 @@ export class InsHeader {
   private doSwitch(to: string, env: string) {
     this.prodConfirm = null;
     this.closeMenus();
-    // Presentational this release: no Console instance-list API exists yet (see spec README).
+    // Presentational this release: no Console instance-list API exists yet (see spec README). The toast
+    // ("Now in <instance>.") fires only when a roster row other than this instance was chosen, so it stays
+    // dormant until Console supplies one.
     this.insInstanceSwitch.emit({ from: this.instanceId, to, env });
+    const target = this.roster().find(i => i.id === to);
+    if (target && to !== this.instanceId) this.showToast(`Now in ${target.name}.`);
   }
 
   private envMenuKeyDown = (e: KeyboardEvent) => {
@@ -832,12 +901,24 @@ export class InsHeader {
                 <i class="icon-alert-triangle iia-dialog__warn" aria-hidden="true"></i>
                 <h2 id="iia-prod-switch-title" class="iia-dialog__h2">Switch to {this.prodConfirm.name}?</h2>
                 <p class="iia-dialog__p">{this.prodConfirm.name} is <strong>the live production instance</strong>. Visitors see changes <strong>as soon as you save them</strong>, and emails send for real.</p>
-                <ins-checkbox label="Don't show me again" checked={this.prodDontShow} onInsCheck={(e: any) => this.prodDontShow = !!(e.detail && (e.detail.checked ?? e.detail))}></ins-checkbox>
+                <ins-checkbox label="Don't show me again" checked={this.prodDontShow} onInsCheck={(e: any) => this.setProdDontShow(!!(e.detail && (e.detail.checked ?? e.detail)))}></ins-checkbox>
                 <div class={{ 'iia-dialog__actions': true, 'iia-dialog__actions--stack': this.tight }}>
                   <button type="button" class="iia-btn iia-btn--outline" onClick={() => this.prodConfirm = null}><i class="icon-x" aria-hidden="true"></i>Cancel</button>
                   <button type="button" class="iia-btn iia-btn--solid" onClick={() => this.doSwitch(this.prodConfirm.id, 'production')}><i class="icon-refresh-cw" aria-hidden="true"></i>Switch to production</button>
                 </div>
               </div>
+            </div>
+          </div>
+        ) : null}
+
+        {/* toast: DS Toast markup (success), 4s timer bar, below the header on desktop, docked bottom on phones */}
+        {this.toast ? (
+          <div class="iia-toast-region" role="status" aria-live="polite">
+            <div class={`iia-toast ins-toast ins-toast--${this.toast.kind}`} key={String(this.toast.id)}>
+              <i class="icon-check-circle ins-toast__icon" aria-hidden="true"></i>
+              <div class="ins-toast__body"><p class="ins-toast__msg iia-toast__msg">{this.toast.text}</p></div>
+              <button type="button" class="ins-toast__close" aria-label="Dismiss notification" onClick={this.hideToast}><i class="icon-x" aria-hidden="true"></i></button>
+              <span class="iia-toast__timer" aria-hidden="true"></span>
             </div>
           </div>
         ) : null}
