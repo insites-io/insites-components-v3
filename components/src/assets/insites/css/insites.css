@@ -14128,8 +14128,17 @@ body.mini .iia-shell--v6 .ins-renderer-wrap.content { margin-left: 0; width: aut
 /* width:auto, not 100%: in overlay mode (<1280px) the body row carries a collapsed-rail gutter as
    padding, and a 100% block would run that many pixels past the viewport. */
 .iia-shell--v6 .ins-renderer-wrap.content.no-sidebar { margin-left: 0; width: auto; }
-/* The breadcrumb bar in the header replaces the crumbs the renderer drew inside the content column. */
-.iia-shell--v6 .ins-renderer-wrap .ins-breadcrumbs-wrap { display: none; }
+/* The breadcrumb bar in the header replaces the crumbs the renderer drew inside the content column, and the
+   crumbs every module SPA draws in its own page title (Header.vue › .page-title-wrapper › ins-breadcrumbs in all
+   eleven modules). One trail, owned by the shell; the module copy stays in the DOM so its route data still flows. */
+.iia-shell--v6 .ins-renderer-wrap .ins-breadcrumbs-wrap,
+.iia-shell--v6 .page-title-wrapper ins-breadcrumbs,
+.iia-shell--v6 .page-title-wrapper .hide-last-breadcrumb { display: none; }
+/* The content column is the scroller, as in the prototype (<main style="flex:1;overflow-y:auto">): header and rail
+   stay put, the page scrolls beneath the breadcrumb bar. Legacy app.min.css gives .ins-renderer-wrap overflow:hidden
+   from the iframe era, which inside this fixed-height frame clipped every SPA page taller than the viewport and left
+   nothing to scroll. */
+.iia-shell--v6 .ins-renderer-wrap.content { overflow-y: auto; overflow-x: hidden; }
 .iia-shell--v6 .ins-renderer-wrap iframe { height: calc(100vh - 56px - 40px); }
 .iia-shell--v6 .ins-renderer-wrap { padding-left: var(--ins-space-md); }
 /* Overlay-only scrollbar (design): a reserved gutter would eat a fifth of the collapsed rail. */
