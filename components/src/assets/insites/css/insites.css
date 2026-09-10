@@ -14363,6 +14363,8 @@ body.mini .iia-crumbs { left: 64px; }
 .iia-crumbs__sep { font-size: var(--iia-glyph-2xs); color: var(--ins-ui-2); }
 .iia-crumbs__link { color: var(--ins-text-3); max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; border-radius: var(--ins-radius); text-decoration: none; }
 .iia-crumbs__current { color: var(--ins-text-1); font-weight: var(--ins-weight-semibold); white-space: nowrap; }
+/* A module heading with a submenu and no route of its own (the v5 pages' "CRM" crumb): plain text, not a dead link. */
+.iia-crumbs__text { color: var(--ins-text-3); max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 @media (max-width: 767px) { .iia-crumbs__link { max-width: 90px; } }
 
 /* ---- dialogs (shortcuts, production confirmation) ------------------------ */

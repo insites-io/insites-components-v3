@@ -296,11 +296,20 @@ export class InsHeader {
   // v6 behaviour
   // ---------------------------------------------------------------------------
 
-  /** Breadcrumb bar follows ins-renderer's route. */
+  /** Breadcrumb bar follows ins-renderer's route: the rail's chain, available before any SPA has mounted. */
   @Listen('insRouteChange', { target: 'document' })
   onRouteChange(e: CustomEvent<{ crumbs: any[] }>) {
     if (!this.isV6) return;
     this.crumbs = Array.isArray(e.detail && e.detail.crumbs) ? e.detail.crumbs : [];
+  }
+
+  /** …and then the page's own trail wins. Every module SPA calls ins-breadcrumbs.updateCrumbs() with the real
+   *  route (Home › CRM › Contacts › …), which is deeper and fresher than the rail's chain, and it fires on every
+   *  in-app navigation the rail never sees. Its own rendering is hidden under the v6 shell; this bar draws it. */
+  @Listen('insBreadcrumbsChange', { target: 'document' })
+  onBreadcrumbsChange(e: CustomEvent<{ crumbs: any[] }>) {
+    if (!this.isV6) return;
+    if (Array.isArray(e.detail && e.detail.crumbs)) this.crumbs = e.detail.crumbs;
   }
 
   /** The dashboard route (`#/`) never routes through the rail, so the bar also watches the hash. */
@@ -533,29 +542,41 @@ export class InsHeader {
     if (shell) shell.classList.toggle('iia-shell--crumbs', !!this.crumbView());
   }
 
+  private static crumbPath(link: any) {
+    // Crumb links arrive as "/crm/contacts", "#/crm/contacts" or "" (a module heading with a submenu).
+    const s = String(link || '').replace(/^#/, '').replace(/\/+$/, '');
+    if (!s || s === '#') return '';
+    return s.startsWith('/') ? s : '/' + s;
+  }
+
   private crumbView() {
-    // Design: the bar exists only off the dashboard, and reads Home > module > sub. The bar draws
-    // its own Home, so a leading home entry from the rail is dropped, and the leaf that
-    // ins-renderer records twice on a nested route is collapsed.
+    // Design: the bar exists only off the dashboard and reads Home › module › section › …. The bar draws its
+    // own Home, so a leading home entry is dropped, and the leaf the v5 pages record twice (their own
+    // "hide the last crumb" trick) is collapsed. Every entry with a route is a link, except the one that IS
+    // the current page; a module heading (withSubmenu, no route) is plain text, as in the v5 bar.
     const hash = this.hash.replace(/^#/, '');
     if (hash === '' || hash === '/' || /^\/dashboard\/?$/i.test(hash)) return null;
     const raw = (this.crumbs || []).filter(Boolean);
     const c = raw.filter((x, i) => {
       if (i === 0 && InsHeader.isHomeCrumb(x)) return false;
       const prev = raw[i - 1];
-      return !(prev && prev.label === x.label && (prev.link || '') === (x.link || ''));
+      return !(prev && prev.label === x.label);
     });
     if (!c.length) return null;
-    const module = c[0];
-    const last = c[c.length - 1];
-    if (c.length === 1 && InsHeader.isHomeCrumb(module)) return null;
-    return { module, last, hasSub: c.length > 1 };
+    if (c.length === 1 && InsHeader.isHomeCrumb(c[0])) return null;
+    const here = InsHeader.crumbPath(hash);
+    return c.map((x, i) => {
+      const path = InsHeader.crumbPath(x.link);
+      const routable = !!path && !x.withSubmenu;
+      const current = i === c.length - 1 && (!routable || path === here);
+      return { label: String(x.label || ''), path, routable, current };
+    });
   }
 
   private goHome = (e: Event) => { e.preventDefault(); window.location.hash = '#/'; };
-  private goCrumb = (e: Event, crumb: any) => {
+  private goCrumb = (e: Event, path: string) => {
     e.preventDefault();
-    if (crumb && crumb.link && crumb.link !== '#') window.location.hash = crumb.link;
+    if (path) window.location.hash = '#' + path;
   };
 
   private icon(name: string, size = 16, cls = '') {
@@ -774,12 +795,14 @@ export class InsHeader {
           <div class="iia-crumbs" data-screen-label="Breadcrumb bar">
             <nav aria-label="Breadcrumb" class="iia-crumbs__nav">
               <a href="#/" class="iia-crumbs__home" onClick={this.goHome}><i class="icon-home" aria-hidden="true"></i>Home</a>
-              <i class="icon-chevron-right iia-crumbs__sep" aria-hidden="true"></i>
-              {crumbs.hasSub ? [
-                <a href="#" class="iia-crumbs__link" onClick={(e) => this.goCrumb(e, crumbs.module)}>{crumbs.module.label}</a>,
+              {crumbs.map((c) => [
                 <i class="icon-chevron-right iia-crumbs__sep" aria-hidden="true"></i>,
-                <span aria-current="page" class="iia-crumbs__current">{crumbs.last.label}</span>,
-              ] : <span aria-current="page" class="iia-crumbs__current">{crumbs.module.label}</span>}
+                c.current
+                  ? <span aria-current="page" class="iia-crumbs__current">{c.label}</span>
+                  : c.routable
+                    ? <a href={'#' + c.path} class="iia-crumbs__link" onClick={(e) => this.goCrumb(e, c.path)}>{c.label}</a>
+                    : <span class="iia-crumbs__text">{c.label}</span>,
+              ])}
             </nav>
           </div>
         ) : null}

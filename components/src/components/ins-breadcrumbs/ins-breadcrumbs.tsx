@@ -40,11 +40,17 @@ export class InsBreadCrumbs {
     }
   }
 
+  /** Fires whenever a page hands this component a new trail (`updateCrumbs`). Bubbles to the document so the
+   *  v6 shell header (`ins-header variant="v6"`) can draw the same trail in its breadcrumb bar: the page knows
+   *  its real route (Home › CRM › Contacts › …), the rail only knows which item was clicked. TW#26371963. */
+  @Event({ bubbles: true, composed: true }) insBreadcrumbsChange: EventEmitter<{ crumbs: any[] }>;
+
   @Method()
   async updateCrumbs(crumbs: any[], noRedirect: boolean = false){ // typed any[] deliberately: a local interface in a public @Method signature leaks into the generated components.d.ts
     this.breadcrumbs = crumbs;
     let parsedCrumbs = JSON.stringify(crumbs);
     window.localStorage.setItem('ins_breadcrumbs', parsedCrumbs);
+    this.insBreadcrumbsChange.emit({ crumbs: JSON.parse(parsedCrumbs) });
 
     let lastCrumb = JSON.parse(parsedCrumbs).pop();
     if (!lastCrumb.app && !lastCrumb.withSubmenu){

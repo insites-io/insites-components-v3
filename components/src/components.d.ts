@@ -2161,6 +2161,7 @@ declare global {
     interface HTMLInsBreadcrumbsElementEventMap {
         "routePage": { crumbs: any[]; redirect: boolean };
         "didLoad": void;
+        "insBreadcrumbsChange": { crumbs: any[] };
     }
     interface HTMLInsBreadcrumbsElement extends Components.InsBreadcrumbs, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsBreadcrumbsElementEventMap>(type: K, listener: (this: HTMLInsBreadcrumbsElement, ev: InsBreadcrumbsCustomEvent<HTMLInsBreadcrumbsElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3950,6 +3951,10 @@ declare namespace LocalJSX {
         "hasLoad"?: string;
         "load"?: boolean;
         "onDidLoad"?: (event: InsBreadcrumbsCustomEvent<void>) => void;
+        /**
+          * Fires whenever a page hands this component a new trail (`updateCrumbs`). Bubbles to the document so the v6 shell header (`ins-header variant="v6"`) can draw the same trail in its breadcrumb bar: the page knows its real route (Home › CRM › Contacts › …), the rail only knows which item was clicked. TW#26371963.
+         */
+        "onInsBreadcrumbsChange"?: (event: InsBreadcrumbsCustomEvent<{ crumbs: any[] }>) => void;
         "onRoutePage"?: (event: InsBreadcrumbsCustomEvent<{ crumbs: any[]; redirect: boolean }>) => void;
     }
     interface InsButton {
