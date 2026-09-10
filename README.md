@@ -48,31 +48,32 @@ Component styles are located in the styles folder, files are named with its comp
 To build components or styles, go to its respective folders and run `npm run build`.
 
 ## Releasing (publishes to the `v3` CDN path only — never `v2`)
-1. Build components and styles
 
-2. Go to release folder and rename the current version to its release version. eg v3.0.0 rename to v3.0.1
+Every release is a **pinned version plus the `v3/latest` alias**. Instances load the alias; the pin is what
+you roll back to. Pinned folders are immutable: never re-publish one.
 
-3. Delete all `.js` files inside it
+1. Build: `cd components && npm run build`.
+2. Bump `components/package.json` `version` (3.x.y) and add a section to `Release Notes` saying what changed
+   since the previous pin.
+3. Publish: `scripts/publish.sh 3.x.y`. It refuses to run if the build is missing, the version does not
+   match package.json, or the pin already exists. It syncs the build and CSS to `v3/3.x.y/` and `v3/latest/`,
+   bumps `dist/version-cache.txt` (the insites_core layouts append it as `?updated=` to every bundle URL, so
+   browsers stop serving the previous loader from cache), invalidates CloudFront and byte-verifies the edge.
+4. Tag: `git tag v3.x.y && git push --tags`.
+5. Only if a module changed too: deploy it after the bundle, never before (the bundle is additive; a new
+   page on an old bundle is what breaks).
 
-4. Copy all files in `components/www/build` and paste it in the version folder (point 2).
+**Rollback:** `scripts/rollback.sh 3.x.y` re-syncs a pinned folder onto `v3/latest` (with delete), bumps
+the stamp and invalidates. Exercised on 2026-09-10 (3.1.0 → 3.0.0 → 3.1.0 on iia-staging). A per-request
+check without touching the alias: append `?insites_component_version=v3/3.x.y` to any admin URL.
 
-5. Copy all insites css in `components/assets/css` and replace the files in the css folder in the version folder (point 2).
+**Compatibility contract** (Build 0, TW#26709029): consumers of `v3/latest` are instances × installed module
+versions, so every publish is additive-only — no removed props, events, tags or class names; default renders
+unchanged; new behaviour behind new props or variants. Smoke the release on the oldest v6 instance as well
+as the newest once a second v6 instance exists.
 
-6. Delete all files in `release/v3/latest` folder
-
-7. Copy all files in the version folder you are going to release (point 2)
-
-8. Log into the **Styleguide** AWS account (SSO profile `insites`, account 959727866136) and go to the [insites-style-guide](https://s3.console.aws.amazon.com/s3/buckets/insites-style-guide?region=us-west-2&tab=objects) bucket — note: the bucket is `insites-style-guide`, NOT `ins-styleguide` as older docs said. CLI: `aws s3 sync <build> s3://insites-style-guide/v3/latest/ --profile insites`
-
-9. First upload the new version folder, under `v3/`
-
-10. Then delete all files in the `v3/latest` folder
-
-11. Upload the latest release files inside the `v3/latest` folder
-
-12. Go to [AWS CloudFront](https://console.aws.amazon.com/cloudfront/v3/home#/distributions/E35G635O6GR2HY/invalidations) — distribution `E35G635O6GR2HY` (the `EKAHJ8SFS25OG` id in older docs does not exist). CLI: `aws cloudfront create-invalidation --distribution-id E35G635O6GR2HY --paths "/v3/*" --profile insites`
-
-13. Create invalidation with this object path `/v3/latest/*`
+Infrastructure: bucket `insites-style-guide` (us-west-2), CloudFront `E35G635O6GR2HY`, Styleguide AWS
+account 959727866136, SSO profile `insites`. Older docs naming `ins-styleguide` / `EKAHJ8SFS25OG` are wrong.
 
 **Never repeat this process against `v2/*`.** `v2` is frozen for Combinate and
 old client websites — it takes security/data-loss backports only, applied

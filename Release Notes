@@ -1,5 +1,21 @@
 Release Notes
 
+*Insites Components* `v3.1.0` — 2026-09-10 (admin CDN line, `v3/latest`; pinned at `v3/3.1.0`)
+
+First pinned release of the v6 admin shell line. `v3/3.0.0` (4 Sep) was the byte-identical fork of insites-components-v2 at v2.15.6 plus the seven CRM record-page components; everything since went to `v3/latest` only. This pin captures what is live.
+
+*Since 3.0.0*
+- `ins-header`, `ins-sidebar`, `ins-sidebar-item`: `variant="v6"`, the IIA Admin Shell v1.5 design — rail groups and flyouts, 56px header, instance switcher UI with production warning, help and account menus, breadcrumb bar, tooltips, dark mode, keyboard shortcuts (TW#26371963)
+- `ins-header`: breadcrumb bar draws the page's own trail (`insBreadcrumbsChange` from `ins-breadcrumbs`); toast; per-administrator "Don't show me again" on the production warning; "Show help panels" restore on the preference store; `lockScreen()` method replaces the lock row
+- `ins-help-panel`: new — the design's dismissible help card with per-administrator persistence
+- `ins-breadcrumbs`: emits `insBreadcrumbsChange` on `updateCrumbs()`
+- `ins-action-menu`: hover-submenus removed (TW#26717377)
+- Shell stylesheet: v6 tokens and chrome layer; hides module page-title crumbs under the shell; the content column is the scroller
+
+*Rollback*: `scripts/rollback.sh 3.0.0` (drops the shell — only if the shell itself is the fault).
+
+---
+
 Hi @here *Insites Components* `v2.0.0` is now released.
 
 Please see the latest documentation for the updates
