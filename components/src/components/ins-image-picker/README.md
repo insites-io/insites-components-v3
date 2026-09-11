@@ -49,16 +49,16 @@ Type: `Promise<any>`
 
 
 
-### `setValue(value: any, file_name: any) => Promise<void>`
+### `setValue(value: string, file_name: string) => Promise<void>`
 
 
 
 #### Parameters
 
-| Name        | Type  | Description |
-| ----------- | ----- | ----------- |
-| `value`     | `any` |             |
-| `file_name` | `any` |             |
+| Name        | Type     | Description |
+| ----------- | -------- | ----------- |
+| `value`     | `string` |             |
+| `file_name` | `string` |             |
 
 #### Returns
 

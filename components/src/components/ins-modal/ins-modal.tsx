@@ -35,8 +35,6 @@ export class InsModal {
 
   @State() showModal: boolean = false;
 
-  parentModal: any;
-
   componentDidLoad() {
     this.adjustPosition();
     if (this.checkLoad) this.load = true;
@@ -106,7 +104,7 @@ export class InsModal {
     insCardWrap.parentElement.style.left = `calc(50% - ${adjust}px)`;
   }
 
-  closeConfirmModal(type){
+  closeConfirmModal(type: string){
     this.insClose.emit({
       action: type,
       value: this.value
@@ -119,7 +117,7 @@ export class InsModal {
   }
 
   @Method()
-  async parentClosed(type){
+  async parentClosed(type: string){
     this.closeConfirmModal(type);
   }
 
@@ -142,7 +140,7 @@ export class InsModal {
     parentModal.close()
   }
 
-  clickOutsideHandler(e){
+  clickOutsideHandler(e: MouseEvent){
     if (this.preventClickOutside) return;
     let insModalWrap = this.insModalEl.querySelector('.ins-modal-wrap');
     let insModalBackdrop = this.insModalEl.querySelector('.ins-backdrop-wrap');
@@ -158,8 +156,7 @@ export class InsModal {
         ${this.showModal ? 'show-modal' : ''} ${this.light ? 'light' : ''}
         ${this.noButton ? 'no-button' : ''}
         ${this.fullHeight ? 'full-height' : ''}
-        ${this.heading ? 'has-heading' : ''}
-        ${this.noButton ? 'no-button' : ''}`} onClick={e => this.clickOutsideHandler(e)}>
+        ${this.heading ? 'has-heading' : ''}`} onClick={e => this.clickOutsideHandler(e)}>
 
         {this.withBackdrop ? <ins-backdrop light={this.light}></ins-backdrop> : ''}
         <ins-card steady no-padding>

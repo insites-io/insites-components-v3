@@ -45,7 +45,7 @@ export class InsInputSearch {
 
   activated = false;
   empty = true;
-  mainWrapEl;
+  mainWrapEl: HTMLElement;
   searchClicked = false;
   optionClicked = false;
   clearClicked = false;
@@ -115,7 +115,7 @@ export class InsInputSearch {
 
   initOutsideClick() {
     window.addEventListener('click', event => {
-      let clickedEl = event.target as any;
+      let clickedEl = event.target as HTMLElement;
       let closestEl = clickedEl.closest('ins-input-search');
 
       if (closestEl !== this.insInputSearchEl) {
@@ -135,11 +135,11 @@ export class InsInputSearch {
     });
   }
 
-  validateDescription(value) {
+  validateDescription(value: string) {
     let allowed = '<a>,<abbr>,<acronym>,<address>,<article>,<aside>,<b>,<base>,<bdi>,<bdo>,<blockquote>,<br>,<caption>,<code>,<dd>,<del>,<details>,<dfn>,<dir>,<div>,<dl>,<dt>,<em>,<font>,<h1>,<h2>,<h3>,<h4>,<h5>,<h6>,<hr>,<i>,<ins>,<label>,<li>,<link>,<mark>,<menu>,<meter>,<nav>,<ol>,<p>,<pre>,<q>,<s>,<samp>,<section>,<small>,<span>,<strike>,<strong>,<sub>,<summary>,<sup>,<table>,<tbody>,<td>,<tfoot>,<th>,<thead>,<time>,<tr>,<tt>,<u>,<ul>,<wbr>';
     allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
 
-    var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
+    const tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
     commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
     return value.replace(commentsAndPhpTags, '').replace(tags, ($0, $1) => {
       return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
@@ -182,7 +182,6 @@ export class InsInputSearch {
     let eventValue = event.target.value;
 
 		if (event.keyCode === 13) {
-      // this.dropUp = false;
       this.clearSearchResults();
       this.checkDropUp();
       if ((eventValue.trim() && !this.readonly) || (this.blankSearch && !this.readonly)) {
@@ -253,11 +252,6 @@ export class InsInputSearch {
         options.push(option);
       }
     }
-
-    // if (!options.length) {
-    //   this.insInputSearchEl.querySelector('.ins-input-search').classList.remove('drop-up');
-    //   this.insInputSearchEl.querySelector('.ins-input-search .ins-input-search-text').removeAttribute('style');
-    // }
 
     return (
       <div class={`ins-input-search-options-wrap ${options.length ? 'has-options' : 'no-options'} ${this.multiple && this.value.length ? 'has-multiple-value' : ''}`}>
@@ -342,23 +336,20 @@ export class InsInputSearch {
   }
 
   setOptionsPosition() {
-    let fieldEl = this.insInputSearchEl.querySelector('.ins-input-search .ins-input-search-text') as HTMLInputElement;
-    let labelWrap = this.insInputSearchEl.querySelector('.ins-input-search label.ins-form-label') as HTMLInputElement;
-    let searchOptions = this.insInputSearchEl.querySelector('.ins-input-search-options-wrap') as HTMLInputElement;
-    let searchWrap = this.insInputSearchEl.querySelector('.ins-input-search-container') as HTMLInputElement;
-    let searchValueWrap = this.insInputSearchEl.querySelector('.ins-input-search-value') as HTMLInputElement;
-    let descriptionWrap = this.insInputSearchEl.querySelector('.ins-description') as HTMLInputElement;
-    let errorWrap = this.insInputSearchEl.querySelector('.ins-input-search.has-error .error-message') as HTMLInputElement;
-    let searchInput = this.insInputSearchEl.querySelector('.ins-input-search-text') as HTMLInputElement;
+    let fieldEl = this.insInputSearchEl.querySelector('.ins-input-search .ins-input-search-text') as HTMLElement;
+    let labelWrap = this.insInputSearchEl.querySelector('.ins-input-search label.ins-form-label') as HTMLElement;
+    let searchOptions = this.insInputSearchEl.querySelector('.ins-input-search-options-wrap') as HTMLElement;
+    let searchWrap = this.insInputSearchEl.querySelector('.ins-input-search-container') as HTMLElement;
+    let searchValueWrap = this.insInputSearchEl.querySelector('.ins-input-search-value') as HTMLElement;
+    let descriptionWrap = this.insInputSearchEl.querySelector('.ins-description') as HTMLElement;
+    let errorWrap = this.insInputSearchEl.querySelector('.ins-input-search.has-error .error-message') as HTMLElement;
+    let searchInput = this.insInputSearchEl.querySelector('.ins-input-search-text') as HTMLElement;
 
     if (!this.dropUp) {
       searchOptions.setAttribute('style', `top: ${(fieldEl?.offsetHeight + 6) + (labelWrap?.offsetHeight ? labelWrap?.offsetHeight + 3 : 0) + (searchValueWrap?.offsetHeight ? searchValueWrap?.offsetHeight + 6 : 0)}px`);
       if (this.multiple && this.value.length) searchInput.removeAttribute('style');
     } else {
       if (this.multiple) {
-        // if (this.value.length) {
-          // searchInput.setAttribute('style', `bottom: ${searchValueWrap?.offsetHeight + 7 || 0}px`);
-
           if (this.value.length) {
             searchOptions.setAttribute('style', `bottom: ${(fieldEl?.offsetHeight + 1) + (this.multiple && this.value.length ? searchInput?.offsetHeight : 0) + (searchValueWrap?.offsetHeight || 0) + (errorWrap?.offsetHeight ? errorWrap?.offsetHeight + 4 : 0) + (descriptionWrap?.offsetHeight + 4 || 0) - this.addPx}px`);
             searchInput.setAttribute('style', `bottom: ${searchWrap?.offsetHeight - 2 || 0}px`);
@@ -366,29 +357,10 @@ export class InsInputSearch {
             searchOptions.setAttribute('style', `bottom: ${(fieldEl?.offsetHeight + 1) + (this.multiple && this.value.length ? searchInput?.offsetHeight : 0) + (searchValueWrap?.offsetHeight || 0) + (errorWrap?.offsetHeight ? errorWrap?.offsetHeight + 4 : 0) + (descriptionWrap?.offsetHeight + 4 || 0)}px`);
             searchInput.removeAttribute('style');
           }
-
-          // console.log((fieldEl?.offsetHeight + 1), (this.multiple && this.value.length ? searchInput?.offsetHeight : 0), (searchValueWrap?.offsetHeight || 0), (errorWrap?.offsetHeight ? errorWrap?.offsetHeight + 4 : 0), (descriptionWrap?.offsetHeight + 4 || 0))
-        // } else {
-        //   searchInput.removeAttribute('style');
-        //   searchOptions.removeAttribute('style');
-        // }
       } else {
         searchOptions.setAttribute('style', `bottom: ${(!this.multiple ? fieldEl?.offsetHeight + 1 : 7) + (this.multiple && this.value.length ? searchInput?.offsetHeight : 0) + (searchValueWrap?.offsetHeight || 0) + (errorWrap?.offsetHeight ? errorWrap?.offsetHeight + 4 : 0) + (descriptionWrap?.offsetHeight + 4 || 0)}px`);
       }
-      // searchOptions.setAttribute('style', `bottom: ${(!this.multiple ? fieldEl?.offsetHeight + 1 : 7) + (this.multiple && this.value.length ? searchInput?.offsetHeight : 0) + (searchValueWrap?.offsetHeight || 0) + (errorWrap?.offsetHeight ? errorWrap?.offsetHeight + 4 : 0) + (descriptionWrap?.offsetHeight + 4 || 0)}px`);
-      // if (this.multiple && this.value.length) searchInput.setAttribute('style', `bottom: ${searchValueWrap?.offsetHeight + 7 || 0}px`);
     }
-
-    // if (!this.dropUp) {
-    //   searchOptions.setAttribute('style', `top: ${(fieldEl?.offsetHeight + 6) + (labelWrap?.offsetHeight ? labelWrap?.offsetHeight + 3 : 0) + (searchValueWrap?.offsetHeight ? searchValueWrap?.offsetHeight + 6 : 0)}px`);
-    //   if (this.multiple && this.value.length) searchInput.removeAttribute('style');
-    // } else {
-    //   searchOptions.setAttribute('style', `bottom: ${(fieldEl?.offsetHeight + 1) + (this.multiple && this.value.length ? searchInput?.offsetHeight : 0) + (searchValueWrap?.offsetHeight || 0) + (errorWrap?.offsetHeight ? errorWrap?.offsetHeight + 4 : 0) + (descriptionWrap?.offsetHeight + 4 || 0)}px`);
-    //   // console.log((!this.multiple ? fieldEl?.offsetHeight + 1 : 7), (this.multiple && this.value.length ? searchInput?.offsetHeight : 0), (searchValueWrap?.offsetHeight || 0), (errorWrap?.offsetHeight ? errorWrap?.offsetHeight + 4 : 0), (descriptionWrap?.offsetHeight + 4 || 0));
-
-    //   console.log(searchValueWrap?.offsetHeight)
-    //   if (this.multiple && this.value.length) searchInput.setAttribute('style', `bottom: ${searchValueWrap?.offsetHeight + 7 || 0}px`);
-    // }
   }
 
   @Listen('insInputSearchOptionClicked')
@@ -407,7 +379,7 @@ export class InsInputSearch {
 
         const optionEls = this.insInputSearchEl.querySelectorAll('ins-input-select-option') as any;
         for (const item of optionEls) item.activated = false;
-        const optionEl = event.target as any;
+        const optionEl = event.target as HTMLInsInputSearchOptionElement;
         optionEl.activated = true;
       } else {
         this.value = null;
@@ -455,7 +427,7 @@ export class InsInputSearch {
   }
 
   componentDidLoad() {
-    this.mainWrapEl = this.insInputSearchEl.querySelector('.ins-input-search');
+    this.mainWrapEl = this.insInputSearchEl.querySelector('.ins-input-search') as HTMLElement;
     this.initOutsideClick();
 
     if (this.value) this.setValue(this.value);
@@ -474,7 +446,7 @@ export class InsInputSearch {
   }
 
   @Method()
-  async setOptions(value) {
+  async setOptions(value: Array<{ label: string; value: string }>) {
     this.optionsData = value;
     this.checkDropUp();
     this.noResults = false;

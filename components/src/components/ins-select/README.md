@@ -45,15 +45,15 @@
 
 ## Events
 
-| Event             | Description | Type               |
-| ----------------- | ----------- | ------------------ |
-| `didLoad`         |             | `CustomEvent<any>` |
-| `insClose`        |             | `CustomEvent<any>` |
-| `insLoadMore`     |             | `CustomEvent<any>` |
-| `insOptionSelect` |             | `CustomEvent<any>` |
-| `insSearch`       |             | `CustomEvent<any>` |
-| `insSubmit`       |             | `CustomEvent<any>` |
-| `insValueChange`  |             | `CustomEvent<any>` |
+| Event             | Description | Type                                                                                                       |
+| ----------------- | ----------- | ---------------------------------------------------------------------------------------------------------- |
+| `didLoad`         |             | `CustomEvent<void>`                                                                                        |
+| `insClose`        |             | `CustomEvent<void>`                                                                                        |
+| `insLoadMore`     |             | `CustomEvent<void>`                                                                                        |
+| `insOptionSelect` |             | `CustomEvent<{ event_type: string; selected: any[]; selectedOptions: { label: string; value: any; }[]; }>` |
+| `insSearch`       |             | `CustomEvent<string>`                                                                                      |
+| `insSubmit`       |             | `CustomEvent<string>`                                                                                      |
+| `insValueChange`  |             | `CustomEvent<any>`                                                                                         |
 
 
 ## Methods
@@ -148,15 +148,15 @@ Type: `Promise<void>`
 
 
 
-### `setLoadingState(state: any) => Promise<boolean>`
+### `setLoadingState(state: boolean) => Promise<boolean>`
 
 
 
 #### Parameters
 
-| Name    | Type  | Description |
-| ------- | ----- | ----------- |
-| `state` | `any` |             |
+| Name    | Type      | Description |
+| ------- | --------- | ----------- |
+| `state` | `boolean` |             |
 
 #### Returns
 
@@ -164,15 +164,15 @@ Type: `Promise<boolean>`
 
 
 
-### `setSearchingState(state: any) => Promise<boolean>`
+### `setSearchingState(state: boolean) => Promise<boolean>`
 
 
 
 #### Parameters
 
-| Name    | Type  | Description |
-| ------- | ----- | ----------- |
-| `state` | `any` |             |
+| Name    | Type      | Description |
+| ------- | --------- | ----------- |
+| `state` | `boolean` |             |
 
 #### Returns
 

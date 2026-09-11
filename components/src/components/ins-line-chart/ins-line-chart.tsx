@@ -11,12 +11,12 @@ export class InsLineChart {
   @Prop({ mutable: true }) load: boolean = false;
   @Prop({ mutable: true }) checkLoad: boolean = false;
 
-  insChartEl: any;
-  chartContainerEl: any;
+  insChartEl: HTMLInsChartElement;
+  chartContainerEl: HTMLElement;
 
   componentDidLoad() {
     this.insChartEl = this.insLineChartEl.querySelector('ins-chart');
-    this.chartContainerEl = this.insChartEl.querySelector('.chart-container');
+    this.chartContainerEl = this.insChartEl.querySelector('.chart-container') as HTMLElement;
     this.renderChart();
     if (this.checkLoad) this.load = true;
     this.didLoad.emit();
@@ -190,7 +190,7 @@ export class InsLineChart {
       series: this.chartData
     }
 
-    this.insChartEl.renderChart(options);
+    this.insChartEl.renderChart(options as any);
   }
 
   render() {

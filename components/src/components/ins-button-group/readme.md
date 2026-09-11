@@ -22,33 +22,33 @@
 
 ## Events
 
-| Event      | Description | Type               |
-| ---------- | ----------- | ------------------ |
-| `didLoad`  |             | `CustomEvent<any>` |
-| `insClick` |             | `CustomEvent<any>` |
+| Event      | Description | Type                                                             |
+| ---------- | ----------- | ---------------------------------------------------------------- |
+| `didLoad`  |             | `CustomEvent<void>`                                              |
+| `insClick` |             | `CustomEvent<{ action: string; label: string; index: number; }>` |
 
 
 ## Methods
 
-### `getActiveOption() => Promise<{ index: number; label: any; }>`
+### `getActiveOption() => Promise<{ index: number; label: string; }>`
 
 
 
 #### Returns
 
-Type: `Promise<{ index: number; label: any; }>`
+Type: `Promise<{ index: number; label: string; }>`
 
 
 
-### `setActiveOption(option: any) => Promise<void>`
+### `setActiveOption(option: string) => Promise<void>`
 
 
 
 #### Parameters
 
-| Name     | Type  | Description |
-| -------- | ----- | ----------- |
-| `option` | `any` |             |
+| Name     | Type     | Description |
+| -------- | -------- | ----------- |
+| `option` | `string` |             |
 
 #### Returns
 

@@ -39,13 +39,13 @@
 
 ## Methods
 
-### `getValue() => Promise<any>`
+### `getValue() => Promise<Record<string, string>[]>`
 
 
 
 #### Returns
 
-Type: `Promise<any>`
+Type: `Promise<Record<string, string>[]>`
 
 
 
@@ -69,19 +69,19 @@ Type: `Promise<void>`
 
 
 
-### `setValue(value: any) => Promise<any>`
+### `setValue(value: Array<Record<string, string | null>>) => Promise<Record<string, string>[]>`
 
 
 
 #### Parameters
 
-| Name    | Type  | Description |
-| ------- | ----- | ----------- |
-| `value` | `any` |             |
+| Name    | Type                       | Description |
+| ------- | -------------------------- | ----------- |
+| `value` | `Record<string, string>[]` |             |
 
 #### Returns
 
-Type: `Promise<any>`
+Type: `Promise<Record<string, string>[]>`
 
 
 

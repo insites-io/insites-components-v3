@@ -3,11 +3,11 @@ import { h, Component, Prop, Event, EventEmitter, Element, Method } from "@stenc
 @Component({ tag: 'ins-input' })
 export class InsInput {
   @Element() el: HTMLElement;
-  @Event() insInput: EventEmitter;
-  @Event() insBlur: EventEmitter;
-  @Event() insIconClick: EventEmitter;
-  @Event() insValueChange: EventEmitter;
-  @Event() insColorChange: EventEmitter;
+  @Event() insInput: EventEmitter<{ value: string | null; keyCode?: number }>;
+  @Event() insBlur: EventEmitter<{ value: string; keyCode: number }>;
+  @Event() insIconClick: EventEmitter<{ target: HTMLElement; value: string }>;
+  @Event() insValueChange: EventEmitter<string | null>;
+  @Event() insColorChange: EventEmitter<{ value: string | null; valid: boolean }>;
   @Event() didLoad: EventEmitter;
   @Prop() hasLoad: string;
 
@@ -41,10 +41,9 @@ export class InsInput {
   @Prop({ mutable: true }) description: string = "";
   @Prop({ mutable: true }) htmlDescription: boolean = false;
 
-  hexValue;
+  hexValue: string | null;
   invalidHexColor: string = "";
   active = false;
-  colorEl;
 
   @Prop({ mutable: true }) checkValue: boolean = false;
   @Method()
@@ -75,7 +74,7 @@ export class InsInput {
   }
 
   @Method()
-  async setValue(value){
+  async setValue(value: string){
     if (this.field === 'color') {
       let color = value;
       if (color?.length < 7 && color?.length > 3) {
@@ -114,7 +113,7 @@ export class InsInput {
 
   componentDidLoad(){
     this.adjustInputPadding();
-    if (this.checkLoad) if (this.checkLoad) this.load = true;
+    if (this.checkLoad) this.load = true;
     this.didLoad.emit();
     if (this.hasLoad && window["Insites"]){
       let func = window["Insites"].methods[this.hasLoad];
@@ -125,20 +124,20 @@ export class InsInput {
   adjustInputPadding(){
     let input = this.el.querySelector('input');
     if (this.unitRight){
-      let rightEl = this.el.querySelector('.unit-right') as any;
+      let rightEl = this.el.querySelector('.unit-right') as HTMLElement;
       let padding = rightEl.offsetWidth + 20;
       if (this.icon) padding = padding + 20;
       input.style.paddingRight = padding + 'px';
     }
 
     if (this.unitLeft){
-      let leftEl = this.el.querySelector('.unit-left') as any;
+      let leftEl = this.el.querySelector('.unit-left') as HTMLElement;
       let padding = leftEl.offsetWidth + 16;
       input.style.paddingLeft = padding + 'px';
     }
   }
 
-  validateMinMax(value, type = "input") {
+  validateMinMax(value: any, type: string = "input") {
     if (this.min !== "" && value !== "") {
       let min = Number(this.min);
       if (value < min) value = min;
@@ -157,7 +156,7 @@ export class InsInput {
     }
   }
 
-  onInputHandler(event){
+  onInputHandler(event: any){
     if (this.field !== "color") {
       let value = event.target.value;
       let keyCode = event.which || event.keyCode;
@@ -167,7 +166,7 @@ export class InsInput {
     }
   }
 
-  insBlurHandler(event){
+  insBlurHandler(event: any){
     let value = event.target.value;
     let keyCode = event.which || event.keyCode;
 
@@ -221,11 +220,11 @@ export class InsInput {
     this.activated = false
   }
 
-  colorHandler(e){
+  colorHandler(e: any){
     this.validateHexColor(e.target.value);
   }
 
-  validateHexColor(color) {
+  validateHexColor(color: string) {
     if (color?.length < 7 && color?.length > 3) {
       let tempColor = color.slice(1).split('');
       for (let counter = 0; counter < tempColor.length; counter++) {
@@ -257,22 +256,22 @@ export class InsInput {
     }
   }
 
-  validateDescription(value) {
+  validateDescription(value: string) {
     let allowed = '<a>,<abbr>,<acronym>,<address>,<article>,<aside>,<b>,<base>,<bdi>,<bdo>,<blockquote>,<br>,<caption>,<code>,<dd>,<del>,<details>,<dfn>,<dir>,<div>,<dl>,<dt>,<em>,<font>,<h1>,<h2>,<h3>,<h4>,<h5>,<h6>,<hr>,<i>,<ins>,<label>,<li>,<link>,<mark>,<menu>,<meter>,<nav>,<ol>,<p>,<pre>,<q>,<s>,<samp>,<section>,<small>,<span>,<strike>,<strong>,<sub>,<summary>,<sup>,<table>,<tbody>,<td>,<tfoot>,<th>,<thead>,<time>,<tr>,<tt>,<u>,<ul>,<wbr>';
     allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
 
-    var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
+    const tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
     commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
     return value.replace(commentsAndPhpTags, '').replace(tags, ($0, $1) => {
       return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
     });
   }
 
-  colorFocusHandler(e) {
+  colorFocusHandler(e: any) {
     e.target.parentNode.parentNode.classList.add('input-active');
   }
 
-  colorBlurHandler(e) {
+  colorBlurHandler(e: any) {
     e.target.parentNode.parentNode.classList.remove('input-active');
   }
 

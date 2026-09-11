@@ -1,0 +1,37 @@
+ins-metric-tile-group {
+  display: block;
+
+  .ins-metric-tile-group-wrap {
+    display: grid;
+    grid-template-columns: repeat(var(--ins-metric-tile-columns, 3), minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  @media (max-width: 560px) {
+    .ins-metric-tile-group-wrap {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+}
+
+// variant="strip": the v6 header metric strip (prototype .hm-strip, inline
+// position:relative;display:flex;align-items:stretch). The host is the flex
+// container so `.crm-hm-inline.hm-strip` and `.crm-hm-card .hm-strip` in the
+// shared record-page layer match it directly; the inner wrap steps out of the
+// layout so the slotted tiles are the flex items. No gap: the prototype's
+// default header renders hmGap = 0 and the shared layer sets the card gap.
+ins-metric-tile-group.hm-strip {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+
+  .ins-metric-tile-group-wrap {
+    display: contents;
+  }
+
+  // Card placement: full width, cells wrap (flex 1 1 180px each, stacking at 560px).
+  &.ins-metric-tile-group--card {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+}

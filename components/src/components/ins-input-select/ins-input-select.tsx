@@ -18,9 +18,9 @@ export class InsInputSelect {
     @Event() didLoad: EventEmitter;
     @Prop() hasLoad: string;
 
-    activated: boolean = false; options = [];
-    labelOfValue = ""; tempSearch = "";
-    inputValueEl; inputSearchEl; optionsWrapEl; mainWrapEl;
+    activated: boolean = false; options: Array<{ el: HTMLInsInputSelectOptionElement; label: string; value: string; activated: boolean; hidden: boolean }> = [];
+    labelOfValue = "";
+    inputValueEl; inputSearchEl: HTMLInputElement; optionsWrapEl: HTMLElement; mainWrapEl: HTMLElement;
 
     // Input Controllers
     @Prop({ mutable: true }) name: string;
@@ -64,7 +64,7 @@ export class InsInputSelect {
     // Mutable Controllers
     @Prop({ mutable: true }) dropUp: boolean = false
     @Prop({ mutable: true }) selectedValues: any = [];
-    dynamicInputEl; scrollWrapEl;
+    dynamicInputEl: HTMLInputElement; scrollWrapEl: HTMLElement;
     loading: boolean = false;
     searching: boolean = false;
 
@@ -94,6 +94,7 @@ export class InsInputSelect {
         if (this.multiple) {
             this.setMultipleValue(value);
         } else { this.setSelected(value); }
+        return undefined;
     }
 
     @Method()
@@ -179,11 +180,12 @@ export class InsInputSelect {
     }
 
     @Method()
-    async setLoadingState(state){
+    async setLoadingState(state: boolean){
         this.loading = state;
         if (this.optionsWrapEl){
             this.optionsWrapEl.classList[state? 'add':'remove']('loading');
         } else return false
+        return undefined;
     }
 
     singleInputHandler(clickedOption, e) {
@@ -229,7 +231,7 @@ export class InsInputSelect {
         }
     }
 
-    searchEl(selector) {
+    searchEl(selector: string) {
         return this.insInputSelectEl.querySelector(selector) as any;
     }
 
@@ -280,6 +282,7 @@ export class InsInputSelect {
                 hasOption = true;
                 return true;
             }
+            return undefined;
         }, this.options);
 
         let action = hasOption ? "remove" : "add";
@@ -289,7 +292,7 @@ export class InsInputSelect {
 
     initOutsideClick() {
         window.addEventListener('click', event => {
-            let clickedEl = event.target as any;
+            let clickedEl = event.target as HTMLElement;
             let closestEl = clickedEl.closest('ins-input-select');
 
             if (closestEl !== this.insInputSelectEl){
@@ -311,6 +314,7 @@ export class InsInputSelect {
     initDynamicOption() {
         if (!this.dynamicOption) return false;
         this.dynamicInputEl = this.searchEl('input[data-dynamic]');
+        return undefined;
     }
 
     @Method()
@@ -318,11 +322,11 @@ export class InsInputSelect {
         if (this.optionsWrapEl) {
             this.optionsWrapEl.classList.remove('no-result');
         } else return false
+        return undefined;
     }
 
     searchOptions(event) {
         let keyword = event.target.value;
-        this.tempSearch = keyword;
         this.disableNoResult();
         if (!this.activated) this.expandSection();
 
@@ -342,15 +346,16 @@ export class InsInputSelect {
     }
 
     @Method()
-    async setSearchingState(state){
+    async setSearchingState(state: boolean){
         this.searching = state;
         this.inputValueEl.readonly = state;
         if (this.optionsWrapEl){
             this.optionsWrapEl.classList[state? 'add' : 'remove']('searching');
         } else return false
+        return undefined;
     }
 
-    staticSearch(keyword) {
+    staticSearch(keyword: string) {
         if (!keyword) {
             this.showHiddenOptions();
             return this.checkForOptions();
@@ -369,6 +374,7 @@ export class InsInputSelect {
 
         if (!hasResult) this.enableNoResult();
         else this.checkForOptions();
+        return undefined;
     }
 
     @Method()
@@ -376,6 +382,7 @@ export class InsInputSelect {
         if (this.optionsWrapEl){
             this.optionsWrapEl.classList.add('no-result');
         } else return false
+        return undefined;
     }
 
     renderCaret() {
@@ -481,11 +488,11 @@ export class InsInputSelect {
         this.initOptions();
     }
 
-    keyUpDynamicInput(e) {
-        this.dynamicValue = e.target.value;
+    keyUpDynamicInput(e: KeyboardEvent) {
+        this.dynamicValue = (e.target as HTMLInputElement).value;
     }
 
-    dynamicOptionHandler(e) {
+    dynamicOptionHandler(e: MouseEvent) {
         e.stopPropagation();
         this.insDynamicSubmit.emit(this.dynamicInputEl.value);
     }
@@ -505,20 +512,7 @@ export class InsInputSelect {
                 { this.renderSelections() }
             </div>
         )
-        // { this.renderSearchWrapForMultiple() }
     }
-
-    // renderSearchWrapForMultiple() {
-    //     if (!this.searchable) return "";
-    //     return (
-    //         <div class="ins-select-search">
-    //             <input class="ins-select-search-input" value={this.tempSearch}
-    //                 readonly={this.readonly} disabled={this.disabled}
-    //                 placeholder={this.searchablePlaceholder} />
-    //             <i class="icon-search"></i>
-    //         </div>
-    //     )
-    // }
 
     renderSelections() {
         if (!this.value.length && this.searchable) return "";
@@ -562,13 +556,13 @@ export class InsInputSelect {
       }
     }
 
-    emitEvent(type){
+    emitEvent(type: 'add' | 'remove'){
         if (this.multiple) {
             this.emitForMultiple(type);
         } else this.insChange.emit(this.value);
     }
 
-    emitForMultiple(event_type){
+    emitForMultiple(event_type: string){
         let selected = this.value.map(item => item.value);
         let selectedOptions = this.value.map(item => {
           return {
@@ -614,11 +608,11 @@ export class InsInputSelect {
         )
     }
 
-    validateDescription(value) {
+    validateDescription(value: string) {
       let allowed = '<a>,<abbr>,<acronym>,<address>,<article>,<aside>,<b>,<base>,<bdi>,<bdo>,<blockquote>,<br>,<caption>,<code>,<dd>,<del>,<details>,<dfn>,<dir>,<div>,<dl>,<dt>,<em>,<font>,<h1>,<h2>,<h3>,<h4>,<h5>,<h6>,<hr>,<i>,<ins>,<label>,<li>,<link>,<mark>,<menu>,<meter>,<nav>,<ol>,<p>,<pre>,<q>,<s>,<samp>,<section>,<small>,<span>,<strike>,<strong>,<sub>,<summary>,<sup>,<table>,<tbody>,<td>,<tfoot>,<th>,<thead>,<time>,<tr>,<tt>,<u>,<ul>,<wbr>';
       allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
 
-      var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
+      const tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
       commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
       return value.replace(commentsAndPhpTags, '').replace(tags, ($0, $1) => {
         return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
@@ -649,7 +643,7 @@ export class InsInputSelect {
         option.el.hidden = false;
     }
 
-    setSelected(value) {
+    setSelected(value: string) {
         this.loopThroughOptions(option => {
             option.activated = false;
             this.deactivateOption(option);

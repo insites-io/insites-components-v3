@@ -17,10 +17,10 @@ export class InsAccordionItem {
   @Prop({ mutable: true }) openIcon: string = "icon-angle-down";
   @Prop({ mutable: true }) closeIcon: string = "icon-angle-up";
 
-  @State() itemHeading: any;
+  @State() itemHeading: string;
   @State() hasItemHeading: boolean = false;
 
-  wrapper: any; body: any;
+  wrapper: HTMLElement; body: HTMLElement;
 
   componentWillLoad() {
     let itemHeading = this.insAccordionItemEl.querySelectorAll(":scope ins-accordion-item-heading:not(:scope ins-accordion-item ins-accordion-item-heading)");
@@ -28,17 +28,12 @@ export class InsAccordionItem {
     if (itemHeading.length) {
       this.itemHeading = itemHeading[0].innerHTML;
       this.hasItemHeading = true;
-
-      // for (let index = 0; index < itemHeading.length; index++) {
-      //   let item = itemHeading[index];
-      //   item.innerHTML = "";
-      // }
     }
   }
 
   componentDidLoad(){
-    this.wrapper = this.insAccordionItemEl.querySelector('.ins-accordion-item');
-    this.body = this.insAccordionItemEl.querySelector('.ins-accordion-item_content');
+    this.wrapper = this.insAccordionItemEl.querySelector('.ins-accordion-item') as HTMLElement;
+    this.body = this.insAccordionItemEl.querySelector('.ins-accordion-item_content') as HTMLElement;
 
     if (this.hasItemHeading) this.renderItemHeading();
     if (this.active) this.toggle();
@@ -69,7 +64,7 @@ export class InsAccordionItem {
   }
 
   @Method()
-  async udpateScrollHeight(height){
+  async udpateScrollHeight(height: number){
     let newHeight = this.body.scrollHeight + height;
     this.body.style.maxHeight = newHeight + "px";
 

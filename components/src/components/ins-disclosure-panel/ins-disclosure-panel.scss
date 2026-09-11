@@ -1,0 +1,124 @@
+ins-disclosure-panel {
+  display: block;
+  width: 100%;
+  background: var(--ins-color-white);
+  font-family: var(--ins-font-family);
+
+  // Divider line between stacked panels
+  + ins-disclosure-panel {
+    border-top: 1px solid var(--ins-border-color);
+  }
+
+  .ins-disclosure-panel {
+    width: 100%;
+
+    &_header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 16px;
+      margin: 0;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+      font-size: inherit;
+      color: var(--ins-color-ink);
+
+      &:hover:not(:disabled) {
+        background: var(--ins-color-ink5);
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--ins-color-primary);
+        outline-offset: -2px;
+      }
+
+      &:disabled {
+        cursor: not-allowed;
+        color: var(--ins-color-disabled);
+
+        .ins-disclosure-panel_chevron,
+        .ins-disclosure-panel_icon,
+        .ins-disclosure-panel_count {
+          color: var(--ins-color-disabled);
+        }
+      }
+    }
+
+    &_chevron {
+      flex: 0 0 auto;
+      color: var(--ins-color-ink40);
+      transition: transform 0.2s ease;
+    }
+
+    &_icon {
+      flex: 0 0 auto;
+      color: var(--ins-color-ink40);
+    }
+
+    &_heading {
+      font-weight: 600;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    &_count {
+      flex: 0 0 auto;
+      padding: 0 8px;
+      border-radius: var(--ins-border-radius);
+      background: var(--ins-color-ink10);
+      color: var(--ins-color-ink);
+      font-size: 0.85em;
+      line-height: 1.6;
+    }
+
+    &_body {
+      display: none;
+      padding: 0 16px 16px 16px;
+    }
+
+    &.open {
+      > .ins-disclosure-panel_header .ins-disclosure-panel_chevron {
+        transform: rotate(180deg);
+      }
+
+      > .ins-disclosure-panel_body {
+        display: block;
+      }
+    }
+
+    // IIA v6 reference section card (opt-in via the `v6` prop).
+    // Layout and colours are inline in the .tsx, copied from the CRM prototype; only the states
+    // that inline styles cannot express live here. The idle background is inline, so the hover
+    // needs !important, same as the module's ReferenceSection.vue.
+    &.v6 {
+      > .ins-disclosure-panel_header {
+        &:hover:not(:disabled) {
+          background: var(--ins-ui-1) !important;
+        }
+
+        &:disabled {
+          cursor: not-allowed !important;
+          opacity: 0.5;
+        }
+      }
+    }
+  }
+
+  // The v6 card paints its own background, border and radius; the host must not add a white box
+  // behind the rounded corners or the v2 divider between stacked panels (the page stacks cards
+  // with a flex gap instead).
+  &.ins-disclosure-panel--v6 {
+    background: transparent;
+  }
+
+  + ins-disclosure-panel.ins-disclosure-panel--v6 {
+    border-top: none;
+  }
+}

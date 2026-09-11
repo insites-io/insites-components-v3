@@ -16,9 +16,9 @@
 
 ## Events
 
-| Event                         | Description | Type               |
-| ----------------------------- | ----------- | ------------------ |
-| `insInputSearchOptionClicked` |             | `CustomEvent<any>` |
+| Event                         | Description | Type                                             |
+| ----------------------------- | ----------- | ------------------------------------------------ |
+| `insInputSearchOptionClicked` |             | `CustomEvent<{ value: string; label: string; }>` |
 
 
 ## Dependencies

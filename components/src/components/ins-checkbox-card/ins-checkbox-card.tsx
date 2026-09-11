@@ -42,7 +42,7 @@ export class InsCheckboxCard {
     this.insValueChange.emit(this.value);
   }
 
-  keyPressHandler(e){
+  keyPressHandler(e: KeyboardEvent){
     if (e.keyCode === 13){
       this.insClickHandler()
     }
@@ -63,7 +63,7 @@ export class InsCheckboxCard {
   }
 
   @Method()
-  async setValue(value){
+  async setValue(value: string){
     this.value = value;
     this.insValueChange.emit(this.value);
   }

@@ -15,9 +15,9 @@
 
 ## Events
 
-| Event                  | Description | Type               |
-| ---------------------- | ----------- | ------------------ |
-| `routeInstanceSubItem` |             | `CustomEvent<any>` |
+| Event                  | Description | Type                                               |
+| ---------------------- | ----------- | -------------------------------------------------- |
+| `routeInstanceSubItem` |             | `CustomEvent<{ instance: string; link: string; }>` |
 
 
 ----------------------------------------------

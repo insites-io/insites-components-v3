@@ -7,7 +7,7 @@ export class InsChart {
   @Element() insChartEl: HTMLElement;
 
   @Method()
-  async renderChart(options) {
+  async renderChart(options: Highcharts.Options) {
     Highcharts.chart(options);
     Highcharts.setOptions({
       lang: {
@@ -17,7 +17,7 @@ export class InsChart {
   }
 
   @Method()
-  async generateColor(color, count){
+  async generateColor(color: string, count: number){
     return new Highcharts.Color(color).brighten(count  / 10).get()
   }
 

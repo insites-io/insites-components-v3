@@ -31,10 +31,6 @@ export class InsToggleSwitch {
   @Prop({mutable: true}) tooltip: string = "";
 
 
-  // this.insToggle.emit({
-  //   checked: this.checked,
-  //   value: this.value
-  // });
   @Prop({ mutable: true }) checkValue: boolean = false;
   @Method()
   async insReset() {
@@ -55,14 +51,14 @@ export class InsToggleSwitch {
   }
 
   @Method()
-  async setValue(value, trueValue, falseValue){
+  async setValue(value: string, trueValue: string, falseValue: string){
     this.value = value;
     this.trueValue = trueValue;
     this.falseValue = falseValue;
   }
 
   @Method()
-  async updateCheckState(state){
+  async updateCheckState(state: boolean){
     this.checked = state;
     this.emitEvents();
   }
@@ -120,11 +116,11 @@ export class InsToggleSwitch {
     )
   }
 
-  validateDescription(value) {
+  validateDescription(value: string): string {
     let allowed = '<a>,<abbr>,<acronym>,<address>,<article>,<aside>,<b>,<base>,<bdi>,<bdo>,<blockquote>,<br>,<caption>,<code>,<dd>,<del>,<details>,<dfn>,<dir>,<div>,<dl>,<dt>,<em>,<font>,<h1>,<h2>,<h3>,<h4>,<h5>,<h6>,<hr>,<i>,<ins>,<label>,<li>,<link>,<mark>,<menu>,<meter>,<nav>,<ol>,<p>,<pre>,<q>,<s>,<samp>,<section>,<small>,<span>,<strike>,<strong>,<sub>,<summary>,<sup>,<table>,<tbody>,<td>,<tfoot>,<th>,<thead>,<time>,<tr>,<tt>,<u>,<ul>,<wbr>';
     allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
 
-    var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
+    const tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
     commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
     return value.replace(commentsAndPhpTags, '').replace(tags, ($0, $1) => {
       return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';

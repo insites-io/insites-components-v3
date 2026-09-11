@@ -18,23 +18,23 @@
 
 ## Events
 
-| Event                         | Description | Type               |
-| ----------------------------- | ----------- | ------------------ |
-| `didLoad`                     |             | `CustomEvent<any>` |
-| `insSidebarFooterButtonEvent` |             | `CustomEvent<any>` |
+| Event                         | Description | Type                      |
+| ----------------------------- | ----------- | ------------------------- |
+| `didLoad`                     |             | `CustomEvent<void>`       |
+| `insSidebarFooterButtonEvent` |             | `CustomEvent<MouseEvent>` |
 
 
 ## Methods
 
-### `insSidebarFooterButtonOnClick(event: any) => Promise<void>`
+### `insSidebarFooterButtonOnClick(event: MouseEvent) => Promise<void>`
 
 
 
 #### Parameters
 
-| Name    | Type  | Description |
-| ------- | ----- | ----------- |
-| `event` | `any` |             |
+| Name    | Type         | Description |
+| ------- | ------------ | ----------- |
+| `event` | `MouseEvent` |             |
 
 #### Returns
 

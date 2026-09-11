@@ -15,8 +15,8 @@ export class InsSparkline {
   @Prop({ mutable: true }) load: boolean = false;
   @Prop({ mutable: true }) checkLoad: boolean = false;
 
-  insChartEl: any;
-  chartContainerEl: any;
+  insChartEl: HTMLInsChartElement;
+  chartContainerEl: HTMLElement;
 
   componentWillLoad() {
     this.checkMovement();
@@ -24,7 +24,7 @@ export class InsSparkline {
 
   componentDidLoad() {
     this.insChartEl = this.insSparklineEl.querySelector('ins-chart');
-    this.chartContainerEl = this.insChartEl.querySelector('.chart-container');
+    this.chartContainerEl = this.insChartEl.querySelector('.chart-container') as HTMLElement;
     this.renderChart();
     if (this.checkLoad) this.load = true;
     this.didLoad.emit();
@@ -113,7 +113,7 @@ export class InsSparkline {
       }
     }
 
-    this.insChartEl.renderChart(options);
+    this.insChartEl.renderChart(options as any);
   }
 
   render() {

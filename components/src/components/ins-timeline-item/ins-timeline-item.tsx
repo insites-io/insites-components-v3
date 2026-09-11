@@ -15,11 +15,6 @@ export class InsTimelineItem {
   @Prop({ mutable: true }) datetime: string;
   @Prop({ mutable: true }) inline: boolean = true;
 
-  checkHexColor(value) {
-    if (value && value.indexOf("#") === 0) return value;
-    return "";
-  }
-
   render() {
     return (
       <div class="ins-timeline-item-wrap">

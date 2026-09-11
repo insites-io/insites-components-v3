@@ -56,16 +56,16 @@
 
 ## Methods
 
-### `buildFormData(s3Data: any, formData: any) => Promise<void>`
+### `buildFormData(s3Data: any, formData: FormData) => Promise<void>`
 
 
 
 #### Parameters
 
-| Name       | Type  | Description |
-| ---------- | ----- | ----------- |
-| `s3Data`   | `any` |             |
-| `formData` | `any` |             |
+| Name       | Type       | Description |
+| ---------- | ---------- | ----------- |
+| `s3Data`   | `any`      |             |
+| `formData` | `FormData` |             |
 
 #### Returns
 
@@ -93,13 +93,13 @@ Type: `Promise<any>`
 
 
 
-### `getS3Credentials() => Promise<unknown>`
+### `getS3Credentials() => Promise<object>`
 
 
 
 #### Returns
 
-Type: `Promise<unknown>`
+Type: `Promise<object>`
 
 
 

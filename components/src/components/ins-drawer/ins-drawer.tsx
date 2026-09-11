@@ -117,7 +117,7 @@ export class InsDrawer {
   }
 
   @Method()
-  async setDrawerState(status) {
+  async setDrawerState(status: boolean) {
     this.isOpen = status;
   }
 

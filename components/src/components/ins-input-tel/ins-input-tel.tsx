@@ -34,16 +34,14 @@ export class InsInputTel {
   @Prop({mutable: true}) htmlDescription: boolean = false;
 
   responsiveView: boolean;
-  activeLabel: boolean;
-  dropdownIsOpen: boolean = false;
-  _phone: any;
-  _areaCode: any;
-  _phoneNumber: any;
-  _label: any;
-  _iti: any;
+  _phone: HTMLInputElement;
+  _areaCode: HTMLInputElement;
+  _phoneNumber: HTMLInputElement;
+  _label: HTMLLabelElement;
+  _iti: ReturnType<typeof intlTelInput>;
 
-  _phone_number_value: any = "";
-  _area_code_value: any = "";
+  _phone_number_value: string = "";
+  _area_code_value: string = "";
 
   @Prop({ mutable: true }) checkValue: boolean = false;
   @Method()
@@ -60,15 +58,15 @@ export class InsInputTel {
     if (this.checkValue) {
       this.insInputTelEl.dataset.insRecover = "true";
       this.insInputTelEl.removeAttribute("data-ins-reset");
-      const valuePhone = await this.getValues() as any;
+      const valuePhone = await this.getValues();
       this.insInput.emit({ field: "phone_number", value: valuePhone.phone_number });
     }
   }
 
   componentDidLoad() {
-    this._phone = this.insInputTelEl.querySelector('.phone');
-    this._areaCode = this.insInputTelEl.querySelector('.area-code');
-    this._phoneNumber = this.insInputTelEl.querySelector('.phone-number');
+    this._phone = this.insInputTelEl.querySelector('.phone') as HTMLInputElement;
+    this._areaCode = this.insInputTelEl.querySelector('.area-code') as HTMLInputElement;
+    this._phoneNumber = this.insInputTelEl.querySelector('.phone-number') as HTMLInputElement;
     this._label = this.insInputTelEl.querySelector('label');
     this._phone_number_value = this.phonenumValue;
     this._area_code_value = this.areacodeValue
@@ -111,14 +109,14 @@ export class InsInputTel {
     this._phoneNumber.addEventListener('change', e => this.changeHandler(e, 13, 'phone_number'));
   }
 
-  changeHandler(event, maxChars, field){
-    let value = event.target.value.replace(/[^\d]/g, '');
+  changeHandler(event: Event, maxChars: number, field: 'area_code' | 'phone_number'){
+    let value = (event.target as HTMLInputElement).value.replace(/[^\d]/g, '');
 
     if (value.length > maxChars) {
       value = value.substr(0, maxChars);
     }
 
-    event.target.value = value;
+    (event.target as HTMLInputElement).value = value;
     if (field === "area_code") {
       this._area_code_value = value;
     } else if (field === "phone_number") {
@@ -129,7 +127,7 @@ export class InsInputTel {
     this.insValueChange.emit(this._getValue());
   }
 
-  validateValue(event){
+  validateValue(event: KeyboardEvent){
     if ((event.which >= 48 && event.which <= 57)
         || event.which === 8
         || event.which === 9
@@ -138,6 +136,7 @@ export class InsInputTel {
       return true;
 
     } else event.preventDefault();
+    return undefined;
   }
 
   initintTel() {
@@ -160,12 +159,9 @@ export class InsInputTel {
 
     this._phone.addEventListener("open:countrydropdown", () => {
       this.activateLabel();
-      this.dropdownIsOpen = true;
     });
 
     this._phone.addEventListener("close:countrydropdown", () => {
-      this.dropdownIsOpen = false;
-
       if (this._phoneNumber !== document.activeElement
         && this._areaCode !== document.activeElement){
         this.deactivateLabel();
@@ -190,7 +186,7 @@ export class InsInputTel {
   }
 
   @Method()
-  async getValues(){
+  async getValues(): Promise<{ country_code: string; area_code: string; phone_number: string }>{
     return {
       country_code: this._iti.getSelectedCountryData().dialCode,
       area_code: this._areaCode.value,
@@ -199,7 +195,7 @@ export class InsInputTel {
   }
 
   @Method()
-  async setValue({ country, country_code, area_code, phone_number }){
+  async setValue({ country, country_code, area_code, phone_number }: { country?: string; country_code?: string; area_code?: string; phone_number?: string }){
     if (country) this._iti.setCountry(country);
     if (country_code) this._iti.setNumber(country_code);
 
@@ -220,12 +216,12 @@ export class InsInputTel {
   }
 
   @Method()
-  async setCountry(country) {
+  async setCountry(country: string) {
     this._iti.setCountry(country);
   }
 
   @Method()
-  async setCountryCode(code) {
+  async setCountryCode(code: string) {
     this._iti.setNumber(code);
   }
 
@@ -241,11 +237,11 @@ export class InsInputTel {
     this.phonenumValue = this._phone_number_value;
   }
 
-  validateDescription(value) {
+  validateDescription(value: string) {
     let allowed = '<a>,<abbr>,<acronym>,<address>,<article>,<aside>,<b>,<base>,<bdi>,<bdo>,<blockquote>,<br>,<caption>,<code>,<dd>,<del>,<details>,<dfn>,<dir>,<div>,<dl>,<dt>,<em>,<font>,<h1>,<h2>,<h3>,<h4>,<h5>,<h6>,<hr>,<i>,<ins>,<label>,<li>,<link>,<mark>,<menu>,<meter>,<nav>,<ol>,<p>,<pre>,<q>,<s>,<samp>,<section>,<small>,<span>,<strike>,<strong>,<sub>,<summary>,<sup>,<table>,<tbody>,<td>,<tfoot>,<th>,<thead>,<time>,<tr>,<tt>,<u>,<ul>,<wbr>';
     allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
 
-    var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
+    const tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
     commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
     return value.replace(commentsAndPhpTags, '').replace(tags, ($0, $1) => {
       return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';

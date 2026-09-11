@@ -1,61 +1,139 @@
 ﻿:root {
-  --ins-color-ink: #2c3148;
-  --ins-color-ink40: #8c94a4;
-  --ins-color-ink10: #e4e6ec;
-  --ins-color-ink5: #f2f4f8;
-  --ins-color-ink1: #ffffff;
-  --ins-color-white: #fff;
-  --ins-color-blue: #1e86e3;
-  --ins-color-blue2: #1a78cb;
-  --ins-color-blue-20p: #cee2f6;
-  --ins-color-blue-10p: #e8f3fc;
-  --ins-color-green: #24be8d;
-  --ins-color-green2: #20aa7e;
-  --ins-color-green-10p: #e9f8f4;
-  --ins-color-orange: #ffa639;
-  --ins-color-orange2: #ff9b20;
-  --ins-color-orange-10p: #fff6eb;
-  --ins-color-red: #f27474;
-  --ins-color-red2: #f05d5d;
-  --ins-color-red-10p: #f8edee;
+  /* ============================================================
+     IIA v6 design system — canonical token source (--iia-*)
+     Mirrors insites_core/insites_admin/styles/sass/_root.sass so
+     the component bundle resolves v6 standalone in EVERY module,
+     not only where the admin CSS happens to load. Brand #436CF2,
+     Poppins, 4px radius. Dark-mode (-dm-) values are defined for
+     parity; switching is not wired here (the design is light).
+     ============================================================ */
+  --iia-text-1: #000000;
+  --iia-text-2: #323232;
+  --iia-text-3: #575757;
+  --iia-text-buttonlabel: #FFFFFF;
+  --iia-text-white: #FFFFFF;
+  --iia-text-dm-1: #FFFFFF;
+  --iia-text-dm-2: #E0E0E0;
+  --iia-text-dm-3: #E0E0E0;
+  --iia-text-dm-buttonlabel: #1F1F1F;
+  --iia-text-dm-white: #FFFFFF;
+  --iia-main: #436CF2;
+  --iia-main-light: #436CF214;
+  --iia-main-dark: #3159DB;
+  --iia-main-dm: #436CF2;
+  --iia-main-dm-light: #2B3042;
+  --iia-main-dm-dark: #3159DB;
+  --iia-sidebar: #0F0F0F;
+  --iia-sidebar-dm: #141414;
+  --iia-sidebar-hover: #242424;
+  --iia-header: #FDFDFD;
+  --iia-header-dm: #141414;
+  --iia-ui-1: #F8F8F8;
+  --iia-ui-2: #84848F;
+  --iia-ui-3: #DFDFDF;
+  --iia-ui-4: #F7F7F7;
+  --iia-ui-5: #FDFDFD;
+  --iia-ui-dm-1: #2E2E2E;
+  --iia-ui-dm-2: #CCCCCC;
+  --iia-ui-dm-3: #3D3D3D;
+  --iia-ui-dm-4: #0F0F0F;
+  --iia-ui-dm-5: #1F1F1F;
+  --iia-alert-negative: #DF1F1F;
+  --iia-alert-negative-light: #DF1F1F14;
+  --iia-alert-negative-dark: #CC1717;
+  --iia-alert-dm-negative: #E74E3B;
+  --iia-alert-dm-negative-light: #FB30240A;
+  --iia-alert-dm-negative-dark: #E32217;
+  --iia-alert-positive: #048801;
+  --iia-alert-positive-light: #04880114;
+  --iia-alert-positive-dark: #026900;
+  --iia-alert-dm-positive: #439639;
+  --iia-alert-dm-positive-light: #1D980F0A;
+  --iia-alert-dm-positive-dark: #128006;
+  --iia-alert-warning: #EC9C00;
+  --iia-alert-warning-light: #FBAC1314;
+  --iia-alert-warning-dark: #CC8700;
+  --iia-alert-dm-warning: #D9991D;
+  --iia-alert-dm-warning-light: #FBAC130A;
+  --iia-alert-dm-warning-dark: #DB940B;
+
+  /* ============================================================
+     Component bridge — every --ins-* token the v3 components read
+     is now an alias onto the --iia-* system above. This is the
+     migration the reskin skipped: components inherit v6 instead of
+     the old v2 palette, with no per-page overrides. Legacy category
+     accents (pink/purple/turquoise/fuchsia/information) have no v6
+     equivalent and keep their v2 values; they are unused in the
+     redesigned CRM surfaces.
+     ============================================================ */
+  /* Ink / text ramp */
+  --ins-color-ink: var(--iia-text-1);
+  --ins-color-ink40: var(--iia-ui-2);
+  --ins-color-ink10: var(--iia-ui-3);
+  --ins-color-ink5: var(--iia-ui-1);
+  --ins-color-ink1: var(--iia-text-white);
+  --ins-color-white: var(--iia-text-white);
+  /* Primary / accent */
+  --ins-color-blue: var(--iia-main);
+  --ins-color-blue2: var(--iia-main-dark);
+  --ins-color-blue-20p: var(--iia-main-light);
+  --ins-color-blue-10p: var(--iia-main-light);
+  --ins-color-primary: var(--iia-main);
+  /* Success / positive */
+  --ins-color-green: var(--iia-alert-positive);
+  --ins-color-green2: var(--iia-alert-positive-dark);
+  --ins-color-green-10p: var(--iia-alert-positive-light);
+  --ins-color-success: var(--iia-alert-positive);
+  /* Warning / amber (orange + yellow both map to the single v6 warning) */
+  --ins-color-orange: var(--iia-alert-warning);
+  --ins-color-orange2: var(--iia-alert-warning-dark);
+  --ins-color-orange-10p: var(--iia-alert-warning-light);
+  --ins-color-warning: var(--iia-alert-warning);
+  --ins-color-yellow: var(--iia-alert-warning);
+  --ins-color-yellow2: var(--iia-alert-warning-dark);
+  --ins-color-yellow-10p: var(--iia-alert-warning-light);
+  /* Negative / danger */
+  --ins-color-red: var(--iia-alert-negative);
+  --ins-color-red2: var(--iia-alert-negative-dark);
+  --ins-color-red-10p: var(--iia-alert-negative-light);
+  --ins-color-negative: var(--iia-alert-negative);
+  --ins-color-negative-10p: var(--iia-alert-negative-light);
+  /* Neutral greys */
+  --ins-color-grey: var(--iia-ui-3);
+  --ins-color-grey2: var(--iia-ui-3);
+  --ins-color-grey-10p: var(--iia-ui-1);
+  /* Legacy category accents — no v6 equivalent, kept at v2 */
   --ins-color-pink: #ff3366;
   --ins-color-pink2: #ff1a53;
   --ins-color-pink-10p: #feebf0;
-  --ins-color-yellow: #fdd835;
-  --ins-color-yellow2: #fdd31c;
-  --ins-color-yellow-10p: #fffbeb;
   --ins-color-turquoise: #2bbad9;
   --ins-color-turquoise2: #24aac7;
   --ins-color-turquoise-10p: #eaf8fb;
   --ins-color-purple: #694fcd;
   --ins-color-fushcia: #c65bbb;
-  --ins-color-grey: #e4e6ec;
-  --ins-color-grey2: #d5d8e1;
-  --ins-color-grey-10p: #edeef2;
-  --ins-color-primary: #1e86e3;
-  --ins-color-success: #24be8d;
-  --ins-color-warning: #ffa639;
-  --ins-color-negative: #f27474;
-  --ins-color-negative-10p: #fef1f1;
   --ins-color-information1: #ff3366;
   --ins-color-information2: #fdd835;
-  --ins-color-table-odd: #fff;
-  --ins-color-table-even: #fafbfc;
-  --ins-color-disabled_readonly_bg: #fafbfc;
-  --ins-bg-color: #ffffff;
-  --ins-bg-color2: #e4e6ec;
-  --ins-bg-color3: #8c94a4;
-  --ins-bg-color4: #f2f4f8;
-  --ins-bg-color5: #fafbfc;
+  /* Tables / surfaces */
+  --ins-color-table-odd: var(--iia-ui-5);
+  --ins-color-table-even: var(--iia-ui-4);
+  --ins-color-disabled_readonly_bg: var(--iia-ui-4);
+  --ins-bg-color: var(--iia-ui-5);
+  --ins-bg-color2: var(--iia-ui-3);
+  --ins-bg-color3: var(--iia-ui-2);
+  --ins-bg-color4: var(--iia-ui-1);
+  --ins-bg-color5: var(--iia-ui-4);
+  /* Borders */
   --ins-border-radius: 4px;
   --ins-border-thickness: 1px;
   --ins-border-style: solid;
-  --ins-border-color: #e4e6ec;
+  --ins-border-color: var(--iia-ui-3);
+  /* Shadows (geometry + neutral, unchanged) */
   --ins-shadow-x: 1px;
   --ins-shadow-y: 1px;
   --ins-shadow-blur: 2px;
-  --ins-shadow-color: #e4e6ec;
-  --ins-font-family: "Open Sans", sans-serif
+  --ins-shadow-color: var(--iia-ui-3);
+  /* Type */
+  --ins-font-family: "Poppins", sans-serif
 }
 
 [class=hydrated] {
@@ -13378,3 +13456,1062 @@ html {
 body.no-transition * {
   transition: none !important
 }
+
+/* ============================================================================
+   IIA v6 semantic token layer
+   ----------------------------------------------------------------------------
+   The --ins-* semantic tokens the v6 design prototypes consume, aliased onto
+   the raw --iia-* palette this bundle already ships. Moved here from
+   module-v6-crm so the record-page layer below, and the v6 component variants,
+   resolve on every module SPA rather than only inside the CRM. Without these
+   the v6 markup renders with unresolved custom properties.
+   ============================================================================ */
+/* ============================================================
+   IIA v6 design-system semantic tokens — the layer the Claude
+   Design prototypes consume (--ins-*), aliased onto the raw
+   --iia-* palette the component bundle already ships.
+
+   Source: _ds/iia-v6-design-system/tokens/{spacing,typography,colors}.css
+   (Claude Design project cb92701b, read 2026-09-07). Values are the
+   design system's, not invented. Only tokens the app did not already
+   define are added here; existing ones (--ins-text-1/2/3, --ins-ui-*,
+   --ins-border-color, --ins-font-family, --ins-color-primary) are left
+   to the bundle bridge and insites_core _root.sass.
+
+   Light theme only for now — the [data-theme='dark'] re-pointing in the
+   design's colors.css is deliberately not carried (the prototype is light
+   and the app's dark switch is not wired to the bridge yet).
+   ============================================================ */
+:root {
+  /* — Spacing scale (px) — mirrors module-general/_spacers.sass */
+  --ins-space-3xs: 2px;
+  --ins-space-2xs: 4px;
+  --ins-space-xs: 8px;
+  --ins-space-sm: 16px;
+  --ins-space-md: 24px;
+  --ins-space-lg: 32px;
+  --ins-space-xl: 40px;
+  --ins-space-2xl: 48px;
+  --ins-space-3xl: 56px;
+  --ins-space-4xl: 64px;
+  --ins-space-section: 80px;
+
+  /* — Radius */
+  --ins-radius-sm: 2px;
+  --ins-radius: 4px;
+  --ins-radius-lg: 8px;
+  --ins-radius-pill: 999px;
+
+  /* — Elevation */
+  --iia-shadow-color-1: rgba(0, 0, 0, 0.04);
+  --ins-shadow-1: 0 4px 8px 0 var(--iia-shadow-color-1);   /* cards, dropdowns */
+  --ins-shadow-2: 0 4px 12px 0 rgba(0, 0, 0, 0.16);        /* modals, popovers */
+  --ins-shadow-sm: 0 1px 2px 0 var(--iia-shadow-color-1);
+  --ins-shadow-focus: 0 0 0 3px var(--iia-main-light);
+
+  /* — Motion */
+  --ins-duration-instant: 100ms;
+  --ins-duration-fast: 150ms;
+  --ins-duration-normal: 200ms;
+  --ins-duration-slow: 300ms;
+  --ins-duration-slower: 500ms;
+  --ins-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ins-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ins-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* — Type: weights (600 = all headings & button labels) */
+  --ins-weight-light: 300;
+  --ins-weight-regular: 400;
+  --ins-weight-semibold: 600;
+  --ins-weight-bold: 700;
+
+  /* — Type: body / control scale */
+  --ins-text-xs: 12px;   /* captions, dense cells, labels */
+  --ins-text-sm: 14px;   /* DEFAULT body & controls */
+  --ins-text-md: 16px;   /* emphasized body, large controls */
+
+  /* — Type: heading scale */
+  --ins-title-6: 18px;
+  --ins-title-5: 24px;
+  --ins-title-4: 32px;
+  --ins-title-3: 48px;
+  --ins-title-2: 56px;
+  --ins-title-1: 64px;
+
+  /* — Type: leading & tracking */
+  --ins-leading-tight: 1.2;
+  --ins-leading-snug: 1.45;
+  --ins-leading-normal: 1.6;
+  --ins-leading-relaxed: 1.7;
+  --ins-tracking-display: -1px;
+  --ins-tracking-normal: 0;
+
+  /* — Icon glyph sizes. NOT defined anywhere in the design system's
+       own token files (a dangling reference in the prototype); the
+       prototype pairs --iia-glyph-sm with a 16px box, so these are the
+       effective rendered sizes. Adjust if the DS later defines them. */
+  --iia-glyph-xs: 12px;
+  --iia-glyph-sm: 16px;
+
+  /* — Semantic colours (design-system names → raw palette) */
+  --ins-main: var(--iia-main);
+  --ins-main-light: var(--iia-main-light);
+  --ins-main-dark: var(--iia-main-dark);
+  --ins-card: var(--iia-ui-5);
+  --ins-card-hover: var(--iia-ui-1);
+  --ins-main-bg: var(--iia-ui-4);
+  --ins-neutral: var(--iia-text-white);
+  --ins-text-buttonlabel: var(--iia-text-buttonlabel);
+  --ins-alert-positive: var(--iia-alert-positive);
+  --ins-alert-positive-light: var(--iia-alert-positive-light);
+  --ins-alert-positive-dark: var(--iia-alert-positive-dark);
+  --ins-alert-negative: var(--iia-alert-negative);
+  --ins-alert-negative-light: var(--iia-alert-negative-light);
+  --ins-alert-negative-dark: var(--iia-alert-negative-dark);
+  --ins-alert-warning: var(--iia-alert-warning);
+  --ins-alert-warning-light: var(--iia-alert-warning-light);
+  --ins-alert-warning-dark: var(--iia-alert-warning-dark);
+  --ins-overlay: rgba(0, 0, 0, 0.25);
+  --ins-disabled-opacity: 0.5;
+
+  /* --------------------------------------------------------------------------
+     Admin Shell additions (TW#26371963). The v1.5 shell design consumes 52
+     semantic tokens; an audit against every stylesheet an admin page loads found
+     15 undefined anywhere. These are those 15. Values are the design system's own,
+     from tokens/colors.css in Claude Design project 98f44421 (read 2026-09-09),
+     not invented.
+
+     None of the 15 is redefined by the design system's own [data-theme='dark']
+     block, so all are correctly light-only. Do not add dark variants without a
+     design change to match.
+
+     WHERE THE REST LIVE, because it is not obvious and it caught this audit out
+     once: the chrome semantic tier (--ins-sidebar, --ins-header-bg,
+     --ins-header-text, --ins-header-text-hovered) and the [data-theme='dark']
+     remap of --ins-text-*/--ins-ui-* are defined in
+     components.insites.io/dist/styles/app.min.css, the legacy unversioned dist
+     artifact, which loads AFTER this file and therefore wins at equal
+     specificity. Tokens it already defines cannot be overridden from here. None
+     of the 15 below collides with it. That ownership split is a governance risk
+     recorded on TW#26711229 rather than something to work around here.
+     -------------------------------------------------------------------------- */
+
+  /* Rail hover wash. The raw value already exists; only the semantic alias was missing. */
+  --ins-sidebar-hover: var(--iia-sidebar-hover);
+
+  /* Accent raws the app never carried. The design system defines these literals itself. */
+  --iia-color-teal: #0B9499;
+  --iia-color-teal-light: #0B949914;
+  --iia-color-teal-dark: #097D81;
+  --iia-color-purple: #5213C9;
+  --iia-color-purple-light: #5213C914;
+  --iia-color-purple-dark: #360C83;
+
+  --ins-teal: var(--iia-color-teal);
+  --ins-teal-light: var(--iia-color-teal-light);
+  --ins-teal-dark: var(--iia-color-teal-dark);
+  --ins-purple: var(--iia-color-purple);
+  --ins-purple-light: var(--iia-color-purple-light);
+  --ins-purple-dark: var(--iia-color-purple-dark);
+
+  /* Categorical chart ramp. Literals in the design system too: no raw tier behind
+     these, and the order is the ramp, so do not reorder them. Consumed by the
+     dashboard lane (TW#20845317) rather than the shell, added here with the rest
+     so the semantic tier matches the design system in one pass. */
+  --ins-chart-1: #436CF2;
+  --ins-chart-2: #0BB780;
+  --ins-chart-3: #EC9C00;
+  --ins-chart-4: #5213C9;
+  --ins-chart-5: #0B9499;
+  --ins-chart-6: #DF1F1F;
+  --ins-chart-7: #0095FF;
+  --ins-chart-8: #84848F;
+
+  /* --------------------------------------------------------------------------
+     Admin Shell chrome patch (TW#26371963). The v1.5 design declares 41 custom
+     properties of its own, on top of the 52 design-system ones above, and its
+     comment calls them a "proposed token patch for tokens/colors.css". None of
+     them appear in any handoff document, so they are only discoverable by reading
+     the design source. 38 were undefined in production; these are those, values
+     verbatim from handoff/admin-shell/AdminShell.dc.html.
+
+     The chrome family exists because the shell is dark in BOTH themes while the
+     app around it is not. Only the surface values re-point under dark, in the
+     block below.
+     -------------------------------------------------------------------------- */
+
+  --ins-chrome-bg: var(--iia-sidebar);
+  --ins-chrome-hover: var(--iia-sidebar-hover);
+  --ins-chrome-surface: #1A1A1A;
+  --ins-chrome-border: #2E2E2E;
+  --ins-chrome-rule: #2E323B;
+  --ins-chrome-desk: #2E2E2E;
+  --ins-chrome-fg: #FFFFFF;
+  --ins-chrome-fg-muted: #B8B8B8;
+  --ins-chrome-fg-subtle: #9BA1AC;
+  --ins-chrome-focus: #8FA9FF;
+
+  /* Chrome glyph sizes. NOT --iia-glyph-sm/xs, deliberately. The design declares
+     those two at 13px and 11px, but production defines them at 16px and 12px and
+     they have 171 consumers across the bundle and the module SPAs. Re-pointing
+     them would resize icons on every screen in the product, which is a fleet-wide
+     density decision and not this task's to make. Scoped to the chrome instead. */
+  --ins-chrome-glyph-sm: 13px;
+  --ins-chrome-glyph-xs: 11px;
+
+  /* Glyph sizes the app never defined, so these are safe additions. */
+  --iia-glyph-2xs: 9px;
+  --iia-glyph-lg: 18px;
+  --iia-glyph-xl: 24px;
+  --iia-text-2xs: 10px;
+
+  /* Rail surfaces and the collapsed-state group label. */
+  --iia-rail-fg: #EDEDED;
+  --iia-rail-fg-muted: #A3A3A3;
+  --iia-rail-divider: #1F1F1F;
+  --iia-rail-pill: rgba(255, 255, 255, 0.06);
+  --iia-group-label: #8F8F8F;
+  --iia-group-label-dm: #737373;
+
+  /* Environment tints behind the switcher's current-instance row (8%). */
+  --iia-instance-staging-light: rgba(0, 149, 255, 0.05);
+  --iia-instance-production-light: rgba(11, 183, 128, 0.05);
+  --iia-instance-staging-text: #0071C2;      /* switcher group labels: text-safe env inks (design literals) */
+  --iia-instance-production-text: #087A56;
+
+  /* Accessibility fix carried by the design, with its own reasoning: amber cannot
+     reach 4.5:1 on white at any weight (#EC9C00 is 2.25:1, --iia-alert-warning-dark
+     is 2.99:1). This ink is 4.61:1 and is for warning TEXT only, never fills. */
+  --iia-alert-warning-text: #A06A00;
+  --iia-alert-dm-warning-text: #E5A93A;
+  --ins-alert-warning-text: var(--iia-alert-warning-text);
+
+  --iia-badge-negative: var(--ins-alert-negative);
+  --iia-overlay-scrim: rgba(15, 15, 15, 0.45);
+  --iia-radius-pill-sm: 6px;
+
+  /* Layering scale. The shell stacks nine deep, so these are a scale rather than
+     ad-hoc values: raised variants exist because the rail and header swap above
+     each other while a flyout is open. */
+  --iia-z-header: 30;
+  --iia-z-rail: 40;
+  --iia-z-menu: 50;
+  --iia-z-rail-raised: 70;
+  --iia-z-flyout: 80;
+  --iia-z-header-raised: 80;
+  --iia-z-overlay: 100;
+  --iia-z-scrim: 110;
+  --iia-z-drawer: 115;
+  --iia-z-switcher: 200;
+}
+
+/* Chrome surfaces re-point for dark; the chrome never goes light. Placed after
+   :root so it wins at equal specificity when the attribute is present, which is
+   how both the design and dist/styles/app.min.css do it.
+
+   NOT included, deliberately: the design also re-points --ins-text-buttonlabel to
+   white under dark. dist/styles/app.min.css sets that token under dark too and
+   loads after this file, so an override here would be dead. Shell markup should
+   use --ins-chrome-fg for a white chrome label instead of relying on it. */
+[data-theme="dark"] {
+  --ins-chrome-bg: var(--iia-sidebar-dm);
+  --ins-chrome-hover: var(--iia-ui-dm-1);
+  --ins-chrome-surface: var(--iia-ui-dm-5);
+  --ins-chrome-border: var(--iia-ui-dm-3);
+  --ins-chrome-rule: var(--iia-ui-dm-3);
+  --ins-alert-warning-text: var(--iia-alert-dm-warning-text);
+  --iia-badge-negative: #C93A28;
+}
+
+/* ============================================================================
+   IIA v6 record-page layer
+   ----------------------------------------------------------------------------
+   The CRM Contact v1.4 / Company v1.0 design prototypes' own stylesheet, moved
+   here from module-v6-crm so a design change is one bundle release instead of a
+   rebuild and deploy per module. Every admin page already links this file, so
+   consumers need no change. Also carries the .ins-table base the Stencil table
+   markup relies on, which was previously duplicated per component.
+   Owns: .crm-*, .fld/.k/.v, .chip, .pill, .fchip, .hm-strip/.hm-cell, .ins-table,
+   .ins-pagination, and the ins-fade-in-up / ins-zoom-in keyframes.
+   ============================================================================ */
+/*
+  crm-record.css (shared by the CRM Contact and Company record pages)
+  Source: "CRM Contact v1.4 - Shane.dc.html" (Claude Design canvas page), single <style> block extracted verbatim,
+  PLUS the rules that exist only in "CRM Company v1.0 - Faizal.dc.html" (its <style> block diffed against Contact's
+  on 2026-09-07). Both pages import this file; the Contact copy (crm-contact.css) was promoted here and deleted.
+  Extraction date: 2026-09-07
+
+  Company-only additions (marked "Company v1.0" below): the .crm-tabhd:has(label.crm-search) wrapped-header rule,
+  and the crmpage 560px block that wraps .crm-tabhd, stacks the tab-header search + action pair and visually hides
+  the .crm-sbprefix search-scope prefix (sr-only). Every other Company rule already existed in the Contact block
+  with identical selectors and thresholds (Company only moved the .crm-toastwrap / .crm-bulkrow rules into an
+  earlier 560px block, which changes nothing), so nothing else was added or duplicated. Company's block lacks
+  Contact's .crm-stickybar rules and the ins-fade-in-up keyframe; both are kept because the Contact page and the
+  shared ReferenceSection / menus rely on them.
+
+  The bare a{} rules are scoped to the two record pages (.view-contact, .view-company) so they cannot restyle
+  anchors elsewhere in the admin.
+
+  Cleaning applied: ONLY the rules below were removed. They target the Claude-Design preview-frame
+  class .om-touch-preview, which does not exist in the Vue app. No rules targeting sc-if / sc-for /
+  x-import / x-dc / dc-import / helmet existed in the stylesheet (verified by search), so nothing else
+  was touched. Nothing renamed, reordered or reformatted. Original comments are all retained, including
+  the two comment lines that introduced the removed .om-touch-preview block.
+
+  Removed selectors (original line number in the Contact <style> block -> selector):
+    L131  .om-touch-preview .crm-relacts
+    L132  .om-touch-preview .crm-relacts > .crm-relkebab
+    L133  .om-touch-preview .crm-relacts:not(.crm-relopen) > *:not(.crm-relkebab)
+    L134  .om-touch-preview .crm-addracts
+    L135  .om-touch-preview .crm-addracts > .crm-relkebab
+    L136  .om-touch-preview .crm-addracts:not(.crm-relopen) > a
+    L137  .om-touch-preview .crm-addracts.crm-relopen
+    L138  .om-touch-preview .crm-addracts.crm-relopen > .crm-relkebab
+    L139  .om-touch-preview .crm-refwrap div:has(> .crm-addracts.crm-relopen)
+    L141  .om-touch-preview .crm-refwrap div:has(> .crm-addracts)
+    L142  .om-touch-preview .crm-addracts.crm-relopen a
+    L145  .om-touch-preview .crm-relacts.crm-relopen
+    L146  .om-touch-preview .crm-relacts.crm-relopen > .crm-relkebab
+    L147  .om-touch-preview .crm-relacts.crm-relopen a
+    L148  .om-touch-preview .crm-relacts.crm-relopen .crm-rellabel
+    L150  .om-touch-preview .crm-relcard .chip
+*/
+
+.view-contact a,.view-company a{color:var(--ins-main)}.view-contact a:hover,.view-company a:hover{color:var(--ins-main-dark)}
+.crm-lnk{padding:4px 8px;margin:-4px -8px;border-radius:var(--ins-radius);text-decoration:none}
+/* Reference field grid: 3 columns, 2 on tablet-width panels, 1 on mobile (container query — preview frames resize the panel, not the viewport) */
+.crm-refwrap{container-type:inline-size}
+/* Record grid: the third at-a-glance rail only appears when the content area is 21in-monitor wide (container query — preview frames resize the panel, not the viewport) */
+.crm-recwrap{container-type:inline-size}
+.crm-recgrid{display:grid;grid-template-columns:minmax(320px,400px) minmax(0,1fr);gap:var(--ins-space-md);align-items:start}
+.crm-recgrid .crm-rail3{display:none}
+/* Tablet & mobile: header metrics move out of the identity card into their own full-width card */
+.crm-pagewrap{container-type:inline-size;container-name:crmpage}
+.crm-hm-card{display:none}
+@container (max-width:900px){.crm-hm-inline{display:none !important}.crm-hm-card{display:block}}
+/* Tablet & mobile: left rail cards stack above the tab panel in one column */
+@container (max-width:900px){.crm-recgrid,.crm-recgrid.crm-wide3{grid-template-columns:minmax(0,1fr)}}
+/* Phone widths: identity stacks under the avatar and the actions menu pins to the card's top right */
+@container crmpage (max-width:560px){
+  .crm-hdr{flex-direction:column;align-items:flex-start !important;gap:var(--ins-space-sm) !important}
+  /* Only the avatar row shares space with the pinned kebab, so the identity block keeps the full width */
+  .crm-hdr > span[aria-hidden="true"]{margin-right:calc(36px + var(--ins-space-sm))}
+  /* Stacked metrics: no stray column dividers, and each row gets its own breathing room */
+  .crm-hm-card{padding:var(--ins-space-sm) !important}
+  .crm-hm-card .hm-strip{gap:var(--ins-space-xs)}
+  .crm-hm-card .hm-strip > div{border-left:none !important;flex-basis:100% !important}
+  .crm-hm-card .hm-cell{padding:var(--ins-space-xs) var(--ins-space-sm) !important}
+  /* Phone widths: filters stack, each control takes the full row */
+  .crm-toolbar{flex-direction:column;align-items:stretch !important}
+  .crm-toolbar > div:not(.crm-btns){width:100%}
+  .crm-toolbar .fchip{width:100%;justify-content:flex-start}
+  /* value sits with the caret on the right, label stays left */
+  .crm-toolbar .fchip strong{margin-left:auto}
+  /* Filter menus span the toolbar row instead of a 170-220px popover */
+  .crm-toolbar [role="menu"]{left:0;right:0;min-width:0 !important}
+  /* Pagination centres its rows-per-page, range and pager instead of splitting them apart */
+  .ins-pagination{justify-content:center}
+  .ins-pagination__spacer{display:none}
+  /* Reference section actions (ADD …, REFRESH) take the full row.
+     The app's section components add their own root element inside .crm-refwrap, so the CTA row sits
+     one level deeper than in the prototype; both depths are matched. */
+  .crm-refwrap > div > button,
+  .crm-refwrap > div > div > button{width:100%;justify-content:center}
+  .crm-addrgrid a[target="_blank"]{width:100%;box-sizing:border-box;justify-content:center}
+  /* Tab header: primary action moves above the total and spans the row */
+  .crm-tabhd{flex-direction:column-reverse;align-items:stretch}
+  .crm-tabhd > button{width:100%;justify-content:center}
+  .crm-refwrap > div:has(> button),
+  .crm-refwrap > div > div:has(> button){flex-direction:column;align-items:stretch}
+  /* higher specificity than the 1100px block below, which also uses !important */
+  .crm-toolbar label.crm-search{width:100%;box-sizing:border-box;flex:0 0 auto !important;max-width:none !important;margin-left:0 !important}
+  .crm-toolbar .crm-btns{width:100%;flex-direction:column;align-items:stretch}
+  .crm-toolbar .crm-btns > button{width:100%;justify-content:center}
+  .crm-hdr > div{width:100%}
+  .crm-hdr-kebab{position:absolute !important;top:var(--ins-space-sm);right:var(--ins-space-sm)}
+}
+/* Narrow panels: tab-toolbar search moves to its own full-width top row; buttons wrap below, right-aligned */
+@container (max-width:1100px){
+  .crm-toolbar{row-gap:var(--ins-space-sm) !important;padding-top:var(--ins-space-sm) !important;padding-bottom:var(--ins-space-sm) !important}
+  .crm-toolbar .crm-ctrls{display:contents !important}
+  .crm-toolbar .crm-btns{order:-2;flex:1 1 100% !important;justify-content:flex-end}
+  /* Search keeps its own width and hugs the right edge of whichever row it lands on */
+  .crm-toolbar .crm-search{flex:0 1 280px !important;max-width:280px !important;margin-left:auto !important}
+}
+/* Company v1.0: the two rules below exist only in the Company prototype's <style> block (Contacts tab header). */
+/* Wrapped tab headers: the action pair keeps to the right of whichever row it lands on.
+   Unconditional — the header wraps on its own width, and the one-row case is already space-between. */
+.crm-tabhd:has(label.crm-search) > div{margin-left:auto}
+/* Phone only: tab-header search drops below the buttons and spans the row; tablet keeps the desktop row.
+   Column direction is forced normal so the 560px column-reverse rule can't invert the order. */
+@container crmpage (max-width:560px){
+  .crm-tabhd{flex-wrap:wrap}
+  .crm-tabhd:has(label.crm-search){flex-direction:column !important;align-items:stretch !important}
+  .crm-tabhd:has(label.crm-search) > div{width:100%}
+  /* Action pairs stack, each button spanning the row */
+  .crm-tabhd:has(label.crm-search) > div{display:flex;flex-direction:column;align-items:stretch;gap:var(--ins-space-xs);margin-left:0}
+  /* The scope prefix is implied by the field's own placeholder, so it drops out to leave room for typing */
+  .crm-tabhd label.crm-search{min-width:0 !important}
+  .crm-sbprefix{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  .crm-tabhd:has(label.crm-search) > div > button{width:100%;justify-content:center}
+  .crm-tabhd > label.crm-search{order:9;width:100%;box-sizing:border-box;flex:0 0 auto !important;max-width:none !important;margin-left:0 !important}
+}
+/* Dev note: production breakpoint is 1600px content width (~21in monitor). The preview's device presets zoom cosmetically without changing CSS width (max ~1430px), so the prototype uses 1400px to make the state demoable. */
+@container (min-width:1340px){.crm-recgrid.crm-wide3{grid-template-columns:minmax(280px,360px) minmax(0,1fr) minmax(250px,300px)}.crm-recgrid.crm-wide3 .crm-rail3{display:flex}}
+/* Left field column stays with the record while the tab panel scrolls; it only scrolls itself when taller than the viewport */
+.crm-fieldcol{position:sticky;top:var(--ins-space-md);align-self:start;max-height:calc(100vh - 144px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+@container (max-width:900px){.crm-fieldcol{position:static;max-height:none;overflow:visible}}
+/* Below the 3-column breakpoint the rail keeps its content: it drops under the left field column instead of disappearing */
+@container (max-width:1339px){
+  .crm-recgrid.crm-wide3 .crm-rail3{display:flex;grid-column:1;grid-row:2}
+  .crm-recgrid.crm-wide3 .crm-tabcol{grid-row:1 / span 2}
+  /* The sticky field column has its own height cap, which pushed the rail past the
+     fold; below the 3-column breakpoint the column flows so they sit together. */
+  .crm-recgrid.crm-wide3 .crm-fieldcol{position:static;max-height:none;overflow:visible}
+}
+@container (max-width:900px){
+  .crm-recgrid.crm-wide3 .crm-rail3{grid-column:1;grid-row:2}
+  .crm-recgrid.crm-wide3 .crm-tabcol{grid-row:3}
+}
+.crm-refgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--crm-grid-gap, var(--ins-space-sm) var(--ins-space-md));padding:var(--crm-grid-pad, var(--ins-space-xs) 0 var(--ins-space-sm))}
+.crm-refcards{gap:var(--ins-space-sm)}
+.crm-rel2{grid-template-columns:repeat(2,minmax(0,1fr))}
+/* Relationship card hover: lift + soft shadow; actions float in as a compact cluster at the
+   card's right edge on their own surface, so the card's links stay visible and clickable. */
+/* Copy buttons line up on the cell's right edge instead of floating after the value */
+/* Copy button rides the text inline, so it follows the last wrapped line (Details card keeps its right-aligned rows) */
+.crm-refwrap div:has(> button[aria-label="Copy value"]){display:block !important;min-width:0;overflow-wrap:anywhere;word-break:break-word}
+.crm-refwrap div:has(> button[aria-label="Copy value"]) > span{overflow-wrap:anywhere;word-break:break-word}
+/* Mono values are clipped by design (nowrap + overflow hidden): keep those rows flex so the clip works */
+.crm-refwrap div:has(> button[aria-label="Copy value"]):has(> span[style*="nowrap"]){display:flex !important;align-items:center;gap:6px}
+.crm-refwrap div:has(> button[aria-label="Copy value"]):has(> span[style*="nowrap"]) > span{min-width:0;white-space:nowrap;word-break:normal;overflow-wrap:normal;text-overflow:ellipsis}
+.crm-refwrap div:has(> button[aria-label="Copy value"]):has(> span[style*="nowrap"]) > button{margin-left:0;flex:none}
+.crm-refwrap button[aria-label="Copy value"]{display:inline-flex !important;vertical-align:middle;margin-left:6px;position:relative;top:-1px}
+/* Pointer devices only: a hover tooltip is dead weight on touch, where a tap fires the action */
+@media (hover:hover){
+button[data-tip]{position:relative}
+button[data-tip]:hover::after,button[data-tip]:focus-visible::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);right:0;z-index:60;white-space:nowrap;padding:4px 8px;border-radius:var(--ins-radius);background:var(--ins-text-1);color:var(--ins-card);font-size:var(--ins-text-xs);font-weight:var(--ins-weight-regular);letter-spacing:0;text-transform:none;pointer-events:none;animation:ins-fade-in-up var(--ins-duration-fast) var(--ins-ease-out)}
+/* Tables and cards clip their overflow, so a tooltip there would be cut off */
+.ins-table button[data-tip]:hover::after,.crm-toastwrap button[data-tip]:hover::after{display:none}
+/* Header-cell buttons keep their tooltip, dropped below so it stays inside the table's scroll box */
+.ins-table thead button[data-tip]:hover::after,.ins-table thead button[data-tip]:focus-visible::after{display:block;bottom:auto;top:calc(100% + 6px)}
+}
+.crm-relcard{transition:box-shadow var(--ins-duration-normal) var(--ins-ease-out),transform var(--ins-duration-normal) var(--ins-ease-out),border-color var(--ins-duration-fast) var(--ins-ease-out)}
+.crm-relcard:hover{box-shadow:0 8px 20px rgba(0,0,0,0.08);transform:translateY(-2px);border-color:transparent;z-index:2}
+.crm-relacts{position:absolute;top:var(--ins-space-xs);right:var(--ins-space-xs);display:flex;gap:var(--ins-space-3xs);padding:3px;background:var(--ins-card);border:1px solid var(--ins-border-color);border-radius:var(--ins-radius);box-shadow:var(--ins-shadow-1);opacity:0;transform:translateY(-4px);transition:opacity var(--ins-duration-fast) var(--ins-ease-out),transform var(--ins-duration-normal) var(--ins-ease-out);pointer-events:none}
+.crm-relcard:hover .crm-relacts,.crm-relacts:focus-within{opacity:1;transform:none;pointer-events:auto}
+/* Address actions stay in flow; on desktop the inline Delete/Edit links need no surface, touch gets the kebab panel */
+.crm-addracts{position:static;opacity:1;transform:none;pointer-events:auto;background:transparent;border:none;box-shadow:none;padding:0}
+@media (hover:hover){
+  .crm-addracts.crm-relopen{background:var(--ins-card);border:1px solid var(--ins-border-color);box-shadow:var(--ins-shadow-2);padding:var(--ins-space-3xs)}
+}
+@media (hover:none){
+  .crm-relacts{opacity:1 !important;transform:none !important;pointer-events:auto !important}
+  .crm-relacts > .crm-relkebab{display:inline-flex !important}
+  .crm-relacts:not(.crm-relopen) > *:not(.crm-relkebab){display:none !important}
+  /* Touch: the collapsed kebab is a real menu trigger, so it keeps the card surface */
+  .crm-addracts{background:var(--ins-card) !important;border:1px solid var(--ins-border-color) !important;box-shadow:var(--ins-shadow-1) !important;padding:3px !important}
+  .crm-addracts > .crm-relkebab{display:inline-flex !important}
+  .crm-addracts:not(.crm-relopen) > a{display:none !important}
+  .crm-addracts.crm-relopen{position:absolute !important;top:0;right:0;z-index:5;flex-direction:column;align-items:stretch;min-width:132px;gap:1px;padding:var(--ins-space-3xs) !important;background:var(--ins-card) !important;border:1px solid var(--ins-border-color) !important;border-radius:var(--ins-radius);box-shadow:var(--ins-shadow-2) !important}
+  .crm-addracts.crm-relopen > .crm-relkebab{display:none !important}
+  /* The open panel leaves the flow, so the row keeps the kebab's footprint and nothing shifts */
+  .crm-refwrap div:has(> .crm-addracts.crm-relopen){padding-right:34px}
+  /* the collapsed kebab sets the row height; hold it so the panel opening never shifts the card */
+  .crm-refwrap div:has(> .crm-addracts){min-height:36px !important}
+  .crm-addracts.crm-relopen a{width:100% !important;box-sizing:border-box;flex:none !important;justify-content:flex-start !important;gap:10px !important;margin:0 !important;padding:0 8px !important;font-size:var(--ins-text-sm) !important;font-weight:var(--ins-weight-regular) !important}
+  .crm-addracts.crm-relopen a{min-height:28px !important;border-radius:var(--ins-radius) !important;text-decoration:none !important}
+  .crm-addracts.crm-relopen a i{font-size:var(--iia-glyph-sm) !important;width:16px;display:inline-flex;justify-content:center}
+  .crm-relacts.crm-relopen{flex-direction:column;align-items:stretch;min-width:132px;gap:1px;padding:var(--ins-space-3xs);box-shadow:var(--ins-shadow-2);z-index:5}
+  .crm-relacts.crm-relopen > .crm-relkebab{display:none !important}
+  .crm-relacts.crm-relopen a{width:100% !important;justify-content:flex-start !important;gap:10px;padding:0 8px}
+  .crm-relacts.crm-relopen .crm-rellabel{display:inline;font-size:var(--ins-text-sm)}
+}
+/* Preview frames simulate size, not touch input: mirror the touch rules under the tablet/mobile frame */
+  /* the collapsed kebab sets the row height; hold it so the panel opening never shifts the card */
+  .crm-addracts.crm-relopen a{min-height:28px !important;border-radius:var(--ins-radius) !important;text-decoration:none !important}
+  .crm-addracts.crm-relopen a i{font-size:var(--iia-glyph-sm) !important;width:16px;display:inline-flex;justify-content:center}
+/* Collapsed kebab floats over the card, so every row keeps the card's 16px right padding */
+@media (hover:none){
+  .crm-relcard .chip{flex:0 0 100% !important;align-self:flex-start;max-width:fit-content}
+}
+.crm-rellabel{display:none}
+@container (max-width:900px){.crm-refgrid{grid-template-columns:repeat(2,1fr)}}
+@container (max-width: 400px){.crm-refgrid{grid-template-columns:1fr}}
+/* Address pairs: below 340px the 280px minimum would overflow the card, so drop to one column */
+@container (max-width:340px){.crm-addrgrid{grid-template-columns:minmax(0,1fr) !important}}
+/* Cells top-align so wrapped names line up with their row's other columns */
+.crm-evtable .ins-table td{vertical-align:top}
+.crm-refwrap .crm-evtable .ins-table td,.crm-refwrap .crm-evtable .ins-table th{overflow-wrap:anywhere}
+/* v5 row-hover View action: reserved space, revealed on row hover */
+.crm-rowview{visibility:hidden;display:block;width:fit-content;margin-top:3px;font-size:var(--ins-text-xs);font-weight:var(--ins-weight-semibold)}
+.crm-evtable tr:hover .crm-rowview{visibility:visible}
+.crm-sep{visibility:hidden;color:var(--ins-border-color)}
+.crm-evtable tr:hover .crm-sep{visibility:visible}
+.crm-lnk:hover{background:var(--ins-main-light)}
+.crm-scroll{scrollbar-width:thin;scrollbar-color:var(--ins-ui-3) transparent}
+.crm-scroll::-webkit-scrollbar{width:8px;height:8px}
+.crm-scroll::-webkit-scrollbar-thumb{background:var(--ins-ui-3);border-radius:var(--ins-radius)}
+/* Tab strip: thin scrollbar when the strip overflows; vertical wheel scrolls it horizontally */
+.crm-tabs{scrollbar-width:thin;scrollbar-color:var(--ins-ui-3) transparent}
+.crm-tabs::-webkit-scrollbar{height:6px}
+.crm-tabs::-webkit-scrollbar-thumb{background:var(--ins-ui-3);border-radius:var(--ins-radius)}
+/* DS Table cells are 16px; pad the outer columns to the card's 24px so the table aligns with the toolbar and tabs */
+.crm-evtable .ins-table th:first-child,.crm-evtable .ins-table td:first-child{padding-left:var(--crm-tblpad, var(--ins-space-md))}
+.crm-evtable .ins-table th:last-child,.crm-evtable .ins-table td:last-child{padding-right:var(--crm-tblpad, var(--ins-space-md))}
+/* v5 sort affordance: an unsorted sortable column shows a grey arrow only while its header is
+   hovered; the active column keeps the DS brand-blue arrow at all times. */
+.ins-table__sort .icon-sort{visibility:hidden}
+.ins-table th.ins-th--sortable:hover .icon-sort{visibility:visible}
+.ins-table__sort .icon-sort:before{content:"\e920"}
+/* Pager prev/next use the angle glyphs (per review), overriding the DS Pagination's chevrons */
+.ins-pagination__pager .icon-chevron-left:before{content:"\f104"}
+.ins-pagination__pager .icon-chevron-right:before{content:"\f105"}
+/* short value: sits on the label's line, right aligned */
+.fld{display:flex;justify-content:space-between;align-items:baseline;gap:var(--ins-space-sm);padding:var(--ins-space-xs) 0}
+.fld:last-child,.fldw:last-child{padding-bottom:0}
+.fld .k{font-size:var(--crm-k-size,var(--ins-text-xs));color:var(--ins-text-3);flex:none}
+.fld .v{font-size:var(--ins-text-sm);color:var(--ins-text-1);text-align:right}
+/* Phone: label above value, left aligned — a two-column row leaves too little
+   width for an email address, which then wraps ragged-left against the label */
+@container crmpage (max-width:560px){
+  /* v5 parity on phones: the toast docks to the bottom, full width, out of the chrome's way */
+  .crm-toastwrap{top:auto !important;right:var(--ins-space-sm) !important;bottom:var(--ins-space-sm);left:var(--ins-space-sm)}
+  .crm-toastwrap .ins-toast{width:100%;max-width:none;box-sizing:border-box}
+  /* Phone only: bulk footer stacks, action controls each span a row, pagination below. Tablet keeps them side by side. */
+  .crm-bulkrow{flex-direction:column;align-items:stretch !important}
+  .crm-bulkrow > div:last-child{width:100%}
+  .crm-bulkrow > div:first-child{flex-direction:column;align-items:stretch;width:100%}
+  .crm-bulkrow > div:first-child > div{width:100%}
+  .crm-bulkrow > div:first-child > div > button{width:100%;justify-content:space-between}
+  .crm-bulkrow > div:first-child > button{width:100%;justify-content:center}
+  .fld{flex-direction:column;align-items:stretch;gap:var(--ins-space-3xs)}
+  .fld .v{text-align:left;justify-content:flex-start !important;align-items:flex-start !important}
+  .fld .v > button[aria-label^="Copy"]{margin-top:3px}
+  .crm-mkv{flex-direction:column !important;align-items:stretch !important;gap:var(--ins-space-3xs) !important}
+  .crm-mkv > span:last-child{text-align:left !important}
+}
+/* long value: own line, left aligned, so it never wraps ragged-left */
+.fldw{display:flex;flex-direction:column;gap:var(--ins-space-3xs);padding:var(--ins-space-xs) 0}
+.fldw .k{font-size:var(--crm-k-size,var(--ins-text-xs));color:var(--ins-text-3)}
+.fldw .v{font-size:var(--ins-text-sm);color:var(--ins-text-1);line-height:var(--ins-leading-snug);overflow-wrap:anywhere}
+.unset{font-size:var(--ins-text-xs);color:var(--ins-text-3);font-style:italic}
+.chip{font-size:var(--ins-text-xs);font-weight:var(--ins-weight-semibold);background:var(--ins-ui-1);color:var(--ins-text-3);border-radius:999px;padding:2px 8px}
+.pill{display:inline-flex;align-items:center;font-size:var(--ins-text-xs);color:var(--ins-text-1);background:var(--ins-ui-1);border-radius:var(--ins-radius);padding:3px 9px}
+.fchip{display:inline-flex;align-items:center;gap:7px;font-size:var(--ins-text-xs);color:var(--ins-text-1);background:var(--ins-ui-3);border-radius:var(--ins-radius);padding:6px 11px;border:none;font-family:inherit;cursor:pointer}
+@keyframes crm-drawer-in{from{transform:translateX(100%)}to{transform:translateX(0)}}
+/* Design-system animation (_ds/tokens/animations.css) used by menus, tooltips, reference bodies; the bundle does not ship it. */
+@keyframes ins-fade-in-up{0%{opacity:0;transform:translate3d(0,16px,0)}100%{opacity:1;transform:translate3d(0,0,0)}}
+/* Design-system animation used by the Company prototype's confirm-delete and configure-metrics dialogs (animation:ins-zoom-in ...); the bundle does not ship it either. */
+@keyframes ins-zoom-in{0%{opacity:0;transform:scale(0.96)}100%{opacity:1;transform:scale(1)}}
+/* Zebra striping (tweak): even rows washed for wide-table scanning */
+.crm-zebra tbody tr:nth-child(odd){background:var(--ins-ui-1)}
+/* Hover paints on the cells, not the row: the sticky first cell is opaque, so a row-level tint
+   would only show in the other columns (and vice versa) */
+.crm-zebra tbody tr:hover{background:transparent !important}
+.crm-zebra tbody tr:hover td{background:linear-gradient(rgba(0,0,0,0.03),rgba(0,0,0,0.03)),var(--ins-card)}
+.crm-zebra tbody tr:nth-child(odd):hover td{background:linear-gradient(rgba(0,0,0,0.03),rgba(0,0,0,0.03)),var(--ins-ui-1)}
+/* Narrow desktop: the primary column stays put while the rest of the table scrolls */
+.crm-evtable .ins-table th:first-child,.crm-evtable .ins-table td:first-child{position:sticky;left:0;z-index:2;background:var(--ins-card);box-shadow:1px 0 0 var(--ins-border-color)}
+/* Selection tables: the 44px checkbox strip carries no identity, so the name column pins beside it */
+.crm-selcols .ins-table th:first-child,.crm-selcols .ins-table td:first-child{box-shadow:none}
+.crm-selcols .ins-table th:nth-child(2),.crm-selcols .ins-table td:nth-child(2){position:sticky;left:44px;z-index:2;background:var(--ins-card);box-shadow:1px 0 0 var(--ins-border-color)}
+.crm-zebra.crm-selcols tbody tr:nth-child(odd) td:nth-child(2){background:var(--ins-ui-1)}
+.crm-zebra.crm-selcols tbody tr:hover td:nth-child(2){background:linear-gradient(rgba(0,0,0,0.03),rgba(0,0,0,0.03)),var(--ins-card)}
+.crm-zebra.crm-selcols tbody tr:nth-child(odd):hover td:nth-child(2){background:linear-gradient(rgba(0,0,0,0.03),rgba(0,0,0,0.03)),var(--ins-ui-1)}
+.crm-zebra tbody tr:nth-child(odd) td:first-child{background:var(--ins-ui-1)}
+.crm-zebra tbody tr:hover td:first-child{background:linear-gradient(rgba(0,0,0,0.03),rgba(0,0,0,0.03)),var(--ins-card)}
+.crm-zebra tbody tr:nth-child(odd):hover td:first-child{background:linear-gradient(rgba(0,0,0,0.03),rgba(0,0,0,0.03)),var(--ins-ui-1)}
+/* Same striping for the collapsed responsive rows (header div is child 1, so rows start even) */
+.crm-mzebra .crm-mrow:nth-child(even){background:var(--ins-ui-1)}
+@container crmpage (max-width:900px){
+  .crm-zebra tbody tr:hover td,.crm-zebra tbody tr:nth-child(odd):hover td{background:var(--ins-card)}
+  .crm-zebra tbody tr:nth-child(odd):hover td{background:var(--ins-ui-1)}
+  .crm-selcols .ins-table tbody tr:hover td:nth-child(2){background:var(--ins-card)}
+  .crm-zebra.crm-selcols tbody tr:nth-child(odd):hover td:nth-child(2){background:var(--ins-ui-1)}
+  .crm-evtable tr:hover .crm-rowview,.crm-evtable tr:hover .crm-sep{visibility:visible}
+}
+/* Search input states: hover darkens border, focus shows the DS brand ring */
+.crm-search{transition:border-color var(--ins-duration-fast) var(--ins-ease-out),box-shadow var(--ins-duration-fast) var(--ins-ease-out)}
+/* Wrapped toolbars: the search keeps to the right of its row instead of dropping to the left */
+.crm-toolbar .crm-search{margin-left:auto}
+.crm-search:hover{border-color:var(--ins-ui-2) !important}
+.crm-search:active,.crm-search:focus-within{border-color:var(--ins-main) !important}
+.crm-search input::-webkit-search-cancel-button{-webkit-appearance:none;display:none}
+.crm-search input::-ms-clear{display:none}
+/* Fixed layout: column widths hold across sort/pagination instead of tracking page content */
+.crm-fixedtable{overflow-x:auto}
+@container (max-width:900px){
+  .crm-fixedtable .ins-table th:first-child,.crm-fixedtable .ins-table td:first-child{position:sticky;left:0;z-index:1;background:var(--ins-card)}
+}
+/* Mobile: the table gives way to a collapsible stacked list */
+.crm-mobile .crm-evtable{display:none}
+.crm-mrow{border-bottom:1px solid var(--ins-border-color)}
+/* The pagination footer draws its own top rule, so the last row must not double it */
+.crm-mzebra .crm-mrow:not(:has(~ .crm-mrow)){border-bottom:none}
+.crm-evtable .ins-table tbody tr:last-child{border-bottom:none}
+.crm-evtable .ins-table tbody tr:last-child td{border-bottom:none}
+.crm-mhead{display:flex;align-items:flex-start;gap:var(--ins-space-sm);width:100%;box-sizing:border-box;padding:var(--ins-space-sm);border:none;background:transparent;font-family:inherit;text-align:left;cursor:pointer}
+/* Multi-line titles: badge, title and caret all start at the row's top edge */
+.crm-mhead > span[aria-hidden="true"]{margin-top:0}
+/* Icon lists: expanded fields line up with the row title, not the icon */
+.crm-micon .crm-mbody{padding-left:calc(var(--ins-space-sm) + 26px + var(--ins-space-sm))}
+.crm-mbody{padding:0 var(--ins-space-sm) var(--ins-space-sm);animation:ins-fade-in-up var(--ins-duration-fast) var(--ins-ease-out)}
+/* Expanded body reads like the Details card: 12px muted label, 14px primary value, xs vertical rhythm */
+.crm-mkv{display:flex;justify-content:space-between;align-items:baseline;gap:var(--ins-space-sm);padding:var(--ins-space-xs) 0;font-size:var(--ins-text-sm)}
+.crm-mkv > span:first-child{flex:none;font-size:var(--crm-k-size,var(--ins-text-xs));color:var(--ins-text-3)}
+.crm-mkv > span:last-child{font-size:var(--ins-text-sm);color:var(--ins-text-1);text-align:right;overflow-wrap:anywhere}
+.crm-fixedtable .ins-table{table-layout:fixed;width:100%;min-width:640px}
+/* Tables whose column set needs more room than the 640px floor scroll instead of crushing cells */
+.crm-fixedtable.crm-widecols .ins-table{min-width:1040px}
+.crm-fixedtable.crm-relcols .ins-table{min-width:920px}
+/* Relationship cells hold single values, so they stay on one line and the column scrolls; only Notes wraps */
+.crm-relcols .ins-table th,.crm-relcols .ins-table td{white-space:nowrap;overflow-wrap:normal}
+.crm-relcols .ins-table th:last-child,.crm-relcols .ins-table td:last-child{white-space:normal;overflow-wrap:anywhere}
+.crm-fixedtable .ins-table td{overflow-wrap:break-word}
+/* Help tooltip: shows on hover, stays open when clicked */
+.crm-tipwrap{position:relative;display:inline-flex}
+.crm-tip{visibility:hidden;opacity:0;transition:opacity var(--ins-duration-fast) var(--ins-ease-out);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);z-index:50;width:max-content;max-width:240px;background:var(--ins-text-1);color:var(--ins-card);font-size:var(--ins-text-xs);line-height:var(--ins-leading-snug);padding:6px 10px;border-radius:var(--ins-radius);box-shadow:var(--ins-shadow-2);pointer-events:none}
+.crm-tipwrap:hover .crm-tip,.crm-tip.open{visibility:visible;opacity:1}
+.crm-tip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--ins-text-1)}
+@keyframes crm-pulse{0%,100%{opacity:1}50%{opacity:0.45}}
+.skel{display:block;background:var(--ins-ui-1);border-radius:4px;animation:crm-pulse 1.4s var(--ins-ease-out) infinite}
+/* Sticky condensed header: zero-height sticky anchor at the page top; the strip slides down out of it once the full header leaves the scroll viewport. Desktop only. */
+.crm-stickybar{position:sticky;top:calc(-1 * var(--ins-space-md));z-index:36;height:0;margin-bottom:calc(-1 * var(--ins-space-md));pointer-events:none}
+.crm-stickybar > div{pointer-events:auto;transition:transform var(--ins-duration-normal) var(--ins-ease-out),visibility 0s linear var(--ins-duration-normal)}
+.crm-stickybar > div[data-on="true"]{transition:transform var(--ins-duration-normal) var(--ins-ease-out),visibility 0s}
+@container crmpage (max-width:900px){.crm-stickybar{display:none}}
+.crm-hot a[href],.crm-hot button:not([disabled]),.crm-hot input,.crm-hot select,.crm-hot textarea,.crm-hot [role="tab"],.crm-hot [role="menuitem"],.crm-hot [role="menuitemradio"],.crm-hot [tabindex="0"]{outline:1.5px dashed #6A8BFF;outline-offset:1px;border-radius:var(--ins-radius)}
+@media (max-width:1180px){
+  .crm-hm-inline.hm-strip{width:100%;order:5;border-top:1px solid var(--ins-border-color);padding-top:var(--ins-space-xs);justify-content:space-between}
+  .crm-hm-inline .hm-cell{border-left:none !important;min-width:0 !important;padding:0 !important;align-items:flex-start !important}
+  .crm-hm-inline .hm-cell span{text-align:left !important}
+}
+/* Confirm modal: stacked full-width actions on phones — two lines of wrapped label otherwise */
+@container crmpage (max-width:560px){
+  /* Primary action sits on top, Cancel below — thumb reach on phones */
+  .crm-confirmcard{padding:var(--ins-space-md) var(--ins-space-md) var(--ins-space-sm) !important}
+  .crm-confirmbtns{width:100%;align-self:stretch;flex-direction:column;align-items:stretch !important}
+  .crm-confirmbtns button{width:100% !important;flex:1 1 auto;justify-content:center}
+  .crm-confirmbtns button:first-child{order:2}
+}
+
+/* ============================================================================
+   IIA v6 admin shell layer (TW#26371963)
+   ----------------------------------------------------------------------------
+   Ported from the Admin Shell v1.5 design (handoff/admin-shell/AdminShell.dc.html,
+   checked in at module-v6-crm/docs/specs/admin-shell/). Every value below is the
+   design's own, resolved from its renderVals(): 56px header, 216/64px rail (56px
+   below 768px), 13px rail type, 32px rows on a 2px gap, 40px breadcrumb bar,
+   breakpoints 640 / 768 / 1024 / 1280.
+
+   Class names are fresh (iia-*) on purpose: none of the 77 legacy .ins-sidebar
+   rules or the 35 body.mini rules in this file can match the v6 DOM, so there is
+   no specificity war and the default render of both components is untouched. The
+   only legacy selectors overridden are the content-column offsets, scoped under
+   .iia-shell--v6 so a v5 page is unaffected.
+
+   Tooltips: the design imports a DS Tooltip whose class names (.ins-tooltip__bubble)
+   do not exist in this bundle. The behaviour it specifies — 150ms hover delay,
+   fast fade-up, instant hide, suppressed after click — is applied to the shared
+   [data-tip] mechanism below instead.
+   ============================================================================ */
+
+/* ---- shell frame ---------------------------------------------------------- */
+.iia-shell--v6 { display: flex; flex-direction: column; min-height: 100vh; background: var(--ins-main-bg); }
+.iia-shell--v6 .iia-shell__body { flex: 1; display: flex; min-height: 0; position: relative; }
+.iia-shell--v6 .iia-shell__main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+/* Legacy content offsets assumed a fixed 240/50px rail and a 75px header. The v6 rail is a flex sibling. */
+.iia-shell--v6 .ins-renderer-wrap.content,
+.iia-shell--v6 body.mini .ins-renderer-wrap.content,
+body.mini .iia-shell--v6 .ins-renderer-wrap.content { margin-left: 0; width: auto; max-width: 100%; flex: 1 1 0%; min-width: 0; padding-top: var(--ins-space-md); min-height: 0; transition: none; }
+/* width:auto, not 100%: in overlay mode (<1280px) the body row carries a collapsed-rail gutter as
+   padding, and a 100% block would run that many pixels past the viewport. */
+.iia-shell--v6 .ins-renderer-wrap.content.no-sidebar { margin-left: 0; width: auto; }
+/* The breadcrumb bar in the header replaces the crumbs the renderer drew inside the content column, and the
+   crumbs every module SPA draws in its own page title (Header.vue › .page-title-wrapper › ins-breadcrumbs in all
+   eleven modules). One trail, owned by the shell; the module copy stays in the DOM so its route data still flows. */
+.iia-shell--v6 .ins-renderer-wrap .ins-breadcrumbs-wrap,
+.iia-shell--v6 .page-title-wrapper ins-breadcrumbs,
+.iia-shell--v6 .page-title-wrapper .hide-last-breadcrumb { display: none; }
+/* The content column is the scroller, as in the prototype (<main style="flex:1;overflow-y:auto">): header and rail
+   stay put, the page scrolls beneath the breadcrumb bar. Legacy app.min.css gives .ins-renderer-wrap overflow:hidden
+   from the iframe era, which inside this fixed-height frame clipped every SPA page taller than the viewport and left
+   nothing to scroll. */
+.iia-shell--v6 .ins-renderer-wrap.content { overflow-y: auto; overflow-x: hidden; }
+.iia-shell--v6 .ins-renderer-wrap iframe { height: calc(100vh - 56px - 40px); }
+.iia-shell--v6 .ins-renderer-wrap { padding-left: var(--ins-space-md); }
+/* Overlay-only scrollbar (design): a reserved gutter would eat a fifth of the collapsed rail. */
+.iia-railscroll { scrollbar-width: none; -ms-overflow-style: none; }
+.iia-railscroll::-webkit-scrollbar { width: 0; display: none; }
+
+/* ---- header ---------------------------------------------------------------- */
+ins-header.iia-hdr-host { display: block; position: relative; z-index: var(--iia-z-header); }
+ins-header.iia-hdr-host--raised { z-index: var(--iia-z-header-raised); }
+.iia-hdr {
+  height: 56px; background: var(--ins-chrome-bg); color: var(--ins-chrome-fg);
+  display: grid; grid-template-columns: 1fr minmax(200px, 480px) 1fr; align-items: center;
+  gap: var(--ins-space-sm); padding: 0 var(--ins-space-sm); position: relative; box-sizing: border-box;
+  font-family: var(--ins-font-family); font-size: var(--ins-text-sm); line-height: var(--ins-leading-normal);
+}
+/* The design inherits the DS body leading (1.6) everywhere in the chrome; the admin page's Foundation reset
+   gives <button> a line-height of 1, which shortened every button-based row and label by 3-8px. */
+.iia-hdr button, .iia-hdr a, .iia-menu button, .iia-menu a, .iia-switcher button, .iia-switcher a, .iia-flyout a, .iia-dialog button { line-height: inherit; }
+.iia-hdr--no-chat { grid-template-columns: auto 1fr; padding: 0 6px; }
+.iia-hdr__left { display: flex; align-items: center; gap: var(--ins-space-sm); justify-self: start; min-width: 0; }
+.iia-hdr--no-chat .iia-hdr__left { gap: 0; }
+.iia-hdr__toggle {
+  width: 34px; height: 34px; border: none; border-radius: var(--ins-radius); background: transparent; color: var(--ins-chrome-fg-muted);
+  cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; font-family: inherit;
+}
+.iia-hdr__toggle i { font-size: var(--iia-glyph-lg); transition: transform var(--ins-duration-normal) var(--ins-ease-out); }
+.iia-hdr__toggle:hover, .iia-hdr__toggle:focus-visible { background: var(--ins-chrome-hover); color: var(--ins-chrome-fg); outline: none; }
+.iia-hdr__logo { display: flex; align-items: center; text-decoration: none; color: inherit; }
+.iia-hdr__logo img { height: 36px; width: auto; display: block; }
+.iia-hdr__right { justify-self: end; display: flex; align-items: center; flex: none; gap: var(--ins-space-xs); }
+.iia-hdr--no-chat .iia-hdr__right { gap: var(--ins-space-3xs); }
+.iia-hdr__btn {
+  flex: none; width: 32px; height: 32px; border: none; border-radius: var(--ins-radius); background: transparent; color: var(--ins-chrome-fg-muted);
+  cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; text-decoration: none; font-family: inherit; position: relative;
+}
+.iia-hdr__btn:hover, .iia-hdr__btn:focus-visible { background: var(--ins-chrome-hover); color: var(--ins-chrome-fg); outline: none; }
+.iia-hdr__btn i { font-size: var(--ins-text-md); }
+.iia-hdr__badgewrap { position: relative; display: flex; }
+.iia-hdr__menuwrap { position: relative; flex: none; }
+.iia-hdr__account { margin-left: var(--ins-space-xs); }
+.iia-hdr--no-chat .iia-hdr__account { margin-left: var(--ins-space-3xs); }
+.iia-hdr__avatarbtn { border: none; background: transparent; padding: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 50%; width: 32px; height: 32px; position: relative; }
+.iia-hdr__avatarbtn:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--ins-chrome-focus); }
+.iia-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--ins-main); color: var(--iia-text-white); font-size: var(--ins-text-xs); font-weight: var(--ins-weight-semibold); display: flex; align-items: center; justify-content: center; flex: none; }
+.iia-avatar--lg { width: 36px; height: 36px; }
+@media (max-width: 767px) {
+  .iia-hdr__toggle, .iia-hdr__btn, .iia-hdr__avatarbtn { width: 44px; height: 44px; }
+}
+
+/* ---- support pill ---------------------------------------------------------- */
+.iia-chat {
+  position: relative; width: 100%; min-width: 0; height: 36px; display: flex; align-items: center; gap: var(--ins-space-xs); padding: 0 var(--ins-space-xs);
+  background: var(--ins-chrome-hover); border: 1px solid var(--ins-chrome-border); border-radius: var(--ins-radius); color: var(--ins-chrome-fg-subtle);
+  font-family: inherit; font-size: 13px; cursor: pointer; text-align: left;
+}
+.iia-chat:hover { border-color: var(--ins-chrome-fg-subtle); }
+.iia-chat:focus-visible { outline: none; border-color: var(--ins-chrome-focus); }
+.iia-chat > i { font-size: var(--ins-text-md); }
+.iia-chat__presence { margin-left: auto; display: flex; align-items: center; gap: 6px; font-size: var(--ins-text-xs); color: var(--ins-chrome-fg); }
+.iia-chat__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ins-alert-positive); }
+.iia-chat__badge {
+  position: absolute; top: -6px; right: -8px; min-width: 16px; height: 16px; box-sizing: border-box; padding: 0 4px; border-radius: var(--ins-radius-pill);
+  background: var(--iia-badge-negative); color: var(--iia-text-white); font-size: 10px; line-height: 1; font-weight: var(--ins-weight-semibold);
+  display: flex; align-items: center; justify-content: center;
+}
+.iia-chat__badge--lg { top: -6px; right: -6px; min-width: 18px; height: 18px; font-size: 11px; border: 2px solid var(--ins-chrome-bg); }
+
+/* ---- environment chip + switcher --------------------------------------- */
+.iia-env { position: relative; flex: none; margin-right: var(--ins-space-xs); }
+.iia-hdr--no-chat .iia-env { margin-right: var(--ins-space-3xs); }
+.iia-env__trigger { display: flex; align-items: center; gap: 8px; min-height: 44px; border: none; padding: 0; background: transparent; font-family: inherit; cursor: pointer; color: var(--ins-chrome-fg-muted); }
+.iia-env__trigger:focus-visible { outline: none; }
+.iia-env__trigger:focus-visible .iia-env__chip { box-shadow: 0 0 0 2px var(--ins-chrome-focus); }
+.iia-env__chip {
+  display: flex; align-items: center; border-radius: var(--ins-radius); padding: 5px 12px; background: var(--ins-instance-staging); color: var(--iia-text-white);
+  font-size: var(--iia-text-2xs); font-weight: var(--ins-weight-semibold); letter-spacing: 0.02em; text-transform: uppercase;
+}
+.iia-env__chip--production { background: var(--ins-instance-production); }
+.iia-env__caret { flex: none; color: var(--ins-chrome-fg-muted); }
+
+.iia-scrim { position: fixed; inset: 0; }
+.iia-scrim--menu { background: var(--iia-overlay-scrim); z-index: var(--iia-z-menu); }
+.iia-scrim--overlay { background: var(--iia-overlay-scrim); z-index: var(--iia-z-overlay); display: flex; justify-content: center; align-items: center; padding: var(--ins-space-md); box-sizing: border-box; }
+.iia-scrim--center { align-items: center; }
+
+.iia-switcher {
+  position: absolute; right: 0; top: calc(100% + var(--ins-space-2xs)); width: 472px; max-height: min(70vh, 560px);
+  display: flex; flex-direction: column; background: var(--ins-card); border: 1px solid var(--ins-border-color); border-radius: var(--ins-radius);
+  box-shadow: var(--ins-shadow-2); z-index: calc(var(--iia-z-menu) + 1); outline: none; color: var(--ins-text-2); line-height: var(--ins-leading-normal);
+  animation: ins-fade-in-up var(--ins-duration-fast) var(--ins-ease-out);
+}
+/* Double class on purpose: the mobile media rule below sets `top: calc(100% + 6px)` on .iia-switcher at
+   the same specificity and later in the file; on a fixed element that percentage is the viewport, which
+   put the docked panel below the screen. */
+.iia-switcher.iia-switcher--docked { position: fixed; left: 12px; right: 12px; top: 62px; width: auto; max-height: calc(100vh - 74px); border-radius: var(--ins-radius); }
+.iia-switcher__title { flex: none; padding: 12px 16px; border-bottom: 1px solid var(--ins-border-color); font-size: 14px; font-weight: var(--ins-weight-semibold); color: var(--ins-text-1); }
+.iia-switcher__search { flex: none; padding: 8px 12px; border-bottom: 1px solid var(--ins-border-color); }
+.iia-switcher__searchbox { display: flex; align-items: center; gap: var(--ins-space-xs); padding: 7px 10px; border: 1px solid var(--ins-border-color); border-radius: var(--ins-radius); background: var(--ins-main-bg); }
+.iia-switcher__searchbox i { font-size: var(--ins-text-md); color: var(--ins-ui-2); }
+.iia-switcher__searchbox input { flex: 1; min-width: 0; border: none; outline: none; background: transparent; font-family: inherit; font-size: var(--ins-text-sm); color: var(--ins-text-1); }
+.iia-switcher__list { flex: 1; min-height: 0; overflow-y: auto; position: relative; padding: 4px; }
+.iia-switcher__pill { position: absolute; left: 4px; right: 4px; top: 0; border-radius: var(--ins-radius); background: var(--ins-ui-1); pointer-events: none; }
+.iia-switcher__empty { padding: 20px 12px; text-align: center; font-size: var(--ins-text-sm); color: var(--ins-text-3); }
+.iia-switcher__group { position: relative; border-top: 1px solid var(--ins-border-color); margin: 4px 0 0; }
+.iia-switcher__group--first { border-top: none; margin: 0; }
+/* Design: group labels carry the environment's text-safe ink, 12px above (8px in the first group), 4px below. */
+.iia-switcher__grouplabel { padding: 12px 12px 4px; font-size: var(--iia-text-2xs); font-weight: var(--ins-weight-semibold); letter-spacing: 0.06em; text-transform: uppercase; color: var(--iia-instance-staging-text); }
+.iia-switcher__group--first .iia-switcher__grouplabel { padding-top: 8px; }
+.iia-switcher__group--production .iia-switcher__grouplabel { color: var(--iia-instance-production-text); }
+.iia-switcher__row {
+  position: relative; display: flex; align-items: center; gap: var(--ins-space-xs); width: 100%; box-sizing: border-box; min-height: 52px; padding: 8px 8px 8px 12px;
+  border-radius: var(--ins-radius); background: transparent; font-family: inherit; font-size: var(--ins-text-sm); cursor: pointer; text-align: left; color: var(--ins-text-2);
+  animation: ins-fade-in-up var(--ins-duration-normal) var(--ins-ease-out) both;
+}
+.iia-switcher__row:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--ins-main); }
+.iia-switcher__row.is-current { cursor: default; }
+.iia-switcher__row.is-current.is-production { background: var(--iia-instance-production-light); }
+.iia-switcher__row.is-current.is-staging { background: var(--iia-instance-staging-light); }
+.iia-switcher__text { flex: 1; min-width: 0; position: relative; }
+.iia-switcher__name { display: block; font-weight: var(--ins-weight-semibold); color: var(--ins-text-1); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.iia-switcher__domain { display: inline-flex; max-width: 100%; align-items: center; gap: var(--ins-space-2xs); margin-top: 1px; font-size: var(--ins-text-xs); color: var(--ins-text-3); text-decoration: none; border-radius: 2px; }
+.iia-switcher__domain:hover { color: var(--ins-main); }
+.iia-switcher__domain > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.iia-switcher__domain i { flex: none; font-size: var(--ins-text-xs); color: var(--ins-ui-2); position: relative; top: -1px; }
+.iia-switcher__current { flex: none; display: inline-flex; align-items: center; justify-content: flex-end; width: 76px; padding-right: 4px; box-sizing: border-box; }
+.iia-switcher__check { width: 20px; height: 20px; border-radius: 50%; background: var(--ins-instance-staging); color: var(--iia-text-white); display: inline-flex; align-items: center; justify-content: center; }
+.is-production .iia-switcher__check { background: var(--ins-instance-production); }
+.iia-switcher__check i { font-size: 11px; }
+.iia-switcher__switch { flex: none; display: flex; justify-content: flex-end; width: 76px; }
+.iia-switcher__switch ins-button .ins-button { height: 32px; min-width: 76px; text-transform: uppercase; }
+.iia-switcher__foot { flex: none; padding: 10px 16px; border-top: 1px solid var(--ins-border-color); font-size: var(--ins-text-xs); line-height: 1.5; color: var(--ins-text-3); }
+.iia-switcher__foot a { color: var(--ins-main); text-decoration: underline; text-underline-offset: 2px; border-radius: 2px; }
+.iia-switcher__foot a:hover { color: var(--ins-main-dark); }
+@media (max-width: 1023px) {
+  .iia-switcher__row { min-height: 60px; }
+  .iia-switcher__name { font-size: 14px; }
+  .iia-switcher__domain { min-height: 24px; }
+}
+
+/* ---- header menus (help, account) ---------------------------------------- */
+.iia-menu {
+  position: absolute; right: 0; top: calc(100% + 12px); background: var(--ins-card); border: 1px solid var(--ins-border-color); border-radius: var(--ins-radius);
+  box-shadow: var(--ins-shadow-2); z-index: var(--iia-z-menu); color: var(--ins-text-2); font-family: var(--ins-font-family); line-height: var(--ins-leading-normal);
+  animation: ins-fade-in-up var(--ins-duration-fast) var(--ins-ease-out); transform-origin: top right;
+}
+@media (max-width: 767px) { .iia-menu, .iia-switcher { top: calc(100% + 6px); } }
+.iia-menu--help { width: 232px; padding: var(--ins-space-2xs); }
+.iia-menu--account { width: 264px; padding-bottom: var(--ins-space-2xs); }
+.iia-menu__head { padding: var(--ins-space-sm); border-bottom: 1px solid var(--ins-border-color); display: flex; gap: var(--ins-space-xs); align-items: center; }
+.iia-menu__who { min-width: 0; }
+.iia-menu__name { font-size: var(--ins-text-sm); font-weight: var(--ins-weight-semibold); color: var(--ins-text-1); }
+.iia-menu__email { font-size: var(--ins-text-xs); color: var(--ins-text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.iia-menu__list { position: relative; padding: var(--ins-space-2xs); display: flex; flex-direction: column; gap: 2px; }
+.iia-menu--help { position: absolute; }
+.iia-menu__pill { position: absolute; left: var(--ins-space-2xs); right: var(--ins-space-2xs); top: 0; border-radius: var(--ins-radius); background: var(--ins-ui-1); pointer-events: none; }
+.iia-menu--help .iia-menu__pill { left: var(--ins-space-2xs); right: var(--ins-space-2xs); }
+.iia-menu__row {
+  position: relative; display: flex; align-items: center; gap: var(--ins-space-xs); width: 100%; box-sizing: border-box; height: 40px; padding: 0 var(--ins-space-xs);
+  border: none; border-radius: var(--ins-radius); background: transparent; color: var(--ins-text-2); font-family: inherit; font-size: 13px; cursor: pointer; text-align: left;
+  text-decoration: none; transition: color 150ms var(--ins-ease-out);
+}
+.iia-menu__row:hover, .iia-menu__row:focus-visible { color: var(--ins-text-1); outline: none; }
+.iia-menu__row.is-disabled { color: var(--ins-text-3); opacity: var(--ins-disabled-opacity); cursor: default; }
+.iia-menu__row > i, .iia-menu__glyph, .iia-menu__fonticon { flex: none; color: var(--ins-ui-2); }
+.iia-menu__row > i { font-size: var(--ins-text-md); }
+.iia-menu__fonticon { width: 16px; text-align: center; }
+.iia-menu__ext { margin-left: auto; font-size: var(--ins-text-xs); color: var(--ins-ui-2); }
+.iia-menu__kbd { margin-left: auto; font-size: var(--ins-text-xs); border: 1px solid var(--ins-border-color); border-radius: var(--ins-radius); padding: 1px 7px; color: var(--ins-text-3); }
+
+/* ---- tooltips on chrome (shared data-tip, design timing) ----------------- */
+.iia-hdr [data-tip] { position: relative; }
+/* Geometry is the DS Tooltip's (placement=bottom): bubble 8px under the trigger, 6px 10px padding, 12px/1.4
+   type on --iia-sidebar, --ins-shadow-2, a 10px arrow, centred on the trigger, 4px rise on show. */
+.iia-hdr [data-tip]::after, .iia-hdr [data-tip]::before {
+  position: absolute; left: 50%; z-index: var(--iia-z-menu); pointer-events: none; opacity: 0; visibility: hidden;
+  transition: opacity var(--ins-duration-fast) var(--ins-ease-out) 0s, transform var(--ins-duration-fast) var(--ins-ease-out) 0s, visibility 0s linear 0s;
+}
+.iia-hdr [data-tip]::after {
+  content: attr(data-tip); top: calc(100% + 8px); transform: translateX(-50%) translateY(-4px);
+  white-space: nowrap; padding: 6px 10px; border-radius: var(--ins-radius); background: var(--iia-sidebar); color: var(--iia-text-white); box-shadow: var(--ins-shadow-2);
+  font-size: var(--ins-text-xs); line-height: 1.4; font-weight: var(--ins-weight-regular); letter-spacing: 0; text-transform: none;
+}
+.iia-hdr [data-tip]::before { content: ''; top: calc(100% - 2px); width: 0; height: 0; border: 5px solid transparent; border-bottom-color: var(--iia-sidebar); transform: translateX(-5px) translateY(-4px); }
+.iia-hdr [data-tip]:hover::after, .iia-hdr [data-tip]:focus-visible::after, .iia-hdr [data-tip]:hover::before, .iia-hdr [data-tip]:focus-visible::before {
+  opacity: 1; visibility: visible;
+  transition-delay: 150ms, 150ms, 150ms; /* 150ms hover delay; hide is instant (delays above are 0) */
+}
+.iia-hdr [data-tip]:hover::after, .iia-hdr [data-tip]:focus-visible::after {
+  transform: translateX(-50%) translateY(0);
+  /* The bundle's generic `button[data-tip]:hover::after` (0,2,2) outranks the base rule above (0,2,1):
+     it places its bubble ABOVE the button (bottom, right, an animation) and restyles it (4px 8px padding,
+     --ins-text-1 fill, z 60). Every visual the design specifies is restated here at (0,3,2). */
+  top: calc(100% + 8px); bottom: auto; right: auto; animation: none; left: 50%;
+  padding: 6px 10px; background: var(--iia-sidebar); color: var(--iia-text-white); box-shadow: var(--ins-shadow-2); z-index: var(--iia-z-menu);
+  font-size: var(--ins-text-xs); line-height: 1.4; border-radius: var(--ins-radius);
+}
+[data-theme="dark"] .iia-hdr [data-tip]:hover::after, [data-theme="dark"] .iia-hdr [data-tip]:focus-visible::after { background: var(--iia-header); color: var(--iia-sidebar); }
+.iia-hdr [data-tip]:hover::before, .iia-hdr [data-tip]:focus-visible::before { transform: translateX(-5px) translateY(0); }
+.iia-hdr [data-tip][data-tip-off]::after, .iia-hdr [data-tip][data-tip-off]::before { opacity: 0 !important; visibility: hidden !important; }
+/* Bubbles are centred on every trigger, as the DS Tooltip is; the admin page's <html> has overflow-x hidden,
+   so a bubble that pokes past a phone viewport never adds scroll width. */
+/* Bubbles hang below the 56px bar over the rail (z 40) and the content; the header sits at z 30, so a
+   showing bubble would paint behind the rail. Raise the header for as long as one of its tips shows. */
+ins-header.iia-hdr-host:has([data-tip]:hover:not([data-tip-off]), [data-tip]:focus-visible) { z-index: var(--iia-z-header-raised); }
+/* DS tooltip bubble is dark; invert it against dark chrome in dark mode (design). */
+[data-theme="dark"] .iia-hdr [data-tip]::after { background: var(--iia-header); color: var(--iia-sidebar); }
+[data-theme="dark"] .iia-hdr [data-tip]::before { border-bottom-color: var(--iia-header); }
+/* Design review: no focus rings in the prototype; focus is carried by background/colour states above. */
+
+/* ---- breadcrumb bar ------------------------------------------------------- */
+/* Design: the bar sits INSIDE the content column, beside the rail (rail runs from y=56). ins-header owns it,
+   so it is positioned from the header host's box and follows the rail width; the shell gets
+   `iia-shell--crumbs` from the header while a bar is showing, which pads the content column down 40px. */
+.iia-crumbs { position: absolute; top: 56px; left: 216px; right: 0; z-index: 1; display: flex; height: 40px; box-sizing: border-box; background: var(--ins-header-bg); border-bottom: 1px solid var(--ins-border-color); align-items: center; padding: 0 var(--ins-space-md); gap: var(--ins-space-xs); font-size: var(--ins-text-xs); line-height: var(--ins-leading-normal); color: var(--ins-text-3); font-family: var(--ins-font-family); transition: left var(--ins-duration-normal) var(--ins-ease-out); }
+body.mini .iia-crumbs { left: 64px; }
+@media (max-width: 767px) { body.mini .iia-crumbs { left: 56px; } }
+.iia-shell--v6.iia-shell--crumbs .iia-shell__main { padding-top: 40px; }
+.iia-crumbs__nav { min-width: 0; display: flex; align-items: center; gap: var(--ins-space-xs); }
+.iia-crumbs__home { display: flex; align-items: center; gap: 6px; color: var(--ins-text-3); border-radius: var(--ins-radius); text-decoration: none; }
+.iia-crumbs__home i { font-size: var(--ins-chrome-glyph-sm); }
+.iia-crumbs__home:hover, .iia-crumbs__link:hover { color: var(--ins-main); }
+.iia-crumbs__sep { font-size: var(--iia-glyph-2xs); color: var(--ins-ui-2); }
+.iia-crumbs__link { color: var(--ins-text-3); max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; border-radius: var(--ins-radius); text-decoration: none; }
+.iia-crumbs__current { color: var(--ins-text-1); font-weight: var(--ins-weight-semibold); white-space: nowrap; }
+/* A module heading with a submenu and no route of its own (the v5 pages' "CRM" crumb): plain text, not a dead link. */
+.iia-crumbs__text { color: var(--ins-text-3); max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ---- help panel (ins-help-panel; design L336–355) ------------------------- */
+ins-help-panel { display: block; }
+ins-help-panel[hidden] { display: none; }
+.iia-help { display: flex; flex-direction: row; gap: var(--ins-space-md); align-items: center; background: var(--ins-card); border: 1px solid var(--ins-border-color); border-radius: var(--ins-radius); padding: var(--ins-space-md); position: relative; margin-bottom: var(--ins-space-md); font-family: var(--ins-font-family); line-height: var(--ins-leading-normal); animation: ins-fade-in-up var(--ins-duration-normal) var(--ins-ease-out); }
+.iia-help__graphic { flex: none; }
+.iia-help__text { min-width: 0; padding-right: var(--ins-space-lg); align-self: stretch; }
+.iia-help__heading { font-size: var(--ins-text-md); font-weight: var(--ins-weight-semibold); color: var(--ins-text-1); }
+.iia-help__body { margin: var(--ins-space-2xs) 0 var(--ins-space-xs); font-size: var(--ins-text-sm); line-height: var(--ins-leading-snug); color: var(--ins-text-3); max-width: 640px; text-wrap: pretty; }
+.iia-help__dismiss { position: absolute; top: var(--ins-space-xs); right: var(--ins-space-xs); width: 28px; height: 28px; border: none; border-radius: var(--ins-radius); background: transparent; color: var(--ins-ui-2); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-size: var(--ins-chrome-glyph-sm); }
+.iia-help__dismiss:hover { background: var(--ins-ui-1); color: var(--ins-text-1); }
+.iia-help__dismiss:focus-visible { outline: 2px solid var(--ins-main); outline-offset: 1px; }
+@media (max-width: 767px) { .iia-help { flex-direction: column; align-items: flex-start; } .iia-help__text { padding-right: 0; } }
+/* The graphic's build animation (design L109–114). */
+@keyframes iia-bar-build { 0% { transform: scaleY(0); opacity: 0; } 8% { opacity: 1; } 16% { transform: scaleY(1.09); opacity: 1; } 24% { transform: scaleY(1); } 86% { transform: scaleY(1); opacity: 1; } 95%, 100% { transform: scaleY(0); opacity: 0; } }
+@keyframes iia-wipe-build { 0% { transform: scaleX(0); } 14%, 86% { transform: scaleX(1); } 95%, 100% { transform: scaleX(0); } }
+.iia-dash-el { transform-box: fill-box; animation-duration: 4s; animation-timing-function: var(--ins-ease-out); animation-iteration-count: infinite; }
+.iia-dash-bar { transform-origin: bottom; animation-name: iia-bar-build; }
+.iia-dash-wipe { transform-origin: left center; animation-name: iia-wipe-build; }
+@media (prefers-reduced-motion: reduce) { .iia-dash-el { animation: none; } }
+
+/* ---- toast (DS Toast markup + the design's timer bar; region L84–94) ------ */
+.iia-toast-region { position: fixed; top: calc(56px + var(--ins-space-sm)); right: var(--ins-space-sm); z-index: var(--iia-z-scrim); display: flex; flex-direction: column; align-items: flex-end; gap: var(--ins-space-xs); pointer-events: none; }
+.iia-toast { pointer-events: auto; position: relative; overflow: hidden; display: flex; gap: 12px; align-items: flex-start; background: var(--ins-card); border-radius: var(--ins-radius); box-shadow: var(--ins-shadow-2); padding: 14px 16px; font-family: var(--ins-font-family); min-width: 280px; max-width: 380px; border-left: 3px solid var(--ins-alert-positive); animation: ins-fade-in-up var(--ins-duration-slow) var(--ins-ease-out); }
+.iia-toast .ins-toast__icon { flex: none; font-size: 18px; line-height: 1; margin-top: 1px; color: var(--ins-alert-positive); }
+.iia-toast .ins-toast__body { flex: 1; min-width: 0; }
+.iia-toast__msg { margin: 0; font-size: var(--ins-text-sm); line-height: var(--ins-leading-snug); color: var(--ins-text-1); }
+.iia-toast .ins-toast__close { flex: none; cursor: pointer; color: var(--ins-ui-2); background: none; border: 0; font-size: 14px; padding: 2px; }
+.iia-toast .ins-toast__close:hover { color: var(--ins-text-2); }
+.iia-toast__timer { position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: var(--ins-alert-positive); transform-origin: left center; animation: iia-toast-timer 4s linear forwards; }
+@keyframes iia-toast-timer { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+@media (max-width: 640px) { .iia-toast-region { top: auto; bottom: var(--ins-space-sm); left: var(--ins-space-sm); right: var(--ins-space-sm); align-items: stretch; } .iia-toast { width: 100%; max-width: none; box-sizing: border-box; } }
+@media (prefers-reduced-motion: reduce) { .iia-toast__timer { animation: none; } }
+@media (max-width: 767px) { .iia-crumbs__link { max-width: 90px; } }
+
+/* ---- dialogs (shortcuts, production confirmation) ------------------------ */
+.iia-dialog { background: var(--ins-card); border: 1px solid var(--ins-border-color); border-radius: var(--ins-radius); box-shadow: var(--ins-shadow-2); color: var(--ins-text-2); font-family: var(--ins-font-family); animation: ins-zoom-in var(--ins-duration-fast) var(--ins-ease-out); box-sizing: border-box; max-width: 100%; }
+.iia-dialog--shortcuts { width: 400px; }
+.iia-dialog--prod { width: 480px; }
+.iia-dialog__head { display: flex; align-items: center; gap: var(--ins-space-xs); padding: 16px; border-bottom: 1px solid var(--ins-border-color); }
+.iia-dialog__title { font-size: 14px; font-weight: var(--ins-weight-semibold); color: var(--ins-text-1); }
+.iia-dialog__close { margin-left: auto; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border: none; border-radius: var(--ins-radius); background: transparent; color: var(--ins-text-3); cursor: pointer; }
+.iia-dialog__close:hover { background: var(--ins-card-hover); color: var(--ins-text-1); }
+.iia-dialog__close i { font-size: var(--ins-text-md); }
+.iia-dialog__rows { padding: var(--ins-space-xs) 16px var(--ins-space-sm); display: flex; flex-direction: column; }
+.iia-dialog__row { display: flex; align-items: center; gap: var(--ins-space-sm); padding: 8px 0; }
+.iia-dialog__row span { flex: 1; min-width: 0; font-size: var(--ins-text-sm); color: var(--ins-text-2); }
+.iia-dialog__row kbd { flex: none; font-family: 'Courier Prime', ui-monospace, Menlo, monospace; font-size: 12px; color: var(--ins-text-1); border: 1px solid var(--ins-border-color); border-bottom-width: 2px; border-radius: var(--ins-radius); padding: 2px 8px; background: var(--ins-main-bg); }
+.iia-dialog__body { display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--ins-space-md); padding: var(--ins-space-lg); }
+.iia-dialog__warn { display: block; font-size: 72px; line-height: 1; color: var(--ins-alert-warning); }
+.iia-dialog__h2 { margin: 0; font-size: var(--ins-title-5); line-height: var(--ins-leading-tight); font-weight: var(--ins-weight-semibold); letter-spacing: -0.5px; color: var(--ins-text-1); }
+.iia-dialog__p { margin: 0; font-size: var(--ins-text-sm); line-height: 1.6; color: var(--ins-text-2); text-wrap: pretty; }
+.iia-dialog__p strong { font-weight: var(--ins-weight-semibold); color: var(--ins-text-1); }
+.iia-dialog__actions { display: flex; align-items: center; justify-content: center; gap: var(--ins-space-sm); width: 100%; }
+.iia-dialog__actions--stack { flex-direction: column; }
+.iia-btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; height: 44px; padding: 0 var(--ins-space-md); border-radius: var(--ins-radius); font-family: inherit; font-size: var(--ins-text-xs); font-weight: var(--ins-weight-semibold); letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; transition: background-color var(--ins-duration-fast) var(--ins-ease-out); }
+.iia-dialog__actions--stack .iia-btn { width: 100%; }
+.iia-btn i { font-size: var(--iia-glyph-sm); }
+.iia-btn--outline { border: 1px solid var(--ins-main); background: var(--ins-card); color: var(--ins-main); }
+.iia-btn--outline:hover { background: var(--ins-main-light); }
+.iia-btn--solid { border: none; background: var(--ins-main); color: var(--iia-text-white); }
+.iia-btn--solid:hover { background: var(--ins-main-dark); }
+
+/* ---- rail --------------------------------------------------------------- */
+ins-sidebar.iia-rail {
+  --iia-rail-w: 216px; --iia-rail-w-collapsed: 64px;
+  flex: none; position: relative; width: var(--iia-rail-w); background: var(--ins-chrome-bg); display: flex; flex-direction: column;
+  transition: width var(--ins-duration-normal) var(--ins-ease-out); z-index: var(--iia-z-rail); font-family: var(--ins-font-family); line-height: var(--ins-leading-normal); align-self: stretch;
+}
+ins-sidebar.iia-rail--collapsed { width: var(--iia-rail-w-collapsed); }
+@media (max-width: 767px) { ins-sidebar.iia-rail { --iia-rail-w-collapsed: 56px; } }
+/* Overlay mode below 1280px: the rail sits over the content; the body row keeps a collapsed-width gutter via padding. */
+@media (max-width: 1279px) {
+  .iia-shell--v6 .iia-shell__body { padding-left: 64px; }
+  ins-sidebar.iia-rail { position: absolute; left: 0; top: 0; bottom: 0; }
+  ins-sidebar.iia-rail:not(.iia-rail--collapsed) { z-index: var(--iia-z-rail-raised); box-shadow: var(--ins-shadow-2); }
+}
+@media (max-width: 767px) { .iia-shell--v6 .iia-shell__body { padding-left: 56px; } }
+.iia-rail__scroll { position: relative; flex: 1; min-height: 0; padding: var(--ins-space-xs) 0 var(--ins-space-sm); display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; }
+@media (min-height: 980px) { .iia-rail__scroll { padding: var(--ins-space-sm) 0 var(--ins-space-md); } }
+.iia-rail__scroll > div:not([class]) { display: contents; } /* any bare <div> a module partial left around its items; never the pill or a group */
+/* Rail groups (design groupsDef): Dashboard alone, then Work / Build / Sell / Configure, each labelled group opening with a rule. */
+.iia-rail__group { display: block; }
+.iia-rail__divider { display: block; height: 1px; margin: var(--ins-space-xs) 12px 0; background: var(--iia-rail-divider); transition: background var(--ins-duration-fast) var(--ins-ease-out); }
+.iia-rail__group-head { display: flex; align-items: flex-end; height: 33px; padding: 0 12px 4px 20px; overflow: hidden; transition: height var(--ins-duration-normal) var(--ins-ease-out), padding var(--ins-duration-normal) var(--ins-ease-out); }
+.iia-rail__group-label { display: inline; font-size: 12px; font-weight: var(--ins-weight-semibold); letter-spacing: normal; color: var(--iia-group-label); white-space: nowrap; }
+[data-theme="dark"] .iia-rail__group-label { color: var(--iia-group-label-dm); }
+.iia-rail--collapsed .iia-rail__group-head { height: 0; padding: 0; }
+.iia-rail--collapsed .iia-rail__group-label { display: none; }
+.iia-rail__pill { position: absolute; left: 4px; right: 12px; top: 0; border-radius: var(--iia-radius-pill-sm); background: var(--iia-rail-pill); pointer-events: none; }
+.iia-rail--collapsed .iia-rail__pill { left: 12px; }
+.iia-rail__fade { position: absolute; left: 0; right: 0; bottom: 0; height: 24px; pointer-events: none; background: linear-gradient(to bottom, transparent, var(--ins-chrome-bg)); }
+
+ins-sidebar-item.iia-rail-item { display: block; position: relative; }
+ins-sidebar-item.iia-rail-item--nested { display: none; }
+/* The mobile-only My Profile / Sign Out rows the partials add are Foundation-hidden above 640px only.
+   In v6 the account menu carries both at every width, so they never render in the rail. */
+ins-sidebar.iia-rail ins-sidebar-item.hide-for-medium { display: none !important; }
+.iia-rail-item__marker { position: absolute; left: 2px; top: 50%; transform: translateY(-50%) scaleY(0.35); transform-origin: center; width: 2px; height: 20px; border-radius: 9999px; background: var(--ins-main); opacity: 0; transition: opacity var(--ins-duration-fast) var(--ins-ease-out), transform 150ms var(--ins-ease-out); }
+.iia-rail-item.is-active .iia-rail-item__marker { opacity: 1; transform: translateY(-50%) scaleY(1); }
+.iia-rail-item__link {
+  display: flex; align-items: center; justify-content: flex-start; height: 32px; margin: 2px 12px 2px 4px; padding: 0 8px 0 16px; border-radius: 6px; box-sizing: border-box;
+  color: var(--iia-rail-fg-muted); background: transparent; white-space: nowrap; overflow: hidden; text-decoration: none; font-size: 13px; font-weight: 400;
+  transition: padding var(--ins-duration-normal) var(--ins-ease-out), color 150ms cubic-bezier(0,0,0.2,1), background 150ms cubic-bezier(0,0,0.2,1);
+}
+.iia-rail-item__link:hover, .iia-rail-item.is-active .iia-rail-item__link { color: var(--iia-rail-fg); }
+.iia-rail-item.is-active .iia-rail-item__link { font-weight: 500; }
+.iia-rail-item__link:active { background: rgba(255, 255, 255, 0.1); }
+.iia-rail-item__link:focus-visible { outline: none; background: rgba(255, 255, 255, 0.08); color: var(--iia-rail-fg); }
+.iia-rail--collapsed .iia-rail-item__link { justify-content: center; margin: 2px 12px; padding: 0; }
+.iia-rail-item__group { display: flex; align-items: center; gap: var(--ins-space-xs); min-width: 0; transition: transform 150ms ease-out; }
+.iia-rail-item__link:active .iia-rail-item__group { transform: scale(0.985); }
+.iia-rail-item__icon { position: relative; flex: none; width: 16px; height: 16px; }
+.iia-rail-item__glyph { position: absolute; inset: 0; transition: opacity 200ms ease-out; }
+.iia-rail-item__glyph--reg { opacity: 1; }
+.iia-rail-item__glyph--fill { opacity: 0; }
+.iia-rail-item.is-active .iia-rail-item__glyph--reg { opacity: 0; }
+.iia-rail-item.is-active .iia-rail-item__glyph--fill { opacity: 1; }
+.iia-rail-item__fonticon { font-size: 16px; line-height: 16px; display: block; }
+.iia-rail-item__label { overflow: hidden; text-overflow: ellipsis; transform: translateX(0); transition: transform var(--ins-duration-normal) var(--ins-ease-out) var(--ins-duration-instant); }
+.iia-rail-item__label.is-hidden { display: none; transform: translateX(-12px); }
+.iia-rail-item__chevron { margin-left: auto; flex: none; color: var(--ins-chrome-fg-subtle); }
+.iia-rail-item__children { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .iia-rail-item__marker, .iia-rail-item__glyph, .iia-rail-item__group, ins-sidebar.iia-rail, .iia-rail-item__link { transition: none; }
+  .iia-rail-item__marker { transform: translateY(-50%) scaleY(1); }
+}
+
+/* ---- rail flyout ---------------------------------------------------------- */
+.iia-flyout {
+  position: fixed; min-width: 208px; max-height: min(70vh, 460px); overflow-y: auto; background: var(--ins-chrome-surface); border: 1px solid var(--ins-chrome-border);
+  border-radius: var(--ins-radius); box-shadow: var(--ins-shadow-2); padding: var(--ins-space-2xs); z-index: var(--iia-z-flyout);
+  animation: ins-fade-in-up var(--ins-duration-fast) var(--ins-ease-out); font-family: var(--ins-font-family); line-height: var(--ins-leading-normal);
+}
+.iia-flyout__pill { position: absolute; left: 4px; right: 4px; top: 0; border-radius: var(--iia-radius-pill-sm); background: var(--iia-rail-pill); pointer-events: none; }
+.iia-flyout__label { font-size: 12px; font-weight: var(--ins-weight-semibold); letter-spacing: normal; text-transform: none; color: var(--iia-group-label); padding: var(--ins-space-xs) var(--ins-space-xs) var(--ins-space-2xs) 12px; }
+[data-theme="dark"] .iia-flyout__label { color: var(--iia-group-label-dm); }
+.iia-flyout__item {
+  position: relative; display: flex; align-items: center; gap: var(--ins-space-xs); padding: var(--ins-space-xs) var(--ins-space-xs) var(--ins-space-xs) 12px; border-radius: 6px;
+  background: transparent; color: var(--iia-rail-fg-muted); font-size: 13px; font-weight: 400; white-space: nowrap; text-decoration: none;
+  transition: color 150ms cubic-bezier(0,0,0.2,1), transform 150ms ease-out; animation: iia-sub-in var(--ins-duration-fast) var(--ins-ease-out) both;
+}
+.iia-flyout__item:hover { color: #EDEDED; transform: scale(0.99); }
+.iia-flyout__item:active { background: rgba(255, 255, 255, 0.1); transform: scale(0.985); }
+.iia-flyout__item:focus-visible { outline: none; background: rgba(255, 255, 255, 0.08); color: var(--iia-rail-fg); }
+.iia-flyout__item.is-active { color: var(--iia-rail-fg); font-weight: 500; }
+.iia-flyout__marker { position: absolute; left: 2px; top: 50%; transform: translateY(-50%) scaleY(0.35); transform-origin: center; width: 2px; height: 20px; border-radius: 9999px; background: var(--ins-main); opacity: 0; transition: opacity var(--ins-duration-fast) var(--ins-ease-out), transform 150ms var(--ins-ease-out); }
+.iia-flyout__item.is-active .iia-flyout__marker { opacity: 1; transform: translateY(-50%) scaleY(1); }
+.iia-flyout__ext { margin-left: auto; font-size: var(--ins-text-xs); color: var(--ins-chrome-fg-subtle); padding-left: var(--ins-space-sm); }
+@keyframes iia-sub-in { from { opacity: 0; transform: translateX(-2px); } to { opacity: 1; transform: translateX(0); } }

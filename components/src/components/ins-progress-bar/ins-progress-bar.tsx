@@ -13,10 +13,10 @@ export class InsProgressBar {
   @Prop({ mutable: true }) load: boolean = false;
   @Prop({ mutable: true }) checkLoad: boolean = false;
 
-  progressEl: any;
+  progressEl: HTMLElement;
 
   componentDidLoad(){
-    this.progressEl = this.el.querySelector('.progress')
+    this.progressEl = this.el.querySelector('.progress') as HTMLElement
     this.calculateProgress();
     if (this.checkLoad) this.load = true;
     this.didLoad.emit();

@@ -54,7 +54,7 @@ export class InsInputMultiple {
     }
   }
 
-  isJSON(value) {
+  isJSON(value: string) {
     try { return JSON.parse(value) }
     catch(err) { return [] }
   }
@@ -79,7 +79,7 @@ export class InsInputMultiple {
   }
 
 	@Method()
-	async setValue(value) {
+	async setValue(value: string | any[]) {
 		this.value = value;
     this.insValueChange.emit(this.value);
 	}
@@ -92,7 +92,7 @@ export class InsInputMultiple {
 		this.insInputMultipleEl.querySelector('.ins-input-multiple').classList.remove('active');
 	}
 
-	onremoveHandler(index) {
+	onremoveHandler(index: number) {
 		let value = this.value;
 		value.splice(index, 1);
 		this.value = [];
@@ -100,13 +100,13 @@ export class InsInputMultiple {
     this.insInput.emit({ value });
 	}
 
-	onclickContainer(event) {
+	onclickContainer(event: any) {
 		if (event.target.classList.contains('ins-input-multiple-container')) {
 			event.target.querySelector('input').focus();
 		}
 	}
 
-	oninputHandler(event) {
+	oninputHandler(event: any) {
 		let value = this.value;
     let eventValue = event.target.value;
 
@@ -119,7 +119,7 @@ export class InsInputMultiple {
 		}
   }
 
-  onaddHandler(event) {
+  onaddHandler(event: any) {
 		let value = this.value;
 		let eventValue = event.target.previousSibling.value;
 
@@ -130,7 +130,7 @@ export class InsInputMultiple {
 		}
 	}
 
-	updateValue(value, eventValue) {
+	updateValue(value: any[], eventValue: string) {
 		this.value = [];
 		this.value = value;
 		this.value.push(eventValue);
@@ -152,7 +152,7 @@ export class InsInputMultiple {
     let allowed = '<a>,<abbr>,<acronym>,<address>,<article>,<aside>,<b>,<base>,<bdi>,<bdo>,<blockquote>,<br>,<caption>,<code>,<dd>,<del>,<details>,<dfn>,<dir>,<div>,<dl>,<dt>,<em>,<font>,<h1>,<h2>,<h3>,<h4>,<h5>,<h6>,<hr>,<i>,<ins>,<label>,<li>,<link>,<mark>,<menu>,<meter>,<nav>,<ol>,<p>,<pre>,<q>,<s>,<samp>,<section>,<small>,<span>,<strike>,<strong>,<sub>,<summary>,<sup>,<table>,<tbody>,<td>,<tfoot>,<th>,<thead>,<time>,<tr>,<tt>,<u>,<ul>,<wbr>';
     allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
 
-    var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
+    const tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
     commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
     return value.replace(commentsAndPhpTags, '').replace(tags, ($0, $1) => {
       return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';

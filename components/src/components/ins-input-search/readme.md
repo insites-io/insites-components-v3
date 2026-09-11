@@ -89,15 +89,15 @@ Type: `Promise<void>`
 
 
 
-### `setOptions(value: any) => Promise<void>`
+### `setOptions(value: Array<{ label: string; value: string; }>) => Promise<void>`
 
 
 
 #### Parameters
 
-| Name    | Type  | Description |
-| ------- | ----- | ----------- |
-| `value` | `any` |             |
+| Name    | Type                                  | Description |
+| ------- | ------------------------------------- | ----------- |
+| `value` | `{ label: string; value: string; }[]` |             |
 
 #### Returns
 

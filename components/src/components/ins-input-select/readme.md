@@ -158,15 +158,15 @@ Type: `Promise<void>`
 
 
 
-### `setLoadingState(state: any) => Promise<boolean>`
+### `setLoadingState(state: boolean) => Promise<boolean>`
 
 
 
 #### Parameters
 
-| Name    | Type  | Description |
-| ------- | ----- | ----------- |
-| `state` | `any` |             |
+| Name    | Type      | Description |
+| ------- | --------- | ----------- |
+| `state` | `boolean` |             |
 
 #### Returns
 
@@ -174,15 +174,15 @@ Type: `Promise<boolean>`
 
 
 
-### `setSearchingState(state: any) => Promise<boolean>`
+### `setSearchingState(state: boolean) => Promise<boolean>`
 
 
 
 #### Parameters
 
-| Name    | Type  | Description |
-| ------- | ----- | ----------- |
-| `state` | `any` |             |
+| Name    | Type      | Description |
+| ------- | --------- | ----------- |
+| `state` | `boolean` |             |
 
 #### Returns
 
