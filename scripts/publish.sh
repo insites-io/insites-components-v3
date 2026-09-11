@@ -28,6 +28,11 @@ DIST_ID=E35G635O6GR2HY
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 BUILD="$ROOT/components/www/build"
 CSS="$ROOT/components/www/assets/insites/css"
+# The icon font. css/insites-font-icons.css resolves ../fonts/icons/insites-font-icon.{eot,ttf,woff,svg}
+# from the same prefix, so a publish that ships the CSS without fonts/ renders every icon glyph as a box
+# (found 11 Sep 2026: v3/3.0.0, v3/3.1.0 and v3/latest had no fonts/ at all — TW#26711229).
+FONTS="$ROOT/components/www/assets/insites/fonts"
+[[ -f "$FONTS/icons/insites-font-icon.woff" ]] || { echo "no icon font at $FONTS/icons — the CSS would 404 its glyphs"; exit 1; }
 PKG_VERSION=$(node -e "process.stdout.write(require('$ROOT/components/package.json').version)")
 
 [[ -f "$BUILD/insites.esm.js" ]] || { echo "no build at $BUILD — run npm run build in components/ first"; exit 1; }
@@ -44,6 +49,8 @@ sync_to() {
     --cache-control "public, max-age=300" --only-show-errors
   aws s3 sync "$CSS/" "s3://$BUCKET/$prefix/css/" --profile "$PROFILE" --exclude "*.log" \
     --cache-control "public, max-age=300" --only-show-errors
+  aws s3 sync "$FONTS/" "s3://$BUCKET/$prefix/fonts/" --profile "$PROFILE" \
+    --cache-control "public, max-age=31536000, immutable" --only-show-errors
 }
 
 echo "== pinned: v3/$VERSION =="; sync_to "v3/$VERSION"
