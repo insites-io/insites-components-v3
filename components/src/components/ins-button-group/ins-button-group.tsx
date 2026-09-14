@@ -4,8 +4,8 @@ import { h, Component, Prop, Event, EventEmitter, Element, State, Method, Watch 
 
 export class InsButtonGroup {
   @Element() insButtonGroupEl: HTMLElement;
-  @Event() insClick: EventEmitter;
-  @Event() didLoad: EventEmitter;
+  @Event() insClick: EventEmitter<{action: string; label: string; index: number}>;
+  @Event() didLoad: EventEmitter<void>;
   @Prop() hasLoad: string;
 
   @Prop({ mutable: true }) activeOption: string = "";
@@ -17,7 +17,7 @@ export class InsButtonGroup {
   @Prop({ mutable: true }) load: boolean = false;
   @Prop({ mutable: true }) checkLoad: boolean = false;
 
-  @State() buttonOptions = []
+  @State() buttonOptions: string[] = []
 
   componentDidLoad(){
     if (this.checkLoad) this.load = true;
@@ -37,7 +37,7 @@ export class InsButtonGroup {
   }
 
   @Method()
-  async setActiveOption(option) {
+  async setActiveOption(option: string) {
     if (this.buttonOptions.indexOf(option) !== -1) {
       this.activeIndex = this.buttonOptions.indexOf(option);
     }
@@ -52,7 +52,7 @@ export class InsButtonGroup {
     list[this.activeIndex].classList.add('active');
   }
 
-  buttonActionHandler(action, label, index) {
+  buttonActionHandler(action: string, label: string, index: number) {
     this.activeIndex = index;
     this.insClick.emit({ action, label, index });
   }

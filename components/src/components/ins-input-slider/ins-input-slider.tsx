@@ -36,10 +36,10 @@ export class InsInputSlider {
 
   @Prop({mutable: true}) tooltip: string = "";
 
-  inputEl: any;
-  tooltipValue: any;
-  sliderEl: any;
-  labelInput: any;
+  inputEl: HTMLInputElement;
+  tooltipValue: HTMLDivElement;
+  sliderEl: any; // TODO: use rangeslider-pure's instance type if the package ships typings
+  labelInput: HTMLInputElement;
 
   @Method()
   async getValue(){
@@ -47,7 +47,7 @@ export class InsInputSlider {
   }
 
   @Method()
-  async setValue(value){
+  async setValue(value: number){
     this.value = value;
     this.insValueChange.emit(this.value);
   }
@@ -68,7 +68,7 @@ export class InsInputSlider {
     this.triggerUpdate();
   }
 
-  emitAction(where?){
+  emitAction(where?: 'Start' | 'End'){
     let prop = `insSlide${where || ""}`;
     this[prop].emit({
       action: prop,
@@ -87,7 +87,7 @@ export class InsInputSlider {
   }
 
   initSlider(){
-    this.inputEl = this.el.querySelector('input[type="range"]');
+    this.inputEl = this.el.querySelector('input[type="range"]') as HTMLInputElement;
     this.sliderEl = new rangeSlider(this.inputEl, {
       onSlideStart: () => {
         this.emitAction('Start');
@@ -114,9 +114,9 @@ export class InsInputSlider {
 
   initLabelInput(){
     if (this.sliderOnly) return;
-    this.labelInput = this.el.querySelector('label input[type="number"]');
+    this.labelInput = this.el.querySelector('label input[type="number"]') as HTMLInputElement;
     this.labelInput.addEventListener('change', e => {
-      this.value = e.target.value;
+      this.value = (e.target as HTMLInputElement).value;
       this.triggerUpdate();
       this.insValueChange.emit(this.value)
     })
@@ -143,11 +143,11 @@ export class InsInputSlider {
     )
   }
 
-  validateDescription(value) {
+  validateDescription(value: string) {
     let allowed = '<a>,<abbr>,<acronym>,<address>,<article>,<aside>,<b>,<base>,<bdi>,<bdo>,<blockquote>,<br>,<caption>,<code>,<dd>,<del>,<details>,<dfn>,<dir>,<div>,<dl>,<dt>,<em>,<font>,<h1>,<h2>,<h3>,<h4>,<h5>,<h6>,<hr>,<i>,<ins>,<label>,<li>,<link>,<mark>,<menu>,<meter>,<nav>,<ol>,<p>,<pre>,<q>,<s>,<samp>,<section>,<small>,<span>,<strike>,<strong>,<sub>,<summary>,<sup>,<table>,<tbody>,<td>,<tfoot>,<th>,<thead>,<time>,<tr>,<tt>,<u>,<ul>,<wbr>';
     allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
 
-    var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
+    const tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
     commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
     return value.replace(commentsAndPhpTags, '').replace(tags, ($0, $1) => {
       return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';

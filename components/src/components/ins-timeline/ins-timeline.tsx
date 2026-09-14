@@ -22,7 +22,7 @@ export class InsTimeline {
     }
   }
 
-  buildTimelineItem(item) {
+  buildTimelineItem(item: any) {
     return (
       <ins-timeline-item
         title={item.title}

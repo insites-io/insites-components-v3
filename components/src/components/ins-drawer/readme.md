@@ -35,15 +35,15 @@
 
 ## Methods
 
-### `setDrawerState(status: any) => Promise<void>`
+### `setDrawerState(status: boolean) => Promise<void>`
 
 
 
 #### Parameters
 
-| Name     | Type  | Description |
-| -------- | ----- | ----------- |
-| `status` | `any` |             |
+| Name     | Type      | Description |
+| -------- | --------- | ----------- |
+| `status` | `boolean` |             |
 
 #### Returns
 

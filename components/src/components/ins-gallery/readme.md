@@ -29,15 +29,15 @@
 
 ## Methods
 
-### `activate(index: any) => Promise<void>`
+### `activate(index: number) => Promise<void>`
 
 
 
 #### Parameters
 
-| Name    | Type  | Description |
-| ------- | ----- | ----------- |
-| `index` | `any` |             |
+| Name    | Type     | Description |
+| ------- | -------- | ----------- |
+| `index` | `number` |             |
 
 #### Returns
 

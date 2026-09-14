@@ -17,10 +17,10 @@
 
 ## Events
 
-| Event       | Description | Type               |
-| ----------- | ----------- | ------------------ |
-| `didLoad`   |             | `CustomEvent<any>` |
-| `insToggle` |             | `CustomEvent<any>` |
+| Event       | Description | Type                |
+| ----------- | ----------- | ------------------- |
+| `didLoad`   |             | `CustomEvent<void>` |
+| `insToggle` |             | `CustomEvent<any>`  |
 
 
 ----------------------------------------------

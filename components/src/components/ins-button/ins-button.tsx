@@ -1,11 +1,11 @@
-import { h, Component, /*Watch,*/ Prop, Event, EventEmitter, Element, State } from "@stencil/core";
+import { h, Component, Prop, Event, EventEmitter, Element, State } from "@stencil/core";
 
 @Component({ tag: "ins-button" })
 export class InsButton {
   @Element() insButtonEl: HTMLElement;
-  @Event() insClick: EventEmitter;
-  @Event() insClickOption: EventEmitter;
-  @Event() didLoad: EventEmitter;
+  @Event() insClick: EventEmitter<{label: string; data: string}>;
+  @Event() insClickOption: EventEmitter<{label: string | null; option: string}>;
+  @Event() didLoad: EventEmitter<void>;
   @Prop() hasLoad: string;
 
   @Prop({ mutable: true }) color: string = 'blue';
@@ -29,13 +29,13 @@ export class InsButton {
   @Prop({ mutable: true }) load: boolean = false;
   @Prop({ mutable: true }) checkLoad: boolean = false;
 
-  buttonOptions = [];
-  target: any;
+  buttonOptions: string[] = [];
+  target: HTMLElement;
 
   @State() toggleOption = false;
   @State() dropUp = false;
 
-  btnOnClickHandler(e?, target?) {
+  btnOnClickHandler(e?: MouseEvent, target?: HTMLElement) {
     if (e && target) this.rippleHandler(e, target);
     if (this.dropdown && this.buttonOptions.length){
       this.toggleOptions();
@@ -48,7 +48,7 @@ export class InsButton {
     }
   }
 
-  optionOnClickHandler(option) {
+  optionOnClickHandler(option: string) {
     this.toggleOption = false;
     this.insClickOption.emit({
       label: this.optionsOnly ? null : this.label,
@@ -56,9 +56,9 @@ export class InsButton {
     });
   }
 
-  addRippleEffect(startingPoint, target){
+  addRippleEffect(startingPoint: MouseEvent, target: HTMLElement){
     let rect = target.getBoundingClientRect();
-    let ripple = target.querySelector('.ripple-wave');
+    let ripple = target.querySelector('.ripple-wave') as HTMLSpanElement;
 
     if (!ripple) {
       ripple = document.createElement('span');
@@ -108,7 +108,7 @@ export class InsButton {
     this.checkTarget();
   }
 
-  rippleHandler(e, target){
+  rippleHandler(e: MouseEvent, target: HTMLElement){
     if (!this.disabled && !this.loading) {
       if (!target) this.checkTarget();
       this.addRippleEffect(e, target);
@@ -141,7 +141,7 @@ export class InsButton {
 
   closeMenu() {
     window.addEventListener('click', event => {
-      let clickedEl = event.target as any;
+      let clickedEl = event.target as HTMLElement;
       let closestEl = clickedEl.closest('ins-button');
 
       if (closestEl !== this.insButtonEl){

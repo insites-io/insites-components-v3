@@ -3,7 +3,7 @@ import { h, Component, Prop, Element, Event, EventEmitter } from '@stencil/core'
 @Component({ tag: 'ins-bar-chart' })
 export class InsBarChart {
   @Element() insBarChartEl: HTMLElement;
-  @Event() didLoad: EventEmitter;
+  @Event() didLoad: EventEmitter<void>;
   @Prop() hasLoad: string;
   @Prop({mutable: true}) name: string = "";
   @Prop({mutable: true}) chartData: Array<any> = [];
@@ -13,12 +13,12 @@ export class InsBarChart {
   @Prop({ mutable: true }) load: boolean = false;
   @Prop({ mutable: true }) checkLoad: boolean = false;
 
-  insChartEl: any;
-  chartContainerEl: any;
+  insChartEl: HTMLInsChartElement;
+  chartContainerEl: HTMLElement;
 
   componentDidLoad() {
     this.insChartEl = this.insBarChartEl.querySelector('ins-chart');
-    this.chartContainerEl = this.insChartEl.querySelector('.chart-container');
+    this.chartContainerEl = this.insChartEl.querySelector('.chart-container') as HTMLElement;
     if (this.chartData.length && this.categories.length){
       this.renderChart();
     }
@@ -202,7 +202,7 @@ export class InsBarChart {
       series: this.chartData
     }
 
-    this.insChartEl.renderChart(options);
+    this.insChartEl.renderChart(options as any);
   }
 
   render() {

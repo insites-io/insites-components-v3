@@ -1,0 +1,26 @@
+name: build
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: components/package-lock.json
+      - run: cd components && npm ci && npm run build
+      # Component tests (TW#26737045). @stencil/playwright starts its own dev server from the
+      # www build; Chromium has to be installed on the runner first or every spec fails with
+      # "Executable doesn't exist", which is what the module repos' CI did for a month.
+      - run: cd components && npx playwright install --with-deps chromium
+      - run: cd components && npm test
+        env:
+          CI: 'true'

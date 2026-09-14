@@ -24,10 +24,10 @@
 
 ## Events
 
-| Event       | Description | Type               |
-| ----------- | ----------- | ------------------ |
-| `didLoad`   |             | `CustomEvent<any>` |
-| `insChange` |             | `CustomEvent<any>` |
+| Event       | Description | Type                                                                   |
+| ----------- | ----------- | ---------------------------------------------------------------------- |
+| `didLoad`   |             | `CustomEvent<any>`                                                     |
+| `insChange` |             | `CustomEvent<{ name: string; old_label: string; new_label: string; }>` |
 
 
 ## Dependencies

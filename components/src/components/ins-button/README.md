@@ -32,11 +32,11 @@
 
 ## Events
 
-| Event            | Description | Type               |
-| ---------------- | ----------- | ------------------ |
-| `didLoad`        |             | `CustomEvent<any>` |
-| `insClick`       |             | `CustomEvent<any>` |
-| `insClickOption` |             | `CustomEvent<any>` |
+| Event            | Description | Type                                              |
+| ---------------- | ----------- | ------------------------------------------------- |
+| `didLoad`        |             | `CustomEvent<void>`                               |
+| `insClick`       |             | `CustomEvent<{ label: string; data: string; }>`   |
+| `insClickOption` |             | `CustomEvent<{ label: string; option: string; }>` |
 
 
 ## Dependencies
@@ -46,6 +46,7 @@
  - [ins-carousel](../ins-carousel)
  - [ins-credit-card](../ins-credit-card)
  - [ins-filter](../ins-filter)
+ - [ins-header](../ins-header)
  - [ins-heading](../ins-heading)
  - [ins-image-picker](../ins-image-picker)
  - [ins-input-table](../ins-input-table)
@@ -59,6 +60,7 @@ graph TD;
   ins-carousel --> ins-button
   ins-credit-card --> ins-button
   ins-filter --> ins-button
+  ins-header --> ins-button
   ins-heading --> ins-button
   ins-image-picker --> ins-button
   ins-input-table --> ins-button

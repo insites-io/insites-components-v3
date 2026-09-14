@@ -1,5 +1,4 @@
 import { h, Component, Prop, Element, Event, EventEmitter } from "@stencil/core";
-// , Prop, Element, Event, EventEmitter, Listen, Method
 
 @Component({
   tag: 'ins-alert-box'
@@ -7,7 +6,7 @@ import { h, Component, Prop, Element, Event, EventEmitter } from "@stencil/core"
 
 export class InsAlertBox {
   @Element() insAlertBoxEl: HTMLElement;
-  @Event() didLoad: EventEmitter;
+  @Event() didLoad: EventEmitter<void>;
 
   @Prop ({ mutable: true }) type: string = "primary";
   @Prop ({ mutable: true }) closeIcon: string = "icon-close";
@@ -15,10 +14,10 @@ export class InsAlertBox {
   @Prop ({ mutable: true }) load: boolean = false;
   @Prop ({ mutable: true }) checkLoad: boolean = false;
 
-  close(event) {
-    event.target.parentElement.style.opacity = "0";
+  close(event: MouseEvent) {
+    (event.target as HTMLElement).parentElement.style.opacity = "0";
     setTimeout(() => {
-      event.target.parentElement.style.display = "none";
+      (event.target as HTMLElement).parentElement.style.display = "none";
     }, 600);
   }
 

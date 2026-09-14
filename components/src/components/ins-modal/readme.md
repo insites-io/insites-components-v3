@@ -63,15 +63,15 @@ Type: `Promise<void>`
 
 
 
-### `parentClosed(type: any) => Promise<void>`
+### `parentClosed(type: string) => Promise<void>`
 
 
 
 #### Parameters
 
-| Name   | Type  | Description |
-| ------ | ----- | ----------- |
-| `type` | `any` |             |
+| Name   | Type     | Description |
+| ------ | -------- | ----------- |
+| `type` | `string` |             |
 
 #### Returns
 

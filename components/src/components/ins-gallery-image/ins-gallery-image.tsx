@@ -3,7 +3,7 @@ import { h, Component, Prop, Event, EventEmitter, Element, Method } from "@stenc
 @Component({ tag: 'ins-gallery-image' })
 export class InsGalleryThumbnail {
   @Element() el: HTMLElement;
-  @Event() insGalleryUpdate: EventEmitter;
+  @Event() insGalleryUpdate: EventEmitter<{ thumbnail: string; image: string }>;
 
   @Prop({ mutable: true }) thumbnail: string;
   @Prop({ mutable: true }) image: string;

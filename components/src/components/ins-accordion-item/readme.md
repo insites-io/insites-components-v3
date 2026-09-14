@@ -32,15 +32,15 @@ Type: `Promise<void>`
 
 
 
-### `udpateScrollHeight(height: any) => Promise<void>`
+### `udpateScrollHeight(height: number) => Promise<void>`
 
 
 
 #### Parameters
 
-| Name     | Type  | Description |
-| -------- | ----- | ----------- |
-| `height` | `any` |             |
+| Name     | Type     | Description |
+| -------- | -------- | ----------- |
+| `height` | `number` |             |
 
 #### Returns
 

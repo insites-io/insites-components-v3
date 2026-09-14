@@ -3,7 +3,7 @@ import { h, Component, Prop, State, Element, Event, EventEmitter } from "@stenci
 @Component({ tag: 'ins-heading' })
 export class InsHeading {
   @Element() insHeadingEl: HTMLElement;
-  @Event() insChange: EventEmitter;
+  @Event() insChange: EventEmitter<{ name: string; old_label: string; new_label: string }>;
   @Event() didLoad: EventEmitter;
   @Prop() hasLoad: string;
 
@@ -41,7 +41,7 @@ export class InsHeading {
     this.editMode = false;
   }
 
-  updateTempLabel(e){
+  updateTempLabel(e: CustomEvent){
     this.tempLabel = e.detail;
   }
 

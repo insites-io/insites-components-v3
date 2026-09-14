@@ -46,29 +46,29 @@
 
 ## Methods
 
-### `formatDate(date: any) => Promise<any>`
+### `formatDate(date: Date) => Promise<string>`
 
 
 
 #### Parameters
 
-| Name   | Type  | Description |
-| ------ | ----- | ----------- |
-| `date` | `any` |             |
+| Name   | Type   | Description |
+| ------ | ------ | ----------- |
+| `date` | `Date` |             |
 
 #### Returns
 
-Type: `Promise<any>`
+Type: `Promise<string>`
 
 
 
-### `getDate() => Promise<{ value: string; selected_dates: any; }>`
+### `getDate() => Promise<{ value: string; selected_dates: Date[]; }>`
 
 
 
 #### Returns
 
-Type: `Promise<{ value: string; selected_dates: any; }>`
+Type: `Promise<{ value: string; selected_dates: Date[]; }>`
 
 
 
@@ -102,15 +102,15 @@ Type: `Promise<void>`
 
 
 
-### `setValue(value: any) => Promise<void>`
+### `setValue(value: string) => Promise<void>`
 
 
 
 #### Parameters
 
-| Name    | Type  | Description |
-| ------- | ----- | ----------- |
-| `value` | `any` |             |
+| Name    | Type     | Description |
+| ------- | -------- | ----------- |
+| `value` | `string` |             |
 
 #### Returns
 

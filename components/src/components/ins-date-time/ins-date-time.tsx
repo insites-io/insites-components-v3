@@ -1,5 +1,6 @@
 import { h, Component, Element, Prop, Event, EventEmitter, Method } from "@stencil/core";
 import flatpickr from "flatpickr";
+import { Instance } from "flatpickr/dist/types/instance";
 import dayjs from "dayjs";
 
 @Component({
@@ -38,10 +39,10 @@ export class InsDateTime {
   @Prop({mutable: true}) description: string = "";
   @Prop({mutable: true}) htmlDescription: boolean = false;
 
-  pickerInstance: any;
-  locFormat: any;
-  locNoMeridiem: any;
-  selectedDates: any;
+  pickerInstance: Instance;
+  locFormat: string;
+  locNoMeridiem: boolean;
+  selectedDates: Date[];
 
   @Prop({ mutable: true }) checkValue: boolean = false;
   @Method()
@@ -65,7 +66,7 @@ export class InsDateTime {
   }
 
   @Method()
-  async setValue(value){
+  async setValue(value: string){
     this.value = value;
     this.insValueChange.emit(this.value);
   }
@@ -76,7 +77,7 @@ export class InsDateTime {
   }
 
   @Method()
-  async formatDate(date){
+  async formatDate(date: Date){
     return this.pickerInstance.formatDate(date, this.locFormat);
   }
 
@@ -139,7 +140,7 @@ export class InsDateTime {
   initInsDateTime(){
     let updatedFormat = this.updateFormat();
     let inputEl = this.insDateTimeEl.querySelector('input');
-    let wrapper = this.insDateTimeEl.querySelector('.ins-date-time-wrap') as any;
+    let wrapper = this.insDateTimeEl.querySelector('.ins-date-time-wrap') as HTMLElement;
 
     this.pickerInstance = flatpickr(inputEl, {
       inline: this.inline,
@@ -161,7 +162,7 @@ export class InsDateTime {
     });
   }
 
-  insValueUpdate(selected_dates, date_string) {
+  insValueUpdate(selected_dates: Date[], date_string: string) {
     const timeFormat = this.noMeridiem ? 'HH:mm' : 'h:mm A';
     if (dayjs(date_string, timeFormat).isValid()) {
       this.selectedDates = selected_dates;
@@ -169,7 +170,7 @@ export class InsDateTime {
     }
   }
 
-  insInputHandler(selected_dates, date_string) {
+  insInputHandler(selected_dates: Date[], date_string: string) {
     this.selectedDates = selected_dates;
     this.value = date_string;
     this.insInput.emit({
@@ -220,11 +221,11 @@ export class InsDateTime {
     }
   }
 
-  validateDescription(value) {
+  validateDescription(value: string): string {
     let allowed = '<a>,<abbr>,<acronym>,<address>,<article>,<aside>,<b>,<base>,<bdi>,<bdo>,<blockquote>,<br>,<caption>,<code>,<dd>,<del>,<details>,<dfn>,<dir>,<div>,<dl>,<dt>,<em>,<font>,<h1>,<h2>,<h3>,<h4>,<h5>,<h6>,<hr>,<i>,<ins>,<label>,<li>,<link>,<mark>,<menu>,<meter>,<nav>,<ol>,<p>,<pre>,<q>,<s>,<samp>,<section>,<small>,<span>,<strike>,<strong>,<sub>,<summary>,<sup>,<table>,<tbody>,<td>,<tfoot>,<th>,<thead>,<time>,<tr>,<tt>,<u>,<ul>,<wbr>';
     allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
 
-    var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
+    const tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
     commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
     return value.replace(commentsAndPhpTags, '').replace(tags, ($0, $1) => {
       return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';

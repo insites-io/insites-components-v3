@@ -4,7 +4,7 @@ import { h, Component, Prop, Element, Event, EventEmitter, Method } from "@stenc
 export class InsAccordionLink {
   @Element() insAccLinkEl: HTMLElement;
 
-  @Event() didLoad: EventEmitter;
+  @Event() didLoad: EventEmitter<void>;
   @Prop() hasLoad: string;
 
   @Prop({ mutable: true }) link: string = "";

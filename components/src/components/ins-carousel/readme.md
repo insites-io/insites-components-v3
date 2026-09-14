@@ -46,15 +46,15 @@
 
 ## Methods
 
-### `goTo(slide: any) => Promise<void>`
+### `goTo(slide: string | number) => Promise<void>`
 
 
 
 #### Parameters
 
-| Name    | Type  | Description |
-| ------- | ----- | ----------- |
-| `slide` | `any` |             |
+| Name    | Type               | Description |
+| ------- | ------------------ | ----------- |
+| `slide` | `string \| number` |             |
 
 #### Returns
 

@@ -7,15 +7,15 @@ export class InsTab {
   @Event() insTabChange: EventEmitter;
   @Event() didLoad: EventEmitter;
   @Prop() hasLoad: string;
-  @Prop({ mutable: true }) tabs: any = [];
+  @Prop({ mutable: true }) tabs: any = []; // NOTE: @Prop types compile into Stencil runtime metadata — do not change without a deliberate behaviour review
   @State() activeTab: string = "";
   @State() activeTabIndex: number = 0;
-  @State() insTabItems: any = [];
-  @State() insTabHeaders: any = [];
+  @State() insTabItems: any[] = [];
+  @State() insTabHeaders: HTMLElement[] = [];
   @Prop({ mutable: true }) load: boolean = false;
   @Prop({ mutable: true }) checkLoad: boolean = false;
 
-  onchangeTabHandler(event, index) {
+  onchangeTabHandler(event: MouseEvent, index: number) {
     if (
       !this.insTabItems[index].disabled &&
       !this.insTabItems[index].active
@@ -38,7 +38,7 @@ export class InsTab {
     return this.insTabEl.querySelectorAll(":scope > .ins-tab > .ins-tab-headers > .ins-tab-header");
   }
 
-  getDefaulTabLabel(index) {
+  getDefaulTabLabel(index: number) {
     return `Tab ${index + 1}`;
   }
 
@@ -47,7 +47,7 @@ export class InsTab {
     let headers = [];
 
     for (let i = 0; i < tabHeaders.length; i++) {
-      let item = tabHeaders[i] as any;
+      let item = tabHeaders[i] as HTMLElement;
       headers.push(item);
     }
 
@@ -82,7 +82,7 @@ export class InsTab {
     }
   }
 
-  setActiveTab(index) {
+  setActiveTab(index: number) {
     this.insTabHeaders.forEach(item => {
       item.classList.remove('active');
     });
@@ -107,7 +107,7 @@ export class InsTab {
     });
   }
 
-  setActiveTabItem(index) {
+  setActiveTabItem(index: number) {
     this.insTabItems.forEach(item => {
       item.deactivate();
     });
@@ -130,7 +130,7 @@ export class InsTab {
     }
   }
 
-  setTabLabel(item, index) {
+  setTabLabel(item: any, index: number) {
     return item.label ?
       item.label :
       this.getDefaulTabLabel(index);
@@ -161,7 +161,7 @@ export class InsTab {
   }
 
   @Method()
-  async activateTab(place){
+  async activateTab(place: number){
     let index = place - 1;
     this.insTabChange.emit({
       event: this.insTabItems[index],
@@ -173,7 +173,7 @@ export class InsTab {
   }
 
   @Listen('insTabDisableToggle')
-  tabItemDisableToggledHandler(event){
+  tabItemDisableToggledHandler(event: CustomEvent<boolean>){
     let tabIndex = this.insTabItems.indexOf(event.target);
     if (this.insTabHeaders[tabIndex]) {
       if (event.detail){
@@ -185,7 +185,7 @@ export class InsTab {
   }
 
   @Listen('insTabError')
-  checkForErrors(event){
+  checkForErrors(event: CustomEvent<boolean>){
     let errorIndex = this.insTabItems.indexOf(event.target);
     if (this.insTabHeaders[errorIndex]) {
       if (event.detail){

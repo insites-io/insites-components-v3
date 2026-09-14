@@ -20,9 +20,9 @@
 
 ## Events
 
-| Event          | Description | Type               |
-| -------------- | ----------- | ------------------ |
-| `insStepClick` |             | `CustomEvent<any>` |
+| Event          | Description | Type                |
+| -------------- | ----------- | ------------------- |
+| `insStepClick` |             | `CustomEvent<void>` |
 
 
 ----------------------------------------------

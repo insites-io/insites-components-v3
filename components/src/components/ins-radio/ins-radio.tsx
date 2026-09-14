@@ -21,7 +21,7 @@ export class InsRadio {
   localChecked: boolean = false;
 
   @Method()
-  async setValue(value, static_value){
+  async setValue(value: any, static_value: any){
     this.value = value;
     this.staticValue = static_value;
   }

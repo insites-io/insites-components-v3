@@ -1,27 +1,34 @@
 import { h, Component, Prop, Element, Method, Listen, Event, EventEmitter } from "@stencil/core";
 
+interface OptionRecord {
+    el: HTMLInsButtonSelectOptionElement;
+    label: string;
+    value: string;
+    activated: boolean;
+    hidden: boolean;
+}
+
 @Component({
     tag: 'ins-button-select'
 })
 
 export class InsButtonSelect {
     @Element() insButtonSelectEl: HTMLElement;
-    @Event() insChange: EventEmitter;
-    @Event() insOptionSelect: EventEmitter;
+    @Event() insChange: EventEmitter<any>;
+    @Event() insOptionSelect: EventEmitter<{event_type: string; selected: any[]; selectedOptions: {label: string; value: string}[]}>;
 
     // Dynamic Events
-    @Event() insDynamicSubmit: EventEmitter;
-    @Event() insSearch: EventEmitter;
-    @Event() insLoadMore: EventEmitter;
+    @Event() insDynamicSubmit: EventEmitter<string>;
+    @Event() insSearch: EventEmitter<string>;
+    @Event() insLoadMore: EventEmitter<void>;
 
     // Lifecycle
-    @Event() didLoad: EventEmitter;
+    @Event() didLoad: EventEmitter<void>;
     @Prop() hasLoad: string;
 
-    activated: boolean = false; options = [];
+    activated: boolean = false; options: OptionRecord[] = [];
     labelOfValue = ""; tempSearch = "";
-    // inputValueEl;
-    inputSearchEl; optionsWrapEl; mainWrapEl;
+    inputSearchEl: HTMLInputElement; optionsWrapEl: HTMLElement; mainWrapEl: HTMLElement;
 
     // Input Controllers
     @Prop({ mutable: true }) name: string;
@@ -67,17 +74,18 @@ export class InsButtonSelect {
     // Mutable Controllers
     @Prop({ mutable: true }) dropUp: boolean = false;
     @Prop({ mutable: true }) selectedValues: any = [];
-    dynamicInputEl; scrollWrapEl;
+    dynamicInputEl: HTMLInputElement; scrollWrapEl: HTMLElement;
     loading: boolean = false;
     searching: boolean = false;
 
     @Method()
-    async setValue(value?) {
+    async setValue(value?: any) {
         if (!this.options.length) return false;
 
         if (this.multiple) {
             this.setMultipleValue(value);
         } else { this.setSelected(value); }
+        return undefined;
     }
 
     @Method()
@@ -113,7 +121,7 @@ export class InsButtonSelect {
         else { this.singleInputHandler(clickedOption, event.detail); }
     }
 
-    setMultipleValue(val){
+    setMultipleValue(val: any){
         let values = [], selections = []
         val = this.isArray(val, true);
 
@@ -132,7 +140,7 @@ export class InsButtonSelect {
         this.selectedValues = values;
     }
 
-    multipleInputHandler(clickedOption) {
+    multipleInputHandler(clickedOption: HTMLInsButtonSelectOptionElement) {
         let checkSelections = this.value.find(el => {
             return el === clickedOption
         });
@@ -163,14 +171,15 @@ export class InsButtonSelect {
     }
 
     @Method()
-    async setLoadingState(state){
+    async setLoadingState(state: boolean){
         this.loading = state;
         if (this.optionsWrapEl){
             this.optionsWrapEl.classList[state? 'add':'remove']('loading');
         } else return false
+        return undefined;
     }
 
-    singleInputHandler(clickedOption, e) {
+    singleInputHandler(clickedOption: HTMLInsButtonSelectOptionElement, e: {label: string; value: string}) {
         this.loopThroughOptions(option => {
             option.activated = false;
             option.showOption();
@@ -194,7 +203,7 @@ export class InsButtonSelect {
         }, this.options);
     }
 
-    loopThroughOptions(cb, opts?){
+    loopThroughOptions(cb: (option: any) => boolean | void, opts?: ArrayLike<any>){
         let options = opts || this.insButtonSelectEl.querySelectorAll('ins-button-select-option');
         for (let i = 0; i < options.length; i++){
           if (cb(options[i])) break;
@@ -213,7 +222,7 @@ export class InsButtonSelect {
         }
     }
 
-    searchEl(selector) {
+    searchEl(selector: string) {
         return this.insButtonSelectEl.querySelector(selector) as any;
     }
 
@@ -224,7 +233,6 @@ export class InsButtonSelect {
 
     bindEls() {
         this.mainWrapEl = this.searchEl('.ins-select-wrap');
-        // this.inputValueEl = this.searchEl('.ins-select-value-input');
         this.optionsWrapEl = this.searchEl('.ins-select-options-wrap');
         if (this.searchable) {
             this.inputSearchEl = this.searchEl('.ins-select-search-input');
@@ -264,6 +272,7 @@ export class InsButtonSelect {
                 hasOption = true;
                 return true;
             }
+            return undefined;
         }, this.options);
 
         let action = hasOption ? "remove" : "add";
@@ -295,6 +304,7 @@ export class InsButtonSelect {
     initDynamicOption() {
         if (!this.dynamicOption) return false;
         this.dynamicInputEl = this.searchEl('input[data-dynamic]');
+        return undefined;
     }
 
     @Method()
@@ -302,10 +312,11 @@ export class InsButtonSelect {
         if (this.optionsWrapEl) {
             this.optionsWrapEl.classList.remove('no-result');
         } else return false
+        return undefined;
     }
 
-    searchOptions(event) {
-        let keyword = event.target.value;
+    searchOptions(event: KeyboardEvent) {
+        let keyword = (event.target as HTMLInputElement).value;
         this.tempSearch = keyword;
         this.disableNoResult();
         if (!this.activated) this.expandSection();
@@ -315,7 +326,7 @@ export class InsButtonSelect {
         } else this.staticSearch(keyword);
     }
 
-    lookupHandler(keyword, event) {
+    lookupHandler(keyword: string, event: KeyboardEvent) {
         if (event.which === 13 && !this.searching && !this.loading) {
             this.setSearchingState(true);
             this.disableNoResult();
@@ -326,15 +337,15 @@ export class InsButtonSelect {
     }
 
     @Method()
-    async setSearchingState(state){
+    async setSearchingState(state: boolean){
         this.searching = state;
-        // this.inputValueEl.readonly = state;
         if (this.optionsWrapEl){
             this.optionsWrapEl.classList[state? 'add' : 'remove']('searching');
         } else return false
+        return undefined;
     }
 
-    staticSearch(keyword) {
+    staticSearch(keyword: string) {
         if (!keyword) {
             this.showHiddenOptions();
             return this.checkForOptions();
@@ -353,6 +364,7 @@ export class InsButtonSelect {
 
         if (!hasResult) this.enableNoResult();
         else this.checkForOptions();
+        return undefined;
     }
 
     @Method()
@@ -360,6 +372,7 @@ export class InsButtonSelect {
         if (this.optionsWrapEl){
             this.optionsWrapEl.classList.add('no-result');
         } else return false
+        return undefined;
     }
 
     renderCaret() {
@@ -452,11 +465,11 @@ export class InsButtonSelect {
         this.initOptions();
     }
 
-    keyUpDynamicInput(e) {
-        this.dynamicValue = e.target.value;
+    keyUpDynamicInput(e: KeyboardEvent) {
+        this.dynamicValue = (e.target as HTMLInputElement).value;
     }
 
-    dynamicOptionHandler(e) {
+    dynamicOptionHandler(e: MouseEvent) {
         e.stopPropagation();
         this.insDynamicSubmit.emit(this.dynamicInputEl.value);
     }
@@ -490,15 +503,9 @@ export class InsButtonSelect {
         if (this.value.length) return (
             this.value.map(item => this.renderItem(item))
         );
-
-        // return (
-        //     <div class="multiple-placeholder">
-        //         { this.placeholder ? this.placeholder : "Select" }
-        //     </div>
-        // )
     }
 
-    renderItem(item){
+    renderItem(item: any){
         return (
             <div class="multiple-item-wrap">
                 <span class="item-label">{item.label}</span>
@@ -509,7 +516,7 @@ export class InsButtonSelect {
         )
     }
 
-    removeItem(option){
+    removeItem(option: any){
       if (!this.disabled && !this.readonly){
         let i = this.value.findIndex(el => {
           return el === option
@@ -524,13 +531,13 @@ export class InsButtonSelect {
       }
     }
 
-    emitEvent(type){
+    emitEvent(type: string){
         if (this.multiple) {
             this.emitForMultiple(type);
         } else this.insChange.emit(this.value);
     }
 
-    emitForMultiple(event_type){
+    emitForMultiple(event_type: string){
         let selected = this.value.map(item => item.value);
         let selectedOptions = this.value.map(item => {
           return {
@@ -575,23 +582,23 @@ export class InsButtonSelect {
         )
     }
 
-    activateOption(option) {
+    activateOption(option: OptionRecord) {
         option.el.activated = true;
     }
 
-    deactivateOption(option) {
+    deactivateOption(option: OptionRecord) {
         option.el.activated = false;
     }
 
-    hideOption(option) {
+    hideOption(option: OptionRecord) {
         option.el.hidden = true;
     }
 
-    showOption(option) {
+    showOption(option: OptionRecord) {
         option.el.hidden = false;
     }
 
-    setSelected(value) {
+    setSelected(value: any) {
         this.loopThroughOptions(option => {
             option.activated = false;
             if (value === option.value) {
@@ -603,10 +610,6 @@ export class InsButtonSelect {
             }
         }, this.options);
     }
-
-    // updateValueEls(option){
-    //     this.inputValueEl.value = this.labelOfValue = this.blankLabel && !option.value ? "" : option.label;
-    // }
 
     isArray(value, isObject = false) {
         try {
@@ -684,11 +687,11 @@ export class InsButtonSelect {
         this.mainWrapEl.classList.remove("activated");
     }
 
-    validateDescription(value) {
+    validateDescription(value: string) {
       let allowed = '<a>,<abbr>,<acronym>,<address>,<article>,<aside>,<b>,<base>,<bdi>,<bdo>,<blockquote>,<br>,<caption>,<code>,<dd>,<del>,<details>,<dfn>,<dir>,<div>,<dl>,<dt>,<em>,<font>,<h1>,<h2>,<h3>,<h4>,<h5>,<h6>,<hr>,<i>,<ins>,<label>,<li>,<link>,<mark>,<menu>,<meter>,<nav>,<ol>,<p>,<pre>,<q>,<s>,<samp>,<section>,<small>,<span>,<strike>,<strong>,<sub>,<summary>,<sup>,<table>,<tbody>,<td>,<tfoot>,<th>,<thead>,<time>,<tr>,<tt>,<u>,<ul>,<wbr>';
       allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
 
-      var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
+      const tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
       commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
       return value.replace(commentsAndPhpTags, '').replace(tags, ($0, $1) => {
         return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';

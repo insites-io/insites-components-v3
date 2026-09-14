@@ -25,15 +25,15 @@
 
 ## Methods
 
-### `activateTab(place: any) => Promise<void>`
+### `activateTab(place: number) => Promise<void>`
 
 
 
 #### Parameters
 
-| Name    | Type  | Description |
-| ------- | ----- | ----------- |
-| `place` | `any` |             |
+| Name    | Type     | Description |
+| ------- | -------- | ----------- |
+| `place` | `number` |             |
 
 #### Returns
 

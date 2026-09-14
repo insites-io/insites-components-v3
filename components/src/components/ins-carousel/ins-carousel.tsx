@@ -39,11 +39,11 @@ export class InsCarousel {
   @Prop({ mutable: true }) checkLoad: boolean = false;
 
   slider: any;
-  slides: any;
-  slideEls: any;
-  slideInterval: any;
+  slides: Element;
+  slideEls: NodeListOf<Element>;
+  slideInterval: ReturnType<typeof setInterval>;
   currentIndex: number;
-  paginations: any;
+  paginations: NodeListOf<Element>;
 
   componentDidLoad(){
     this.initSiema();
@@ -136,7 +136,7 @@ export class InsCarousel {
     clearInterval(this.slideInterval);
   }
 
-  renderPaginate(index){
+  renderPaginate(index: number){
     let liEl = document.createElement('li');
     liEl.classList.add('pagination');
     liEl.addEventListener('click', () => this.goTo(index));
@@ -145,7 +145,7 @@ export class InsCarousel {
     return liEl;
   }
 
-  setActiveIndex(index){
+  setActiveIndex(index: number){
     for (let i = 0; i < this.paginations.length; i++){
       this.paginations[i].classList.remove('active');
     }
@@ -153,7 +153,7 @@ export class InsCarousel {
   }
 
   @Method()
-  async goTo(slide){
+  async goTo(slide: string | number){
     let fromSlide = this.currentIndex;
 
     if (this.paginations && this.loop

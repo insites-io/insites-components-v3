@@ -24,10 +24,10 @@
 
 ## Events
 
-| Event            | Description | Type               |
-| ---------------- | ----------- | ------------------ |
-| `didLoad`        |             | `CustomEvent<any>` |
-| `insFilterApply` |             | `CustomEvent<any>` |
+| Event            | Description | Type                                 |
+| ---------------- | ----------- | ------------------------------------ |
+| `didLoad`        |             | `CustomEvent<any>`                   |
+| `insFilterApply` |             | `CustomEvent<{ [x: string]: any; }>` |
 
 
 ## Methods
@@ -42,13 +42,13 @@ Type: `Promise<void>`
 
 
 
-### `getDate() => Promise<"All" | { from: any; to: any; }>`
+### `getDate() => Promise<"All" | { from: string; to: string; }>`
 
 
 
 #### Returns
 
-Type: `Promise<"All" | { from: any; to: any; }>`
+Type: `Promise<"All" | { from: string; to: string; }>`
 
 
 

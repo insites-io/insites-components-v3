@@ -24,26 +24,26 @@ export class InsGallery {
   @Prop({ mutable: true }) load: boolean = false;
   @Prop({ mutable: true }) checkLoad: boolean = false;
 
-  imgEl;
-  thumbs;
+  imgEl: HTMLImageElement;
+  thumbs: HTMLInsGalleryImageElement[];
   sliderThumbs;
   slider;
-  slides;
-  progress;
-  viewports;
+  slides: NodeListOf<HTMLImageElement>;
+  progress: Element;
+  viewports: Record<number, number>;
   hasLoad = false;
   currentThumbIndex: number = 0; // Track current thumb for non-slidable slider thumbs
 
   @Listen("insGalleryUpdate")
-  insUpdateSrcHandler(e) {
-    let i = this.thumbs.indexOf(e.target);
+  insUpdateSrcHandler(e: CustomEvent) {
+    let i = this.thumbs.indexOf(e.target as HTMLInsGalleryImageElement);
     let img = e.detail.image;
     if (this.slidable && !this.zoomable) {
       this.updateSlide(i, img);
     } else this.updateSrc(img, i);
   }
 
-  updateSrc(img, i?) {
+  updateSrc(img: string, i?: number) {
     if (i !== undefined) this.setProgress(i);
     this.loading();
     this.imgEl.src = img;
@@ -52,13 +52,13 @@ export class InsGallery {
     }
   }
 
-  updateSlide(i, img) {
+  updateSlide(i: number, img: string) {
     this.updateSlideImg(i, img);
     this.setProgress(i);
     this.slider.goTo(i);
   }
 
-  updateSlideImg(i, img) {
+  updateSlideImg(i: number, img: string) {
     if (this.slides[i].src !== img) {
       this.loading();
       this.slides[i].src = img;
@@ -71,7 +71,7 @@ export class InsGallery {
 
   setDefaultImg() {
     let selector = ".ins-gallery_current-image img";
-    this.imgEl = this.el.querySelector(selector);
+    this.imgEl = this.el.querySelector(selector) as HTMLImageElement;
     this.thumbs[0].activate();
     this.updateSrc(this.thumbs[0].image, 0);
     if (this.thumbnailLayout === "slider" && !this.slidable) {
@@ -79,7 +79,7 @@ export class InsGallery {
     }
   }
 
-  setProgress(i) {
+  setProgress(i: number) {
     if (this.hasLoad) {
       this.insChange.emit({
         index: i,
@@ -116,7 +116,7 @@ export class InsGallery {
 
   initSlider() {
     let sliderEl = this.el.querySelector(".ins-gallery_slider");
-    this.slides = this.el.querySelectorAll(".ins-gallery_slide img");
+    this.slides = this.el.querySelectorAll(".ins-gallery_slide img") as NodeListOf<HTMLImageElement>;
     this.slider = new Siema({
       selector: sliderEl,
       onChange: () => this.onSlideHandler(),
@@ -125,19 +125,19 @@ export class InsGallery {
 
   initSliderThumbs() {
     let thumbnails = this.el.querySelector(`.ins-gallery_thumbnails`);
-    let perPage = this.calculateThumbnailsPerPage(thumbnails);
+    let perPage = this.calculateThumbnailsPerPage(thumbnails as HTMLElement);
     this.sliderThumbs = new Siema({
       selector: thumbnails,
       perPage,
     });
   }
 
-  calculateViewport(viewport, current, wrapper, thumbnail) {
+  calculateViewport(viewport: number, current: number, wrapper: number, thumbnail: number) {
     return Math.floor(((viewport / current) * wrapper) / thumbnail);
     // return i > this.thumbs.length ? this.thumbs.length : i;
   }
 
-  calculateThumbnailsPerPage(wrapper) {
+  calculateThumbnailsPerPage(wrapper: HTMLElement) {
     const docWidth = document.documentElement.clientWidth || 0;
     const windowWidth = window.innerWidth || 0;
     const viewport = Math.max(docWidth, windowWidth);
@@ -200,8 +200,8 @@ export class InsGallery {
     result.style.backgroundSize =
       this.imgEl.width * cx + "px " + this.imgEl.height * cy + "px";
 
-    let getCursorPos = (e) => {
-      var a,
+    let getCursorPos = (e: any) => {
+      let a,
         x = 0,
         y = 0;
       e = e || window.event;
@@ -219,8 +219,8 @@ export class InsGallery {
       return { x: x, y: y };
     };
 
-    let moveLens = (e) => {
-      var pos, x, y;
+    let moveLens = (e: any) => {
+      let pos, x, y;
       /* show zoom element */
       result.classList.add("zooming");
 
@@ -396,8 +396,8 @@ export class InsGallery {
   }
 
   @Method()
-  async activate(index) {
-    this.thumbs[index]?.querySelector(".ins-gallery-image")?.click();
+  async activate(index: number) {
+    (this.thumbs[index]?.querySelector(".ins-gallery-image") as HTMLElement)?.click();
   }
 
   render() {

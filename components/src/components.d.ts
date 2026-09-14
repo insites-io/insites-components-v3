@@ -5,6 +5,10 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { ScopeOption } from "./components/ins-search-scope/ins-search-scope";
+import { Event } from "@stencil/core";
+export { ScopeOption } from "./components/ins-search-scope/ins-search-scope";
+export { Event } from "@stencil/core";
 export namespace Components {
     interface InsAccordion {
         "checkLoad": boolean;
@@ -23,7 +27,7 @@ export namespace Components {
         "linkTarget": string;
         "openIcon": string;
         "toggle": () => Promise<void>;
-        "udpateScrollHeight": (height: any) => Promise<void>;
+        "udpateScrollHeight": (height: number) => Promise<void>;
     }
     interface InsAccordionItemHeading {
     }
@@ -39,6 +43,30 @@ export namespace Components {
         "linkTitle": string;
         "load": boolean;
         "toggle": () => Promise<void>;
+    }
+    interface InsActionMenu {
+        "ariaLabelText": string;
+        "checkLoad": boolean;
+        "closeMenu": () => Promise<void>;
+        "hasLoad": string;
+        "load": boolean;
+        "position": string;
+        "triggerIcon": string;
+        "triggerLabel": string;
+        "triggerTip": string;
+        "variant": string;
+    }
+    interface InsActionMenuItem {
+        "checkLoad": boolean;
+        "danger": boolean;
+        "disabled": boolean;
+        "divider": boolean;
+        "hasLoad": string;
+        "icon": string;
+        "label": string;
+        "load": boolean;
+        "slotLabel": string;
+        "value": string;
     }
     interface InsAdmin {
     }
@@ -67,7 +95,7 @@ export namespace Components {
         "checkLoad": boolean;
         "hasLoad": string;
         "load": boolean;
-        "updateCrumbs": (crumbs: any, noRedirect?: boolean) => Promise<void>;
+        "updateCrumbs": (crumbs: any[], noRedirect?: boolean) => Promise<void>;
     }
     interface InsButton {
         "checkLoad": boolean;
@@ -96,11 +124,11 @@ export namespace Components {
         "checkLoad": boolean;
         "color": string;
         "disabled": boolean;
-        "getActiveOption": () => Promise<{ index: number; label: any; }>;
+        "getActiveOption": () => Promise<{ index: number; label: string; }>;
         "hasLoad": string;
         "load": boolean;
         "options": string;
-        "setActiveOption": (option: any) => Promise<void>;
+        "setActiveOption": (option: string) => Promise<void>;
         "size": string;
     }
     interface InsButtonSelect {
@@ -142,8 +170,8 @@ export namespace Components {
         "searchable": boolean;
         "searchablePlaceholder": string;
         "selectedValues": any;
-        "setLoadingState": (state: any) => Promise<boolean>;
-        "setSearchingState": (state: any) => Promise<boolean>;
+        "setLoadingState": (state: boolean) => Promise<boolean>;
+        "setSearchingState": (state: boolean) => Promise<boolean>;
         "setValue": (value?: any) => Promise<boolean>;
         "small": boolean;
         "value": any;
@@ -184,7 +212,7 @@ export namespace Components {
         "load": boolean;
         "multiple": boolean;
         "readonly": boolean;
-        "setValue": (value: any) => Promise<void>;
+        "setValue": (value: string | string[]) => Promise<void>;
         "tooltip": string;
         "value": any;
     }
@@ -211,7 +239,7 @@ export namespace Components {
         "ctaLinkTarget": string;
         "dragDisabled": boolean;
         "duration": number;
-        "goTo": (slide: any) => Promise<void>;
+        "goTo": (slide: string | number) => Promise<void>;
         "hasLoad": string;
         "heading": string;
         "height": string;
@@ -227,8 +255,8 @@ export namespace Components {
         "width": string;
     }
     interface InsChart {
-        "generateColor": (color: any, count: any) => Promise<Highcharts.ColorType>;
-        "renderChart": (options: any) => Promise<void>;
+        "generateColor": (color: string, count: number) => Promise<Highcharts.ColorType>;
+        "renderChart": (options: Highcharts.Options) => Promise<void>;
     }
     interface InsCheckbox {
         "checkLoad": boolean;
@@ -240,10 +268,10 @@ export namespace Components {
         "label": string;
         "load": boolean;
         "name": string;
-        "setValue": (value: any, trueValue: any, falseValue: any) => Promise<void>;
+        "setValue": (value: string, trueValue: string, falseValue: string) => Promise<void>;
         "tooltip": string;
         "trueValue": string;
-        "updateCheckState": (state: any) => Promise<void>;
+        "updateCheckState": (state: boolean) => Promise<void>;
         "value": string;
     }
     interface InsCheckboxCard {
@@ -257,7 +285,7 @@ export namespace Components {
         "noPadding": boolean;
         "selected": boolean;
         "selectedColor": string;
-        "setValue": (value: any) => Promise<void>;
+        "setValue": (value: string) => Promise<void>;
         "tabOrder": string;
         "value": string;
     }
@@ -277,7 +305,7 @@ export namespace Components {
         "load": boolean;
         "multiple": boolean;
         "readonly": boolean;
-        "setValue": (value: any) => Promise<void>;
+        "setValue": (value: string[]) => Promise<void>;
         "tooltip": string;
         "value": any;
     }
@@ -303,11 +331,55 @@ export namespace Components {
         "readonly": boolean;
         "refresh": () => Promise<void>;
         "reset": () => Promise<void>;
-        "setValue": (value: any) => Promise<void>;
+        "setValue": (value: string) => Promise<void>;
         "theme": string;
         "tooltip": string;
         "val": () => Promise<any>;
         "value": string;
+    }
+    /**
+     * Type-to-confirm destructive dialog (IIA v6 CRM record pages).
+     * Design: div[role="dialog"] > div[data-screen-label="Delete confirmation"] in
+     * CRM Company v1.0 and CRM Contact v1.4 (handoff-confirm-delete.md, handoff.md section 5).
+     * Reference implementation: module-v6-crm ConfirmDeleteModal.vue.
+     * The confirm button is never `disabled`. It dims to 0.45 with aria-disabled and the
+     * handler returns early until the field reads the confirm word, so it stays focusable
+     * and screen readers can reach the requirement text. The typed word is compared trimmed
+     * and case-insensitively, so "delete" passes for "DELETE".
+     * Lead copy (the bold spans, the "are you sure" lines) comes in through the default slot.
+     * The kept-records note can come through the slot too, or through the `keptNote` prop.
+     */
+    interface InsConfirmModal {
+        /**
+          * Icon-font class on the cancel button. Empty string hides the icon.
+         */
+        "cancelButtonIcon": string;
+        "cancelButtonLabel": string;
+        "checkLoad": boolean;
+        /**
+          * Icon-font class on the confirm button. Empty string hides the icon.
+         */
+        "confirmButtonIcon": string;
+        "confirmButtonLabel": string;
+        /**
+          * Overrides the default prompt line: Please enter "{confirmWord}" to proceed.
+         */
+        "confirmPrompt": string;
+        "confirmWord": string;
+        /**
+          * aria-label for the dialog, e.g. "Delete company". When empty the dialog is labelled by its heading.
+         */
+        "dialogLabel": string;
+        "hasLoad": string;
+        "heading": string;
+        "hide": () => Promise<void>;
+        /**
+          * Optional "what is kept" note rendered below the lead copy with a positive check icon.
+         */
+        "keptNote": string;
+        "load": boolean;
+        "open": boolean;
+        "show": () => Promise<void>;
     }
     interface InsContent {
     }
@@ -329,7 +401,7 @@ export namespace Components {
         "options": string;
         "optionsColor": string;
         "optionsIcon": string;
-        "setValue": (value: any) => Promise<void>;
+        "setValue": (value: string) => Promise<void>;
         "tag": string;
         "tagBackgroundColor": string;
         "tagColor": string;
@@ -346,8 +418,8 @@ export namespace Components {
         "disabled": boolean;
         "errorMessage": string;
         "format": string;
-        "formatDate": (date: any) => Promise<any>;
-        "getDate": () => Promise<{ value: string; selected_dates: any; }>;
+        "formatDate": (date: Date) => Promise<string>;
+        "getDate": () => Promise<{ value: string; selected_dates: Date[]; }>;
         "getValue": () => Promise<string>;
         "hasError": boolean;
         "hasLoad": string;
@@ -367,9 +439,50 @@ export namespace Components {
         "noMeridiem": boolean;
         "placeholder": string;
         "readonly": boolean;
-        "setValue": (value: any) => Promise<void>;
+        "setValue": (value: string) => Promise<void>;
         "tooltip": string;
         "value": string;
+    }
+    interface InsDisclosurePanel {
+        "checkLoad": boolean;
+        /**
+          * Programmatic close. Does NOT emit insToggle. The body stays mounted.
+         */
+        "closePanel": () => Promise<void>;
+        /**
+          * Number, or a string such as "5 profiles". Hidden when null, undefined or an empty string.
+         */
+        "count": number | string;
+        "disabled": boolean;
+        /**
+          * Treat the body as mounted from the start, for panels whose content is read while closed.
+         */
+        "eager": boolean;
+        "hasLoad": string;
+        "heading": string;
+        "icon": string;
+        /**
+          * Whether the body has been opened at least once (or was eager).
+         */
+        "isMounted": () => Promise<boolean>;
+        /**
+          * Current open state. The `open` prop is the synchronous equivalent.
+         */
+        "isOpen": () => Promise<boolean>;
+        "load": boolean;
+        "open": boolean;
+        /**
+          * Programmatic open. Does NOT emit insToggle. Mounts the body if it was not yet mounted.
+         */
+        "openPanel": () => Promise<void>;
+        /**
+          * Programmatic toggle. Does NOT emit insToggle.
+         */
+        "toggle": () => Promise<void>;
+        /**
+          * Opt in to the IIA v6 reference section card. Off by default so existing panels do not move.
+         */
+        "v6": boolean;
     }
     interface InsDrawer {
         "backdropCanClose": boolean;
@@ -383,7 +496,7 @@ export namespace Components {
         "load": boolean;
         "noPadding": boolean;
         "position": string;
-        "setDrawerState": (status: any) => Promise<void>;
+        "setDrawerState": (status: boolean) => Promise<void>;
         "showCloseButton": boolean;
         "showHeader": boolean;
         "stickyHeader": boolean;
@@ -410,7 +523,7 @@ export namespace Components {
         "description": string;
         "disableLineNumbers": boolean;
         "errorMessage": string;
-        "getValue": () => Promise<any>;
+        "getValue": () => Promise<string>;
         "hasCodeEditor": boolean;
         "hasError": boolean;
         "htmlDescription": boolean;
@@ -424,11 +537,11 @@ export namespace Components {
         "name": string;
         "pluginsList": any;
         "readonly": boolean;
-        "setValue": (value: any) => Promise<void>;
+        "setValue": (value: string) => Promise<void>;
         "showSource": boolean;
         "theme": string;
         "tooltip": string;
-        "val": () => Promise<any>;
+        "val": () => Promise<string>;
         "value": string;
     }
     interface InsFilter {
@@ -440,7 +553,7 @@ export namespace Components {
         "dateTitle": any;
         "dateTo": string;
         "defaultDate": string;
-        "getDate": () => Promise<"All" | { from: any; to: any; }>;
+        "getDate": () => Promise<"All" | { from: string; to: string; }>;
         "hasLoad": string;
         "label": string;
         "load": boolean;
@@ -449,7 +562,7 @@ export namespace Components {
     interface InsFilterItem {
         "checkLoad": boolean;
         "closeFilter": () => Promise<void>;
-        "getSelected": () => Promise<{ name: string; option: any; }>;
+        "getSelected": () => Promise<{ name: string; option: string; }>;
         "hasLoad": string;
         "load": boolean;
         "name": string;
@@ -457,7 +570,7 @@ export namespace Components {
         "selected": any;
     }
     interface InsGallery {
-        "activate": (index: any) => Promise<void>;
+        "activate": (index: number) => Promise<void>;
         "checkLoad": boolean;
         "imgAlt": string;
         "imgTitle": string;
@@ -475,14 +588,79 @@ export namespace Components {
         "imgTitle": string;
         "thumbnail": string;
     }
+    /**
+     * IIA v6 shell header (TW#26371963) is an ADDITIVE variant of this component.
+     * `variant="v6"` renders the Admin Shell v1.5 top bar: 56px dark chrome carrying the
+     * rail toggle, logo, the support pill, the environment chip with the instance
+     * switcher, view-frontend, theme toggle, help menu and account menu, plus the 40px
+     * breadcrumb bar beneath it, the keyboard-shortcuts dialog and the production
+     * confirmation. The default render is unchanged. `toggleSidebar()` keeps its
+     * contract because adminScripts and ins-sidebar-item both call it.
+     * The instance switcher is presentational this release: the roster comes from
+     * `instances` (JSON) or, absent that, the single current instance built from the
+     * instance-* attributes. There is no Console endpoint that lists a user's
+     * instances yet, so Switch emits `insInstanceSwitch` and navigates nowhere.
+     * Tooltips use the shared `data-tip` mechanism rather than a nested component; the
+     * design's 150ms delay / instant hide / suppress-after-click live in CSS on the
+     * `iia-hdr` scope.
+     */
     interface InsHeader {
         "checkLoad": boolean;
+        "consoleHref": string;
+        "docsHref": string;
+        /**
+          * 'staging' | 'production' — this instance's tier.
+         */
+        "environment": string;
+        "frontendHref": string;
         "hasLoad": string;
         "hasMenuToggle": boolean;
+        /**
+          * Whether help panels are currently dismissed (restore row is actionable). Read from the preference store on load; a host may still set it.
+         */
+        "helpPanelsDismissed": boolean;
+        /**
+          * Show the "Show help panels" restore row in the account menu.
+         */
+        "helpRestore": boolean;
+        "homeHref": string;
+        "instanceDomain": string;
+        "instanceId": string;
+        "instanceName": string;
+        /**
+          * Optional JSON roster: [{ id, name, env, domain }]. Absent: the current instance alone.
+         */
+        "instances": string;
         "load": boolean;
+        "lockEndpoint": string;
+        "lockFormName": string;
+        /**
+          * Locks the admin session: emits `insLockScreen`, ends the session through `lockEndpoint` and shows the host's lock screen. The v1.5 design has no lock row, so the v6 chrome renders none; a host that keeps the lock feature calls this method from its own trigger.
+         */
+        "lockScreen": () => Promise<void>;
+        "logoAlt": string;
+        "logoSrc": string;
+        "logoutHref": string;
+        /**
+          * Administrator-preferences endpoint: holds the dismissed help panels and the production-switch "Don't show me again" choice, per administrator, across devices.
+         */
+        "preferencesEndpoint": string;
+        "profileHref": string;
         "supportLink": string;
+        /**
+          * Presence label on the support pill.
+         */
+        "supportPresence": string;
+        "supportReplyLine": string;
+        "themeEndpoint": string;
         "toggleNav": () => Promise<void>;
         "toggleSidebar": () => Promise<void>;
+        "userEmail": string;
+        "userName": string;
+        /**
+          * '' keeps the original rendering. 'v6' is the Admin Shell v1.5 header.
+         */
+        "variant": string;
     }
     interface InsHeaderUser {
         "app": boolean;
@@ -508,6 +686,38 @@ export namespace Components {
         "name": string;
         "withoutLine": boolean;
     }
+    /**
+     * ins-help-panel — the IIA v6 shell's dismissible help panel (Admin Shell v1.5 design, TW#26371963).
+     * A card that explains the screen it sits on, with a small graphic, a heading, a body and a
+     * "Dismiss permanently" control. Dismissal is stored per administrator through the
+     * administrator-preferences endpoint, so a panel dismissed once stays dismissed on every device.
+     * The account menu's "Show help panels" row (ins-header) restores every dismissed panel at once.
+     * Storage: one preference row, key `help_panels:dismissed`, value a JSON array of panel keys.
+     * The header reads the same row to decide whether its restore row is live, and clears it on restore.
+     *   <ins-help-panel panel-key="dashboard" heading="…" body="…"></ins-help-panel>
+     * Copy comes from the page (`heading` / `body`, or the default slot for richer body content); the
+     * shell owns the frame, the graphic, the persistence and the restore round trip.
+     */
+    interface InsHelpPanel {
+        /**
+          * Plain-text body. Use the default slot instead for markup.
+         */
+        "body": string;
+        /**
+          * Toast copy shown by the header when the panel is dismissed.
+         */
+        "dismissedMessage": string;
+        /**
+          * 'dashboard' draws the design's animated cards graphic; 'none' draws no graphic.
+         */
+        "graphic": string;
+        "heading": string;
+        /**
+          * Stable key for this panel, e.g. "dashboard". Required; without it nothing can be remembered.
+         */
+        "panelKey": string;
+        "preferencesEndpoint": string;
+    }
     interface InsImagePicker {
         "buttonColor": string;
         "checkLoad": boolean;
@@ -521,7 +731,7 @@ export namespace Components {
         "name": string;
         "notImageFile": boolean;
         "placeholder": string;
-        "setValue": (value: any, file_name: any) => Promise<void>;
+        "setValue": (value: string, file_name: string) => Promise<void>;
         "uploadImgContainer": string;
         "uploadImgFileFormats": string;
         "uploadImgRecFileSize": number;
@@ -554,7 +764,7 @@ export namespace Components {
         "errorMessage": string;
         "field": string;
         "fieldId": string;
-        "getValue": () => Promise<any>;
+        "getValue": () => Promise<string>;
         "hasError": boolean;
         "hasLoad": string;
         "htmlDescription": boolean;
@@ -572,7 +782,7 @@ export namespace Components {
         "placeholder": string;
         "readonly": boolean;
         "required": boolean;
-        "setValue": (value: any) => Promise<void>;
+        "setValue": (value: string) => Promise<void>;
         "step": string;
         "tooltip": string;
         "unitLeft": string;
@@ -582,7 +792,7 @@ export namespace Components {
     interface InsInputFile {
         "acceptedFiles": string;
         "autoUpload": boolean;
-        "buildFormData": (s3Data: any, formData: any) => Promise<void>;
+        "buildFormData": (s3Data: any, formData: FormData) => Promise<void>;
         "capture": string;
         "checkLoad": boolean;
         "checkValue": boolean;
@@ -595,7 +805,7 @@ export namespace Components {
         "fileIcon": string;
         "getDropzoneInstance": () => Promise<any>;
         "getFilesList": () => Promise<any>;
-        "getS3Credentials": () => Promise<unknown>;
+        "getS3Credentials": () => Promise<object>;
         "getUploadingFiles": () => Promise<any>;
         "hasError": boolean;
         "hasLoad": string;
@@ -642,7 +852,7 @@ export namespace Components {
         "name": string;
         "placeholder": string;
         "readonly": boolean;
-        "setValue": (value: any) => Promise<void>;
+        "setValue": (value: string | any[]) => Promise<void>;
         "tooltip": string;
         "val": () => Promise<any>;
         "value": any;
@@ -664,7 +874,7 @@ export namespace Components {
         "placeholder": string;
         "readonly": boolean;
         "required": boolean;
-        "setValue": (value: any) => Promise<void>;
+        "setValue": (value: string) => Promise<void>;
         "tooltip": string;
         "validate": boolean;
         "value": string;
@@ -698,7 +908,7 @@ export namespace Components {
         "readonly": boolean;
         "resetValue": () => Promise<void>;
         "searchValue": string;
-        "setOptions": (value: any) => Promise<void>;
+        "setOptions": (value: Array<{ label: string; value: string; }>) => Promise<void>;
         "setValue": (value: any) => Promise<void>;
         "tooltip": string;
         "value": any;
@@ -749,8 +959,8 @@ export namespace Components {
         "searchable": boolean;
         "searchablePlaceholder": string;
         "selectedValues": any;
-        "setLoadingState": (state: any) => Promise<boolean>;
-        "setSearchingState": (state: any) => Promise<boolean>;
+        "setLoadingState": (state: boolean) => Promise<boolean>;
+        "setSearchingState": (state: boolean) => Promise<boolean>;
         "setValue": (value?: any) => Promise<boolean>;
         "tooltip": string;
         "value": any;
@@ -786,7 +996,7 @@ export namespace Components {
         "min": number;
         "name": string;
         "position": string;
-        "setValue": (value: any) => Promise<void>;
+        "setValue": (value: number) => Promise<void>;
         "sliderOnly": boolean;
         "step": number;
         "tooltip": string;
@@ -812,7 +1022,7 @@ export namespace Components {
         "noValueChangeOnBlur": boolean;
         "readonly": boolean;
         "required": boolean;
-        "setValue": (value: any) => Promise<void>;
+        "setValue": (value: string) => Promise<void>;
         "step": string;
         "tooltip": string;
         "value": string;
@@ -826,7 +1036,7 @@ export namespace Components {
         "description": string;
         "disabled": boolean;
         "errorMessage": string;
-        "getValue": () => Promise<any>;
+        "getValue": () => Promise<Record<string, string>[]>;
         "hasError": boolean;
         "hasLoad": string;
         "htmlDescription": boolean;
@@ -837,7 +1047,7 @@ export namespace Components {
         "readonly": boolean;
         "removeButtonColor": string;
         "removeButtonIcon": string;
-        "setValue": (value: any) => Promise<any>;
+        "setValue": (value: Array<Record<string, string | null>>) => Promise<Record<string, string>[]>;
         "tableHeaders": any;
         "tooltip": string;
     }
@@ -853,7 +1063,7 @@ export namespace Components {
         "errorMessage": string;
         "getCountryData": () => Promise<any>;
         "getValue": () => Promise<string>;
-        "getValues": () => Promise<{ country_code: any; area_code: any; phone_number: any; }>;
+        "getValues": () => Promise<{ country_code: string; area_code: string; phone_number: string; }>;
         "hasError": boolean;
         "hasLoad": string;
         "htmlDescription": boolean;
@@ -867,9 +1077,9 @@ export namespace Components {
         "phonenumValue": string;
         "readonly": boolean;
         "required": boolean;
-        "setCountry": (country: any) => Promise<void>;
-        "setCountryCode": (code: any) => Promise<void>;
-        "setValue": ({ country, country_code, area_code, phone_number }: { country: any; country_code: any; area_code: any; phone_number: any; }) => Promise<void>;
+        "setCountry": (country: string) => Promise<void>;
+        "setCountryCode": (code: string) => Promise<void>;
+        "setValue": ({ country, country_code, area_code, phone_number }: { country?: string; country_code?: string; area_code?: string; phone_number?: string; }) => Promise<void>;
         "tooltip": string;
     }
     interface InsInputTooltip {
@@ -911,7 +1121,7 @@ export namespace Components {
         "addItemButtonLabel": string;
         "disableDrop": boolean;
         "disableSort": boolean;
-        "getColumnCardsOrder": () => Promise<{}>;
+        "getColumnCardsOrder": () => Promise<Record<number, string>>;
         "heading": string;
         "headingColor": string;
         "headingSubDetail": string;
@@ -919,7 +1129,7 @@ export namespace Components {
         "noItems": boolean;
         "noItemsDetail": string;
         "noItemsHeading": string;
-        "reorderCards": (sortable: any) => Promise<void>;
+        "reorderCards": (sortable: string | any[]) => Promise<void>;
         "sortableItems": [];
         "totalCount": string;
     }
@@ -967,10 +1177,33 @@ export namespace Components {
         "readonly": boolean;
         "required": boolean;
         "reset": () => Promise<void>;
-        "setValue": (value: any) => Promise<void>;
+        "setValue": (value: string) => Promise<void>;
         "tooltip": string;
         "val": () => Promise<any>;
         "value": string;
+    }
+    interface InsMetricTile {
+        "card": boolean;
+        "checkLoad": boolean;
+        "clickable": boolean;
+        "hasLoad": string;
+        "hint": string;
+        "icon": string;
+        "label": string;
+        "load": boolean;
+        "loading": boolean;
+        "metricKey": string;
+        "value": string;
+        "variant": 'default' | 'strip';
+    }
+    interface InsMetricTileGroup {
+        "card": boolean;
+        "checkLoad": boolean;
+        "clickable": boolean;
+        "columns": number;
+        "hasLoad": string;
+        "load": boolean;
+        "variant": 'default' | 'strip';
     }
     interface InsModal {
         "buttonAlignment": string;
@@ -992,7 +1225,7 @@ export namespace Components {
         "load": boolean;
         "noButton": boolean;
         "open": () => Promise<void>;
-        "parentClosed": (type: any) => Promise<void>;
+        "parentClosed": (type: string) => Promise<void>;
         "parentRender": string;
         "preventClickOutside": boolean;
         "value": any;
@@ -1074,7 +1307,7 @@ export namespace Components {
         "multiple": boolean;
         "noneLabel": String;
         "readonly": boolean;
-        "setValue": (value: any) => Promise<void>;
+        "setValue": (value: string | any[]) => Promise<void>;
         "tooltip": string;
         "value": any;
     }
@@ -1087,8 +1320,35 @@ export namespace Components {
         "link": string;
         "load": boolean;
         "resizeIframe": () => Promise<void>;
-        "updateRoute": (newRoutes: any, noRedirect: boolean, iframe: any) => Promise<void>;
-        "updateRouteLabel": (value: any) => Promise<void>;
+        "updateRoute": (newRoutes: any[], noRedirect: boolean, iframe: boolean) => Promise<void>;
+        "updateRouteLabel": (value: string) => Promise<void>;
+    }
+    /**
+     * The IIA v6 record-page search pill with a field-scope dropdown.
+     * Ported from module-v6-crm Companies/sections/Contacts/Contacts.vue (design: CRM Company v1.0, Contacts tab header).
+     * Markup mirrors the design so the shared record-page CSS (.crm-search, .crm-sbprefix, button[data-tip]) lands on it:
+     *   label.crm-search > span (trigger + role=menu) + input[type=search] + clear button + submit button
+     * The search only applies on submit (Enter or the search button), matching v5 and the design prototype.
+     * Set `debounce` above 0 to opt in to a live insSearch while typing.
+     */
+    interface InsSearchScope {
+        "checkLoad": boolean;
+        "clear": () => Promise<void>;
+        "clearLabel": string;
+        "closeMenu": () => Promise<void>;
+        "debounce": number;
+        "disabled": boolean;
+        "focusInput": () => Promise<void>;
+        "hasLoad": string;
+        "load": boolean;
+        "loading": boolean;
+        "menuLabel": string;
+        "placeholder": string;
+        "scope": string;
+        "scopeOptions": Array<ScopeOption | string> | string;
+        "scopePrefix": string;
+        "searchLabel": string;
+        "value": string;
     }
     interface InsSelect {
         "button": boolean;
@@ -1126,8 +1386,8 @@ export namespace Components {
         "searchable": boolean;
         "selected_values": any;
         "setInsSelectDefaultValue": () => Promise<void>;
-        "setLoadingState": (state: any) => Promise<boolean>;
-        "setSearchingState": (state: any) => Promise<boolean>;
+        "setLoadingState": (state: boolean) => Promise<boolean>;
+        "setSearchingState": (state: boolean) => Promise<boolean>;
         "setSelectedFromValue": (value?: any) => Promise<boolean>;
         "setValue": (value: any) => Promise<void>;
         "small": boolean;
@@ -1153,15 +1413,46 @@ export namespace Components {
         "showOption": () => Promise<void>;
         "value": string;
     }
+    /**
+     * IIA v6 shell rail (TW#26371963) is an ADDITIVE variant of this component.
+     * `variant="v6"` renders the Admin Shell v1.5 rail: 216px expanded / 64px collapsed
+     * (56px below 768px), shared sliding hover pill, 2px active marker, Phosphor
+     * outline-to-fill icons, hover flyouts for sub-menus. The default render, the hash
+     * routing, `minimise()`/`maximise()` and the `routePage` listener are unchanged,
+     * so every module partial that emits <ins-sidebar-item> keeps working with no
+     * edit, which is the decision recorded on that task. Child items detect the
+     * variant through `closest('ins-sidebar[variant="v6"]')`.
+     * Collapsed state still rides `body.mini` + `minimised`, because ins-sidebar-item
+     * and the legacy ins-header toggle both key off those. The v6 CSS reads the
+     * `iia-rail--collapsed` host class that mirrors `minimised`.
+     */
     interface InsSidebar {
         "checkLoad": boolean;
+        "closeFlyout": () => Promise<void>;
         "deactivateSidebarItems": () => Promise<void>;
         "fullLogo": string;
         "hasLoad": string;
         "iconLogo": string;
+        /**
+          * v6: whether the rail is collapsed.
+         */
+        "isCollapsed": () => Promise<boolean>;
         "load": boolean;
         "maximise": () => Promise<void>;
         "minimise": () => Promise<void>;
+        /**
+          * Called by top-level ins-sidebar-item on pointer enter (v6).
+         */
+        "railItemEnter": (itemEl: HTMLElement) => Promise<void>;
+        "railItemLeave": () => Promise<void>;
+        /**
+          * Called by a top-level ins-sidebar-item with a submenu when clicked (v6).
+         */
+        "toggleFlyout": (host: HTMLInsSidebarItemElement) => Promise<void>;
+        /**
+          * '' keeps the original rendering. 'v6' is the Admin Shell v1.5 rail.
+         */
+        "variant": string;
     }
     interface InsSidebarFooter {
         "checkLoad": boolean;
@@ -1173,7 +1464,7 @@ export namespace Components {
         "checkLoad": boolean;
         "hasLoad": string;
         "icon": string;
-        "insSidebarFooterButtonOnClick": (event: any) => Promise<void>;
+        "insSidebarFooterButtonOnClick": (event: MouseEvent) => Promise<void>;
         "load": boolean;
         "open": string;
     }
@@ -1184,6 +1475,20 @@ export namespace Components {
         "showMenu": () => Promise<void>;
         "toggleMenu": () => Promise<void>;
     }
+    /**
+     * IIA v6 rail item (TW#26371963). No new props: when the closest <ins-sidebar>
+     * carries variant="v6" this item renders the Admin Shell v1.5 row instead of the
+     * legacy one. Its public API and every method the module partials and the hash
+     * router rely on are unchanged, so the ten module rail partials and the two
+     * migration-seeded instance partials keep working untouched.
+     * In v6 a top-level item with a submenu does NOT render its children inline; the
+     * parent rail reads them and shows a flyout. Nested items render nothing
+     * themselves, but stay in the DOM so routing, crumbs and activation keep working
+     * through routePageHandler()/activate() exactly as before.
+     * The icon: the legacy `icon="icon-…"` class is resolved centrally to a Phosphor
+     * glyph (utils/phosphor-shell-icons). Unmapped classes fall back to the font icon,
+     * so an unknown module still renders.
+     */
     interface InsSidebarItem {
         "activate": () => Promise<boolean>;
         "activateParent": () => Promise<boolean>;
@@ -1201,7 +1506,7 @@ export namespace Components {
         "landingPage": boolean;
         "link": any;
         "load": boolean;
-        "routePageHandler": (e: any) => Promise<{ crumbs: any[]; }>;
+        "routePageHandler": (e?: Event | string) => Promise<{ crumbs: any[]; }>;
         "showSubMenu": () => Promise<boolean>;
         "tooltip": boolean;
         "withSubmenu": boolean;
@@ -1211,7 +1516,7 @@ export namespace Components {
         "cloneOnDrag": boolean;
         "disabled": boolean;
         "droppable": boolean;
-        "getSortOrder": () => Promise<{}>;
+        "getSortOrder": () => Promise<Record<number, string>>;
         "hasLoad": string;
         "ignoreElements": string;
         "insDraggable": boolean;
@@ -1245,21 +1550,21 @@ export namespace Components {
         "clickable": boolean;
         "complete": boolean;
         "finish": () => Promise<boolean>;
-        "getAllSteps": () => Promise<any>;
+        "getAllSteps": () => Promise<NodeListOf<any>>;
         "indicator": string;
         "inline": boolean;
         "next": () => Promise<{ end: boolean; previousStep: any; currentStep: any; }>;
         "prev": () => Promise<{ start: boolean; previousStep: any; currentStep: any; }>;
         "reset": () => Promise<boolean>;
         "setComplete": () => Promise<boolean>;
-        "setStep": (i: any) => Promise<{ previousStep: any; currentStep: any; }>;
+        "setStep": (i: number) => Promise<{ previousStep: any; currentStep: any; }>;
         "withValidation": boolean;
     }
     interface InsStyleguide {
         "label": string;
     }
     interface InsTab {
-        "activateTab": (place: any) => Promise<void>;
+        "activateTab": (place: number) => Promise<void>;
         "checkLoad": boolean;
         "hasLoad": string;
         "load": boolean;
@@ -1302,7 +1607,7 @@ export namespace Components {
         "searchPosition": string;
         "searchbarPlaceholder": string;
         "selectedRows": any;
-        "setBulkAction": (value: any) => Promise<void>;
+        "setBulkAction": (value: string) => Promise<void>;
         "sortKeyword": string;
         "sortOrder": boolean;
         "staticTable": boolean;
@@ -1355,7 +1660,7 @@ export namespace Components {
         "placeholder": string;
         "readonly": boolean;
         "required": boolean;
-        "setValue": (value: any) => Promise<void>;
+        "setValue": (value: string) => Promise<void>;
         "tooltip": string;
         "value": string;
     }
@@ -1414,10 +1719,10 @@ export namespace Components {
         "label": string;
         "load": boolean;
         "name": string;
-        "setValue": (value: any, trueValue: any, falseValue: any) => Promise<void>;
+        "setValue": (value: string, trueValue: string, falseValue: string) => Promise<void>;
         "tooltip": string;
         "trueValue": string;
-        "updateCheckState": (state: any) => Promise<void>;
+        "updateCheckState": (state: boolean) => Promise<void>;
         "value": string;
     }
     interface InsTooltip {
@@ -1442,6 +1747,14 @@ export interface InsAccordionCustomEvent<T> extends CustomEvent<T> {
 export interface InsAccordionLinkCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLInsAccordionLinkElement;
+}
+export interface InsActionMenuCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLInsActionMenuElement;
+}
+export interface InsActionMenuItemCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLInsActionMenuItemElement;
 }
 export interface InsAlertBoxCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -1499,6 +1812,10 @@ export interface InsCodeEditorCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLInsCodeEditorElement;
 }
+export interface InsConfirmModalCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLInsConfirmModalElement;
+}
 export interface InsCreditCardCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLInsCreditCardElement;
@@ -1506,6 +1823,10 @@ export interface InsCreditCardCustomEvent<T> extends CustomEvent<T> {
 export interface InsDateTimeCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLInsDateTimeElement;
+}
+export interface InsDisclosurePanelCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLInsDisclosurePanelElement;
 }
 export interface InsDrawerCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -1542,6 +1863,10 @@ export interface InsHeaderUserCustomEvent<T> extends CustomEvent<T> {
 export interface InsHeadingCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLInsHeadingElement;
+}
+export interface InsHelpPanelCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLInsHelpPanelElement;
 }
 export interface InsImagePickerCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -1639,6 +1964,14 @@ export interface InsMarkdownEditorCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLInsMarkdownEditorElement;
 }
+export interface InsMetricTileCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLInsMetricTileElement;
+}
+export interface InsMetricTileGroupCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLInsMetricTileGroupElement;
+}
 export interface InsModalCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLInsModalElement;
@@ -1662,6 +1995,10 @@ export interface InsRadioGroupCustomEvent<T> extends CustomEvent<T> {
 export interface InsRendererCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLInsRendererElement;
+}
+export interface InsSearchScopeCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLInsSearchScopeElement;
 }
 export interface InsSelectCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -1734,7 +2071,7 @@ export interface InsToggleSwitchCustomEvent<T> extends CustomEvent<T> {
 declare global {
     interface HTMLInsAccordionElementEventMap {
         "insToggle": any;
-        "didLoad": any;
+        "didLoad": void;
     }
     interface HTMLInsAccordionElement extends Components.InsAccordion, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsAccordionElementEventMap>(type: K, listener: (this: HTMLInsAccordionElement, ev: InsAccordionCustomEvent<HTMLInsAccordionElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1763,7 +2100,7 @@ declare global {
         new (): HTMLInsAccordionItemHeadingElement;
     };
     interface HTMLInsAccordionLinkElementEventMap {
-        "didLoad": any;
+        "didLoad": void;
     }
     interface HTMLInsAccordionLinkElement extends Components.InsAccordionLink, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsAccordionLinkElementEventMap>(type: K, listener: (this: HTMLInsAccordionLinkElement, ev: InsAccordionLinkCustomEvent<HTMLInsAccordionLinkElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1779,6 +2116,42 @@ declare global {
         prototype: HTMLInsAccordionLinkElement;
         new (): HTMLInsAccordionLinkElement;
     };
+    interface HTMLInsActionMenuElementEventMap {
+        "insOpenChange": { open: boolean };
+        "didLoad": void;
+    }
+    interface HTMLInsActionMenuElement extends Components.InsActionMenu, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLInsActionMenuElementEventMap>(type: K, listener: (this: HTMLInsActionMenuElement, ev: InsActionMenuCustomEvent<HTMLInsActionMenuElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLInsActionMenuElementEventMap>(type: K, listener: (this: HTMLInsActionMenuElement, ev: InsActionMenuCustomEvent<HTMLInsActionMenuElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLInsActionMenuElement: {
+        prototype: HTMLInsActionMenuElement;
+        new (): HTMLInsActionMenuElement;
+    };
+    interface HTMLInsActionMenuItemElementEventMap {
+        "insSelect": { label: string; value: string };
+        "didLoad": void;
+    }
+    interface HTMLInsActionMenuItemElement extends Components.InsActionMenuItem, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLInsActionMenuItemElementEventMap>(type: K, listener: (this: HTMLInsActionMenuItemElement, ev: InsActionMenuItemCustomEvent<HTMLInsActionMenuItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLInsActionMenuItemElementEventMap>(type: K, listener: (this: HTMLInsActionMenuItemElement, ev: InsActionMenuItemCustomEvent<HTMLInsActionMenuItemElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLInsActionMenuItemElement: {
+        prototype: HTMLInsActionMenuItemElement;
+        new (): HTMLInsActionMenuItemElement;
+    };
     interface HTMLInsAdminElement extends Components.InsAdmin, HTMLStencilElement {
     }
     var HTMLInsAdminElement: {
@@ -1786,7 +2159,7 @@ declare global {
         new (): HTMLInsAdminElement;
     };
     interface HTMLInsAlertBoxElementEventMap {
-        "didLoad": any;
+        "didLoad": void;
     }
     interface HTMLInsAlertBoxElement extends Components.InsAlertBox, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsAlertBoxElementEventMap>(type: K, listener: (this: HTMLInsAlertBoxElement, ev: InsAlertBoxCustomEvent<HTMLInsAlertBoxElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1809,7 +2182,7 @@ declare global {
         new (): HTMLInsBackdropElement;
     };
     interface HTMLInsBarChartElementEventMap {
-        "didLoad": any;
+        "didLoad": void;
     }
     interface HTMLInsBarChartElement extends Components.InsBarChart, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsBarChartElementEventMap>(type: K, listener: (this: HTMLInsBarChartElement, ev: InsBarChartCustomEvent<HTMLInsBarChartElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1826,8 +2199,9 @@ declare global {
         new (): HTMLInsBarChartElement;
     };
     interface HTMLInsBreadcrumbsElementEventMap {
-        "routePage": any;
-        "didLoad": any;
+        "routePage": { crumbs: any[]; redirect: boolean };
+        "didLoad": void;
+        "insBreadcrumbsChange": { crumbs: any[] };
     }
     interface HTMLInsBreadcrumbsElement extends Components.InsBreadcrumbs, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsBreadcrumbsElementEventMap>(type: K, listener: (this: HTMLInsBreadcrumbsElement, ev: InsBreadcrumbsCustomEvent<HTMLInsBreadcrumbsElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1844,9 +2218,9 @@ declare global {
         new (): HTMLInsBreadcrumbsElement;
     };
     interface HTMLInsButtonElementEventMap {
-        "insClick": any;
-        "insClickOption": any;
-        "didLoad": any;
+        "insClick": {label: string; data: string};
+        "insClickOption": {label: string | null; option: string};
+        "didLoad": void;
     }
     interface HTMLInsButtonElement extends Components.InsButton, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsButtonElementEventMap>(type: K, listener: (this: HTMLInsButtonElement, ev: InsButtonCustomEvent<HTMLInsButtonElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1863,8 +2237,8 @@ declare global {
         new (): HTMLInsButtonElement;
     };
     interface HTMLInsButtonGroupElementEventMap {
-        "insClick": any;
-        "didLoad": any;
+        "insClick": {action: string; label: string; index: number};
+        "didLoad": void;
     }
     interface HTMLInsButtonGroupElement extends Components.InsButtonGroup, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsButtonGroupElementEventMap>(type: K, listener: (this: HTMLInsButtonGroupElement, ev: InsButtonGroupCustomEvent<HTMLInsButtonGroupElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1882,11 +2256,11 @@ declare global {
     };
     interface HTMLInsButtonSelectElementEventMap {
         "insChange": any;
-        "insOptionSelect": any;
-        "insDynamicSubmit": any;
-        "insSearch": any;
-        "insLoadMore": any;
-        "didLoad": any;
+        "insOptionSelect": {event_type: string; selected: any[]; selectedOptions: {label: string; value: string}[]};
+        "insDynamicSubmit": string;
+        "insSearch": string;
+        "insLoadMore": void;
+        "didLoad": void;
     }
     interface HTMLInsButtonSelectElement extends Components.InsButtonSelect, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsButtonSelectElementEventMap>(type: K, listener: (this: HTMLInsButtonSelectElement, ev: InsButtonSelectCustomEvent<HTMLInsButtonSelectElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1909,7 +2283,7 @@ declare global {
         new (): HTMLInsButtonSelectGroupElement;
     };
     interface HTMLInsButtonSelectOptionElementEventMap {
-        "insButtonSelectOptionClicked": any;
+        "insButtonSelectOptionClicked": {value: string; label: string};
     }
     interface HTMLInsButtonSelectOptionElement extends Components.InsButtonSelectOption, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsButtonSelectOptionElementEventMap>(type: K, listener: (this: HTMLInsButtonSelectOptionElement, ev: InsButtonSelectOptionCustomEvent<HTMLInsButtonSelectOptionElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2066,6 +2440,37 @@ declare global {
         prototype: HTMLInsCodeEditorElement;
         new (): HTMLInsCodeEditorElement;
     };
+    interface HTMLInsConfirmModalElementEventMap {
+        "insConfirm": void;
+        "insClose": void;
+        "didLoad": void;
+    }
+    /**
+     * Type-to-confirm destructive dialog (IIA v6 CRM record pages).
+     * Design: div[role="dialog"] > div[data-screen-label="Delete confirmation"] in
+     * CRM Company v1.0 and CRM Contact v1.4 (handoff-confirm-delete.md, handoff.md section 5).
+     * Reference implementation: module-v6-crm ConfirmDeleteModal.vue.
+     * The confirm button is never `disabled`. It dims to 0.45 with aria-disabled and the
+     * handler returns early until the field reads the confirm word, so it stays focusable
+     * and screen readers can reach the requirement text. The typed word is compared trimmed
+     * and case-insensitively, so "delete" passes for "DELETE".
+     * Lead copy (the bold spans, the "are you sure" lines) comes in through the default slot.
+     * The kept-records note can come through the slot too, or through the `keptNote` prop.
+     */
+    interface HTMLInsConfirmModalElement extends Components.InsConfirmModal, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLInsConfirmModalElementEventMap>(type: K, listener: (this: HTMLInsConfirmModalElement, ev: InsConfirmModalCustomEvent<HTMLInsConfirmModalElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLInsConfirmModalElementEventMap>(type: K, listener: (this: HTMLInsConfirmModalElement, ev: InsConfirmModalCustomEvent<HTMLInsConfirmModalElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLInsConfirmModalElement: {
+        prototype: HTMLInsConfirmModalElement;
+        new (): HTMLInsConfirmModalElement;
+    };
     interface HTMLInsContentElement extends Components.InsContent, HTMLStencilElement {
     }
     var HTMLInsContentElement: {
@@ -2112,6 +2517,25 @@ declare global {
         prototype: HTMLInsDateTimeElement;
         new (): HTMLInsDateTimeElement;
     };
+    interface HTMLInsDisclosurePanelElementEventMap {
+        "insToggle": { open: boolean; heading: string };
+        "insMount": { heading: string };
+        "didLoad": void;
+    }
+    interface HTMLInsDisclosurePanelElement extends Components.InsDisclosurePanel, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLInsDisclosurePanelElementEventMap>(type: K, listener: (this: HTMLInsDisclosurePanelElement, ev: InsDisclosurePanelCustomEvent<HTMLInsDisclosurePanelElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLInsDisclosurePanelElementEventMap>(type: K, listener: (this: HTMLInsDisclosurePanelElement, ev: InsDisclosurePanelCustomEvent<HTMLInsDisclosurePanelElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLInsDisclosurePanelElement: {
+        prototype: HTMLInsDisclosurePanelElement;
+        new (): HTMLInsDisclosurePanelElement;
+    };
     interface HTMLInsDrawerElementEventMap {
         "insToggle": any;
         "didLoad": any;
@@ -2143,10 +2567,10 @@ declare global {
         new (): HTMLInsDropdownItemElement;
     };
     interface HTMLInsEditorElementEventMap {
-        "insBlur": any;
-        "insInput": any;
+        "insBlur": string;
+        "insInput": string | null;
         "insUpload": any;
-        "insValueChange": any;
+        "insValueChange": string;
     }
     interface HTMLInsEditorElement extends Components.InsEditor, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsEditorElementEventMap>(type: K, listener: (this: HTMLInsEditorElement, ev: InsEditorCustomEvent<HTMLInsEditorElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2163,7 +2587,7 @@ declare global {
         new (): HTMLInsEditorElement;
     };
     interface HTMLInsFilterElementEventMap {
-        "insFilterApply": any;
+        "insFilterApply": Record<string, any>;
         "didLoad": any;
     }
     interface HTMLInsFilterElement extends Components.InsFilter, HTMLStencilElement {
@@ -2181,7 +2605,7 @@ declare global {
         new (): HTMLInsFilterElement;
     };
     interface HTMLInsFilterItemElementEventMap {
-        "insSelect": any;
+        "insSelect": { name: string; option: string };
         "didLoad": any;
     }
     interface HTMLInsFilterItemElement extends Components.InsFilterItem, HTMLStencilElement {
@@ -2217,7 +2641,7 @@ declare global {
         new (): HTMLInsGalleryElement;
     };
     interface HTMLInsGalleryImageElementEventMap {
-        "insGalleryUpdate": any;
+        "insGalleryUpdate": { thumbnail: string; image: string };
     }
     interface HTMLInsGalleryImageElement extends Components.InsGalleryImage, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsGalleryImageElementEventMap>(type: K, listener: (this: HTMLInsGalleryImageElement, ev: InsGalleryImageCustomEvent<HTMLInsGalleryImageElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2235,7 +2659,29 @@ declare global {
     };
     interface HTMLInsHeaderElementEventMap {
         "didLoad": any;
+        "insInstanceSwitch": { from: string; to: string; env: string };
+        "insThemeChange": { theme: string };
+        "insLockScreen": void;
+        "insHelpRestore": void;
+        "insShortcutsOpen": void;
+        "insSupportOpen": void;
     }
+    /**
+     * IIA v6 shell header (TW#26371963) is an ADDITIVE variant of this component.
+     * `variant="v6"` renders the Admin Shell v1.5 top bar: 56px dark chrome carrying the
+     * rail toggle, logo, the support pill, the environment chip with the instance
+     * switcher, view-frontend, theme toggle, help menu and account menu, plus the 40px
+     * breadcrumb bar beneath it, the keyboard-shortcuts dialog and the production
+     * confirmation. The default render is unchanged. `toggleSidebar()` keeps its
+     * contract because adminScripts and ins-sidebar-item both call it.
+     * The instance switcher is presentational this release: the roster comes from
+     * `instances` (JSON) or, absent that, the single current instance built from the
+     * instance-* attributes. There is no Console endpoint that lists a user's
+     * instances yet, so Switch emits `insInstanceSwitch` and navigates nowhere.
+     * Tooltips use the shared `data-tip` mechanism rather than a nested component; the
+     * design's 150ms delay / instant hide / suppress-after-click live in CSS on the
+     * `iia-hdr` scope.
+     */
     interface HTMLInsHeaderElement extends Components.InsHeader, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsHeaderElementEventMap>(type: K, listener: (this: HTMLInsHeaderElement, ev: InsHeaderCustomEvent<HTMLInsHeaderElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2268,7 +2714,7 @@ declare global {
         new (): HTMLInsHeaderUserElement;
     };
     interface HTMLInsHeadingElementEventMap {
-        "insChange": any;
+        "insChange": { name: string; old_label: string; new_label: string };
         "didLoad": any;
     }
     interface HTMLInsHeadingElement extends Components.InsHeading, HTMLStencilElement {
@@ -2284,6 +2730,35 @@ declare global {
     var HTMLInsHeadingElement: {
         prototype: HTMLInsHeadingElement;
         new (): HTMLInsHeadingElement;
+    };
+    interface HTMLInsHelpPanelElementEventMap {
+        "insHelpDismiss": { key: string; message: string };
+    }
+    /**
+     * ins-help-panel — the IIA v6 shell's dismissible help panel (Admin Shell v1.5 design, TW#26371963).
+     * A card that explains the screen it sits on, with a small graphic, a heading, a body and a
+     * "Dismiss permanently" control. Dismissal is stored per administrator through the
+     * administrator-preferences endpoint, so a panel dismissed once stays dismissed on every device.
+     * The account menu's "Show help panels" row (ins-header) restores every dismissed panel at once.
+     * Storage: one preference row, key `help_panels:dismissed`, value a JSON array of panel keys.
+     * The header reads the same row to decide whether its restore row is live, and clears it on restore.
+     *   <ins-help-panel panel-key="dashboard" heading="…" body="…"></ins-help-panel>
+     * Copy comes from the page (`heading` / `body`, or the default slot for richer body content); the
+     * shell owns the frame, the graphic, the persistence and the restore round trip.
+     */
+    interface HTMLInsHelpPanelElement extends Components.InsHelpPanel, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLInsHelpPanelElementEventMap>(type: K, listener: (this: HTMLInsHelpPanelElement, ev: InsHelpPanelCustomEvent<HTMLInsHelpPanelElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLInsHelpPanelElementEventMap>(type: K, listener: (this: HTMLInsHelpPanelElement, ev: InsHelpPanelCustomEvent<HTMLInsHelpPanelElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLInsHelpPanelElement: {
+        prototype: HTMLInsHelpPanelElement;
+        new (): HTMLInsHelpPanelElement;
     };
     interface HTMLInsImagePickerElementEventMap {
         "insValueChange": any;
@@ -2321,11 +2796,11 @@ declare global {
         new (): HTMLInsInfoTableElement;
     };
     interface HTMLInsInputElementEventMap {
-        "insInput": any;
-        "insBlur": any;
-        "insIconClick": any;
-        "insValueChange": any;
-        "insColorChange": any;
+        "insInput": { value: string | null; keyCode?: number };
+        "insBlur": { value: string; keyCode: number };
+        "insIconClick": { target: HTMLElement; value: string };
+        "insValueChange": string | null;
+        "insColorChange": { value: string | null; valid: boolean };
         "didLoad": any;
     }
     interface HTMLInsInputElement extends Components.InsInput, HTMLStencilElement {
@@ -2386,9 +2861,9 @@ declare global {
     };
     interface HTMLInsInputPhoneElementEventMap {
         "insInput": any;
-        "insValueChange": any;
-        "insValidation": any;
-        "didLoad": any;
+        "insValueChange": string;
+        "insValidation": {hasError: boolean; errorMessage: string};
+        "didLoad": void;
     }
     interface HTMLInsInputPhoneElement extends Components.InsInputPhone, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsInputPhoneElementEventMap>(type: K, listener: (this: HTMLInsInputPhoneElement, ev: InsInputPhoneCustomEvent<HTMLInsInputPhoneElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2425,7 +2900,7 @@ declare global {
         new (): HTMLInsInputSearchElement;
     };
     interface HTMLInsInputSearchOptionElementEventMap {
-        "insInputSearchOptionClicked": any;
+        "insInputSearchOptionClicked": { value: string; label: string };
     }
     interface HTMLInsInputSearchOptionElement extends Components.InsInputSearchOption, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsInputSearchOptionElementEventMap>(type: K, listener: (this: HTMLInsInputSearchOptionElement, ev: InsInputSearchOptionCustomEvent<HTMLInsInputSearchOptionElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2470,7 +2945,7 @@ declare global {
         new (): HTMLInsInputSelectGroupElement;
     };
     interface HTMLInsInputSelectOptionElementEventMap {
-        "insInputSelectOptionClicked": any;
+        "insInputSelectOptionClicked": { value: string; label: string };
     }
     interface HTMLInsInputSelectOptionElement extends Components.InsInputSelectOption, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsInputSelectOptionElementEventMap>(type: K, listener: (this: HTMLInsInputSelectOptionElement, ev: InsInputSelectOptionCustomEvent<HTMLInsInputSelectOptionElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2587,8 +3062,8 @@ declare global {
         new (): HTMLInsInstancesElement;
     };
     interface HTMLInsInstancesItemElementEventMap {
-        "routeInstance": any;
-        "activeSubItem": any;
+        "routeInstance": { instance: string; logoLink: string; withSubItem: boolean };
+        "activeSubItem": void;
     }
     interface HTMLInsInstancesItemElement extends Components.InsInstancesItem, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsInstancesItemElementEventMap>(type: K, listener: (this: HTMLInsInstancesItemElement, ev: InsInstancesItemCustomEvent<HTMLInsInstancesItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2605,7 +3080,7 @@ declare global {
         new (): HTMLInsInstancesItemElement;
     };
     interface HTMLInsInstancesSubItemElementEventMap {
-        "routeInstanceSubItem": any;
+        "routeInstanceSubItem": { instance: string; link: string };
     }
     interface HTMLInsInstancesSubItemElement extends Components.InsInstancesSubItem, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsInstancesSubItemElementEventMap>(type: K, listener: (this: HTMLInsInstancesSubItemElement, ev: InsInstancesSubItemCustomEvent<HTMLInsInstancesSubItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2751,6 +3226,41 @@ declare global {
         prototype: HTMLInsMarkdownEditorElement;
         new (): HTMLInsMarkdownEditorElement;
     };
+    interface HTMLInsMetricTileElementEventMap {
+        "didLoad": void;
+        "insTileClick": { metricKey: string };
+    }
+    interface HTMLInsMetricTileElement extends Components.InsMetricTile, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLInsMetricTileElementEventMap>(type: K, listener: (this: HTMLInsMetricTileElement, ev: InsMetricTileCustomEvent<HTMLInsMetricTileElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLInsMetricTileElementEventMap>(type: K, listener: (this: HTMLInsMetricTileElement, ev: InsMetricTileCustomEvent<HTMLInsMetricTileElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLInsMetricTileElement: {
+        prototype: HTMLInsMetricTileElement;
+        new (): HTMLInsMetricTileElement;
+    };
+    interface HTMLInsMetricTileGroupElementEventMap {
+        "didLoad": void;
+    }
+    interface HTMLInsMetricTileGroupElement extends Components.InsMetricTileGroup, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLInsMetricTileGroupElementEventMap>(type: K, listener: (this: HTMLInsMetricTileGroupElement, ev: InsMetricTileGroupCustomEvent<HTMLInsMetricTileGroupElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLInsMetricTileGroupElementEventMap>(type: K, listener: (this: HTMLInsMetricTileGroupElement, ev: InsMetricTileGroupCustomEvent<HTMLInsMetricTileGroupElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLInsMetricTileGroupElement: {
+        prototype: HTMLInsMetricTileGroupElement;
+        new (): HTMLInsMetricTileGroupElement;
+    };
     interface HTMLInsModalElementEventMap {
         "insClose": any;
         "didLoad": any;
@@ -2841,8 +3351,8 @@ declare global {
         new (): HTMLInsRadioElement;
     };
     interface HTMLInsRadioGroupElementEventMap {
-        "insInput": any;
-        "didLoad": any;
+        "insInput": { value: any };
+        "didLoad": void;
     }
     interface HTMLInsRadioGroupElement extends Components.InsRadioGroup, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsRadioGroupElementEventMap>(type: K, listener: (this: HTMLInsRadioGroupElement, ev: InsRadioGroupCustomEvent<HTMLInsRadioGroupElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2859,7 +3369,8 @@ declare global {
         new (): HTMLInsRadioGroupElement;
     };
     interface HTMLInsRendererElementEventMap {
-        "didLoad": any;
+        "didLoad": void;
+        "insRouteChange": { crumbs: any[]; route: any };
     }
     interface HTMLInsRendererElement extends Components.InsRenderer, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsRendererElementEventMap>(type: K, listener: (this: HTMLInsRendererElement, ev: InsRendererCustomEvent<HTMLInsRendererElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2875,14 +3386,44 @@ declare global {
         prototype: HTMLInsRendererElement;
         new (): HTMLInsRendererElement;
     };
+    interface HTMLInsSearchScopeElementEventMap {
+        "insSearch": { value: string; scope: string };
+        "insInput": { value: string; scope: string };
+        "insScopeChange": { scope: string; label: string };
+        "insClear": { scope: string };
+        "insOpenChange": { open: boolean };
+        "didLoad": void;
+    }
+    /**
+     * The IIA v6 record-page search pill with a field-scope dropdown.
+     * Ported from module-v6-crm Companies/sections/Contacts/Contacts.vue (design: CRM Company v1.0, Contacts tab header).
+     * Markup mirrors the design so the shared record-page CSS (.crm-search, .crm-sbprefix, button[data-tip]) lands on it:
+     *   label.crm-search > span (trigger + role=menu) + input[type=search] + clear button + submit button
+     * The search only applies on submit (Enter or the search button), matching v5 and the design prototype.
+     * Set `debounce` above 0 to opt in to a live insSearch while typing.
+     */
+    interface HTMLInsSearchScopeElement extends Components.InsSearchScope, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLInsSearchScopeElementEventMap>(type: K, listener: (this: HTMLInsSearchScopeElement, ev: InsSearchScopeCustomEvent<HTMLInsSearchScopeElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLInsSearchScopeElementEventMap>(type: K, listener: (this: HTMLInsSearchScopeElement, ev: InsSearchScopeCustomEvent<HTMLInsSearchScopeElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLInsSearchScopeElement: {
+        prototype: HTMLInsSearchScopeElement;
+        new (): HTMLInsSearchScopeElement;
+    };
     interface HTMLInsSelectElementEventMap {
         "insValueChange": any;
-        "insOptionSelect": any;
-        "insClose": any;
-        "insSubmit": any;
-        "insSearch": any;
-        "insLoadMore": any;
-        "didLoad": any;
+        "insOptionSelect": { event_type: string; selected: any[]; selectedOptions: Array<{ label: string; value: any }> };
+        "insClose": void;
+        "insSubmit": string;
+        "insSearch": string;
+        "insLoadMore": void;
+        "didLoad": void;
     }
     interface HTMLInsSelectElement extends Components.InsSelect, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsSelectElementEventMap>(type: K, listener: (this: HTMLInsSelectElement, ev: InsSelectCustomEvent<HTMLInsSelectElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2905,7 +3446,7 @@ declare global {
         new (): HTMLInsSelectGroupElement;
     };
     interface HTMLInsSelectOptionElementEventMap {
-        "insSelectOptionClicked": any;
+        "insSelectOptionClicked": { value: string; label: string };
     }
     interface HTMLInsSelectOptionElement extends Components.InsSelectOption, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsSelectOptionElementEventMap>(type: K, listener: (this: HTMLInsSelectOptionElement, ev: InsSelectOptionCustomEvent<HTMLInsSelectOptionElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2923,8 +3464,22 @@ declare global {
     };
     interface HTMLInsSidebarElementEventMap {
         "insSidebarAction": any;
-        "didLoad": any;
+        "didLoad": void;
+        "insFlyoutChange": { open: boolean; label: string };
     }
+    /**
+     * IIA v6 shell rail (TW#26371963) is an ADDITIVE variant of this component.
+     * `variant="v6"` renders the Admin Shell v1.5 rail: 216px expanded / 64px collapsed
+     * (56px below 768px), shared sliding hover pill, 2px active marker, Phosphor
+     * outline-to-fill icons, hover flyouts for sub-menus. The default render, the hash
+     * routing, `minimise()`/`maximise()` and the `routePage` listener are unchanged,
+     * so every module partial that emits <ins-sidebar-item> keeps working with no
+     * edit, which is the decision recorded on that task. Child items detect the
+     * variant through `closest('ins-sidebar[variant="v6"]')`.
+     * Collapsed state still rides `body.mini` + `minimised`, because ins-sidebar-item
+     * and the legacy ins-header toggle both key off those. The v6 CSS reads the
+     * `iia-rail--collapsed` host class that mirrors `minimised`.
+     */
     interface HTMLInsSidebarElement extends Components.InsSidebar, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsSidebarElementEventMap>(type: K, listener: (this: HTMLInsSidebarElement, ev: InsSidebarCustomEvent<HTMLInsSidebarElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2940,7 +3495,7 @@ declare global {
         new (): HTMLInsSidebarElement;
     };
     interface HTMLInsSidebarFooterElementEventMap {
-        "didLoad": any;
+        "didLoad": void;
     }
     interface HTMLInsSidebarFooterElement extends Components.InsSidebarFooter, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsSidebarFooterElementEventMap>(type: K, listener: (this: HTMLInsSidebarFooterElement, ev: InsSidebarFooterCustomEvent<HTMLInsSidebarFooterElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2957,8 +3512,8 @@ declare global {
         new (): HTMLInsSidebarFooterElement;
     };
     interface HTMLInsSidebarFooterButtonElementEventMap {
-        "insSidebarFooterButtonEvent": any;
-        "didLoad": any;
+        "insSidebarFooterButtonEvent": MouseEvent;
+        "didLoad": void;
     }
     interface HTMLInsSidebarFooterButtonElement extends Components.InsSidebarFooterButton, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsSidebarFooterButtonElementEventMap>(type: K, listener: (this: HTMLInsSidebarFooterButtonElement, ev: InsSidebarFooterButtonCustomEvent<HTMLInsSidebarFooterButtonElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2981,10 +3536,24 @@ declare global {
         new (): HTMLInsSidebarFooterMenuElement;
     };
     interface HTMLInsSidebarItemElementEventMap {
-        "routePage": any;
-        "didLoad": any;
-        "didHover": any;
+        "routePage": { crumbs: any[]; redirect: boolean };
+        "didLoad": void;
+        "didHover": { x: number; y: number; label: string; state: boolean };
     }
+    /**
+     * IIA v6 rail item (TW#26371963). No new props: when the closest <ins-sidebar>
+     * carries variant="v6" this item renders the Admin Shell v1.5 row instead of the
+     * legacy one. Its public API and every method the module partials and the hash
+     * router rely on are unchanged, so the ten module rail partials and the two
+     * migration-seeded instance partials keep working untouched.
+     * In v6 a top-level item with a submenu does NOT render its children inline; the
+     * parent rail reads them and shows a flyout. Nested items render nothing
+     * themselves, but stay in the DOM so routing, crumbs and activation keep working
+     * through routePageHandler()/activate() exactly as before.
+     * The icon: the legacy `icon="icon-…"` class is resolved centrally to a Phosphor
+     * glyph (utils/phosphor-shell-icons). Unmapped classes fall back to the font icon,
+     * so an unknown module still renders.
+     */
     interface HTMLInsSidebarItemElement extends Components.InsSidebarItem, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsSidebarItemElementEventMap>(type: K, listener: (this: HTMLInsSidebarItemElement, ev: InsSidebarItemCustomEvent<HTMLInsSidebarItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3044,7 +3613,7 @@ declare global {
         new (): HTMLInsSparklineElement;
     };
     interface HTMLInsStepElementEventMap {
-        "insStepClick": any;
+        "insStepClick": void;
     }
     interface HTMLInsStepElement extends Components.InsStep, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsStepElementEventMap>(type: K, listener: (this: HTMLInsStepElement, ev: InsStepCustomEvent<HTMLInsStepElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3061,7 +3630,7 @@ declare global {
         new (): HTMLInsStepElement;
     };
     interface HTMLInsStepsElementEventMap {
-        "insClick": any;
+        "insClick": { start?: boolean; end?: boolean; nextStep?: any; previousStep?: any; currentStep: any };
     }
     interface HTMLInsStepsElement extends Components.InsSteps, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsStepsElementEventMap>(type: K, listener: (this: HTMLInsStepsElement, ev: InsStepsCustomEvent<HTMLInsStepsElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3256,6 +3825,8 @@ declare global {
         "ins-accordion-item": HTMLInsAccordionItemElement;
         "ins-accordion-item-heading": HTMLInsAccordionItemHeadingElement;
         "ins-accordion-link": HTMLInsAccordionLinkElement;
+        "ins-action-menu": HTMLInsActionMenuElement;
+        "ins-action-menu-item": HTMLInsActionMenuItemElement;
         "ins-admin": HTMLInsAdminElement;
         "ins-alert-box": HTMLInsAlertBoxElement;
         "ins-backdrop": HTMLInsBackdropElement;
@@ -3275,9 +3846,11 @@ declare global {
         "ins-checkbox-card": HTMLInsCheckboxCardElement;
         "ins-checkbox-group": HTMLInsCheckboxGroupElement;
         "ins-code-editor": HTMLInsCodeEditorElement;
+        "ins-confirm-modal": HTMLInsConfirmModalElement;
         "ins-content": HTMLInsContentElement;
         "ins-credit-card": HTMLInsCreditCardElement;
         "ins-date-time": HTMLInsDateTimeElement;
+        "ins-disclosure-panel": HTMLInsDisclosurePanelElement;
         "ins-drawer": HTMLInsDrawerElement;
         "ins-dropdown": HTMLInsDropdownElement;
         "ins-dropdown-item": HTMLInsDropdownItemElement;
@@ -3289,6 +3862,7 @@ declare global {
         "ins-header": HTMLInsHeaderElement;
         "ins-header-user": HTMLInsHeaderUserElement;
         "ins-heading": HTMLInsHeadingElement;
+        "ins-help-panel": HTMLInsHelpPanelElement;
         "ins-image-picker": HTMLInsImagePickerElement;
         "ins-info-table": HTMLInsInfoTableElement;
         "ins-input": HTMLInsInputElement;
@@ -3315,6 +3889,8 @@ declare global {
         "ins-loader": HTMLInsLoaderElement;
         "ins-markdown": HTMLInsMarkdownElement;
         "ins-markdown-editor": HTMLInsMarkdownEditorElement;
+        "ins-metric-tile": HTMLInsMetricTileElement;
+        "ins-metric-tile-group": HTMLInsMetricTileGroupElement;
         "ins-modal": HTMLInsModalElement;
         "ins-notifications": HTMLInsNotificationsElement;
         "ins-notifications-item": HTMLInsNotificationsItemElement;
@@ -3324,6 +3900,7 @@ declare global {
         "ins-radio": HTMLInsRadioElement;
         "ins-radio-group": HTMLInsRadioGroupElement;
         "ins-renderer": HTMLInsRendererElement;
+        "ins-search-scope": HTMLInsSearchScopeElement;
         "ins-select": HTMLInsSelectElement;
         "ins-select-group": HTMLInsSelectGroupElement;
         "ins-select-option": HTMLInsSelectOptionElement;
@@ -3358,7 +3935,7 @@ declare namespace LocalJSX {
         "hasLoad"?: string;
         "load"?: boolean;
         "menu"?: boolean;
-        "onDidLoad"?: (event: InsAccordionCustomEvent<any>) => void;
+        "onDidLoad"?: (event: InsAccordionCustomEvent<void>) => void;
         "onInsToggle"?: (event: InsAccordionCustomEvent<any>) => void;
     }
     interface InsAccordionItem {
@@ -3385,7 +3962,34 @@ declare namespace LocalJSX {
         "linkTarget"?: string;
         "linkTitle"?: string;
         "load"?: boolean;
-        "onDidLoad"?: (event: InsAccordionLinkCustomEvent<any>) => void;
+        "onDidLoad"?: (event: InsAccordionLinkCustomEvent<void>) => void;
+    }
+    interface InsActionMenu {
+        "ariaLabelText"?: string;
+        "checkLoad"?: boolean;
+        "hasLoad"?: string;
+        "load"?: boolean;
+        "onDidLoad"?: (event: InsActionMenuCustomEvent<void>) => void;
+        "onInsOpenChange"?: (event: InsActionMenuCustomEvent<{ open: boolean }>) => void;
+        "position"?: string;
+        "triggerIcon"?: string;
+        "triggerLabel"?: string;
+        "triggerTip"?: string;
+        "variant"?: string;
+    }
+    interface InsActionMenuItem {
+        "checkLoad"?: boolean;
+        "danger"?: boolean;
+        "disabled"?: boolean;
+        "divider"?: boolean;
+        "hasLoad"?: string;
+        "icon"?: string;
+        "label"?: string;
+        "load"?: boolean;
+        "onDidLoad"?: (event: InsActionMenuItemCustomEvent<void>) => void;
+        "onInsSelect"?: (event: InsActionMenuItemCustomEvent<{ label: string; value: string }>) => void;
+        "slotLabel"?: string;
+        "value"?: string;
     }
     interface InsAdmin {
     }
@@ -3394,7 +3998,7 @@ declare namespace LocalJSX {
         "closeIcon"?: string;
         "load"?: boolean;
         "noCloseButton"?: boolean;
-        "onDidLoad"?: (event: InsAlertBoxCustomEvent<any>) => void;
+        "onDidLoad"?: (event: InsAlertBoxCustomEvent<void>) => void;
         "type"?: string;
     }
     interface InsBackdrop {
@@ -3408,7 +4012,7 @@ declare namespace LocalJSX {
         "horizontal"?: boolean;
         "load"?: boolean;
         "name"?: string;
-        "onDidLoad"?: (event: InsBarChartCustomEvent<any>) => void;
+        "onDidLoad"?: (event: InsBarChartCustomEvent<void>) => void;
         "stacked"?: boolean;
     }
     interface InsBreadcrumbs {
@@ -3416,8 +4020,12 @@ declare namespace LocalJSX {
         "checkLoad"?: boolean;
         "hasLoad"?: string;
         "load"?: boolean;
-        "onDidLoad"?: (event: InsBreadcrumbsCustomEvent<any>) => void;
-        "onRoutePage"?: (event: InsBreadcrumbsCustomEvent<any>) => void;
+        "onDidLoad"?: (event: InsBreadcrumbsCustomEvent<void>) => void;
+        /**
+          * Fires whenever a page hands this component a new trail (`updateCrumbs`). Bubbles to the document so the v6 shell header (`ins-header variant="v6"`) can draw the same trail in its breadcrumb bar: the page knows its real route (Home › CRM › Contacts › …), the rail only knows which item was clicked. TW#26371963.
+         */
+        "onInsBreadcrumbsChange"?: (event: InsBreadcrumbsCustomEvent<{ crumbs: any[] }>) => void;
+        "onRoutePage"?: (event: InsBreadcrumbsCustomEvent<{ crumbs: any[]; redirect: boolean }>) => void;
     }
     interface InsButton {
         "checkLoad"?: boolean;
@@ -3432,9 +4040,9 @@ declare namespace LocalJSX {
         "label"?: string;
         "load"?: boolean;
         "loading"?: boolean;
-        "onDidLoad"?: (event: InsButtonCustomEvent<any>) => void;
-        "onInsClick"?: (event: InsButtonCustomEvent<any>) => void;
-        "onInsClickOption"?: (event: InsButtonCustomEvent<any>) => void;
+        "onDidLoad"?: (event: InsButtonCustomEvent<void>) => void;
+        "onInsClick"?: (event: InsButtonCustomEvent<{label: string; data: string}>) => void;
+        "onInsClickOption"?: (event: InsButtonCustomEvent<{label: string | null; option: string}>) => void;
         "options"?: string;
         "optionsOnly"?: boolean;
         "outlined"?: boolean;
@@ -3451,8 +4059,8 @@ declare namespace LocalJSX {
         "disabled"?: boolean;
         "hasLoad"?: string;
         "load"?: boolean;
-        "onDidLoad"?: (event: InsButtonGroupCustomEvent<any>) => void;
-        "onInsClick"?: (event: InsButtonGroupCustomEvent<any>) => void;
+        "onDidLoad"?: (event: InsButtonGroupCustomEvent<void>) => void;
+        "onInsClick"?: (event: InsButtonGroupCustomEvent<{action: string; label: string; index: number}>) => void;
         "options"?: string;
         "size"?: string;
     }
@@ -3481,12 +4089,12 @@ declare namespace LocalJSX {
         "multiple"?: boolean;
         "name"?: string;
         "noLabel"?: boolean;
-        "onDidLoad"?: (event: InsButtonSelectCustomEvent<any>) => void;
+        "onDidLoad"?: (event: InsButtonSelectCustomEvent<void>) => void;
         "onInsChange"?: (event: InsButtonSelectCustomEvent<any>) => void;
-        "onInsDynamicSubmit"?: (event: InsButtonSelectCustomEvent<any>) => void;
-        "onInsLoadMore"?: (event: InsButtonSelectCustomEvent<any>) => void;
-        "onInsOptionSelect"?: (event: InsButtonSelectCustomEvent<any>) => void;
-        "onInsSearch"?: (event: InsButtonSelectCustomEvent<any>) => void;
+        "onInsDynamicSubmit"?: (event: InsButtonSelectCustomEvent<string>) => void;
+        "onInsLoadMore"?: (event: InsButtonSelectCustomEvent<void>) => void;
+        "onInsOptionSelect"?: (event: InsButtonSelectCustomEvent<{event_type: string; selected: any[]; selectedOptions: {label: string; value: string}[]}>) => void;
+        "onInsSearch"?: (event: InsButtonSelectCustomEvent<string>) => void;
         "optionsData"?: Array<any>;
         "placeholder"?: string;
         "readonly"?: boolean;
@@ -3506,7 +4114,7 @@ declare namespace LocalJSX {
         "disabled"?: boolean;
         "hidden"?: boolean;
         "label"?: string;
-        "onInsButtonSelectOptionClicked"?: (event: InsButtonSelectOptionCustomEvent<any>) => void;
+        "onInsButtonSelectOptionClicked"?: (event: InsButtonSelectOptionCustomEvent<{value: string; label: string}>) => void;
         "value"?: string;
     }
     interface InsCard {
@@ -3644,6 +4252,51 @@ declare namespace LocalJSX {
         "tooltip"?: string;
         "value"?: string;
     }
+    /**
+     * Type-to-confirm destructive dialog (IIA v6 CRM record pages).
+     * Design: div[role="dialog"] > div[data-screen-label="Delete confirmation"] in
+     * CRM Company v1.0 and CRM Contact v1.4 (handoff-confirm-delete.md, handoff.md section 5).
+     * Reference implementation: module-v6-crm ConfirmDeleteModal.vue.
+     * The confirm button is never `disabled`. It dims to 0.45 with aria-disabled and the
+     * handler returns early until the field reads the confirm word, so it stays focusable
+     * and screen readers can reach the requirement text. The typed word is compared trimmed
+     * and case-insensitively, so "delete" passes for "DELETE".
+     * Lead copy (the bold spans, the "are you sure" lines) comes in through the default slot.
+     * The kept-records note can come through the slot too, or through the `keptNote` prop.
+     */
+    interface InsConfirmModal {
+        /**
+          * Icon-font class on the cancel button. Empty string hides the icon.
+         */
+        "cancelButtonIcon"?: string;
+        "cancelButtonLabel"?: string;
+        "checkLoad"?: boolean;
+        /**
+          * Icon-font class on the confirm button. Empty string hides the icon.
+         */
+        "confirmButtonIcon"?: string;
+        "confirmButtonLabel"?: string;
+        /**
+          * Overrides the default prompt line: Please enter "{confirmWord}" to proceed.
+         */
+        "confirmPrompt"?: string;
+        "confirmWord"?: string;
+        /**
+          * aria-label for the dialog, e.g. "Delete company". When empty the dialog is labelled by its heading.
+         */
+        "dialogLabel"?: string;
+        "hasLoad"?: string;
+        "heading"?: string;
+        /**
+          * Optional "what is kept" note rendered below the lead copy with a positive check icon.
+         */
+        "keptNote"?: string;
+        "load"?: boolean;
+        "onDidLoad"?: (event: InsConfirmModalCustomEvent<void>) => void;
+        "onInsClose"?: (event: InsConfirmModalCustomEvent<void>) => void;
+        "onInsConfirm"?: (event: InsConfirmModalCustomEvent<void>) => void;
+        "open"?: boolean;
+    }
     interface InsContent {
     }
     interface InsCreditCard {
@@ -3706,6 +4359,33 @@ declare namespace LocalJSX {
         "tooltip"?: string;
         "value"?: string;
     }
+    interface InsDisclosurePanel {
+        "checkLoad"?: boolean;
+        /**
+          * Number, or a string such as "5 profiles". Hidden when null, undefined or an empty string.
+         */
+        "count"?: number | string;
+        "disabled"?: boolean;
+        /**
+          * Treat the body as mounted from the start, for panels whose content is read while closed.
+         */
+        "eager"?: boolean;
+        "hasLoad"?: string;
+        "heading"?: string;
+        "icon"?: string;
+        "load"?: boolean;
+        "onDidLoad"?: (event: InsDisclosurePanelCustomEvent<void>) => void;
+        /**
+          * Fired once, the first time the body is considered mounted (first open, or on load when `open` or `eager`).
+         */
+        "onInsMount"?: (event: InsDisclosurePanelCustomEvent<{ heading: string }>) => void;
+        "onInsToggle"?: (event: InsDisclosurePanelCustomEvent<{ open: boolean; heading: string }>) => void;
+        "open"?: boolean;
+        /**
+          * Opt in to the IIA v6 reference section card. Off by default so existing panels do not move.
+         */
+        "v6"?: boolean;
+    }
     interface InsDrawer {
         "backdropCanClose"?: boolean;
         "bordered"?: boolean;
@@ -3755,10 +4435,10 @@ declare namespace LocalJSX {
         "load"?: boolean;
         "mode"?: string;
         "name"?: string;
-        "onInsBlur"?: (event: InsEditorCustomEvent<any>) => void;
-        "onInsInput"?: (event: InsEditorCustomEvent<any>) => void;
+        "onInsBlur"?: (event: InsEditorCustomEvent<string>) => void;
+        "onInsInput"?: (event: InsEditorCustomEvent<string | null>) => void;
         "onInsUpload"?: (event: InsEditorCustomEvent<any>) => void;
-        "onInsValueChange"?: (event: InsEditorCustomEvent<any>) => void;
+        "onInsValueChange"?: (event: InsEditorCustomEvent<string>) => void;
         "pluginsList"?: any;
         "readonly"?: boolean;
         "showSource"?: boolean;
@@ -3778,7 +4458,7 @@ declare namespace LocalJSX {
         "label"?: string;
         "load"?: boolean;
         "onDidLoad"?: (event: InsFilterCustomEvent<any>) => void;
-        "onInsFilterApply"?: (event: InsFilterCustomEvent<any>) => void;
+        "onInsFilterApply"?: (event: InsFilterCustomEvent<Record<string, any>>) => void;
         "withDateFilter"?: boolean;
     }
     interface InsFilterItem {
@@ -3787,7 +4467,7 @@ declare namespace LocalJSX {
         "load"?: boolean;
         "name"?: string;
         "onDidLoad"?: (event: InsFilterItemCustomEvent<any>) => void;
-        "onInsSelect"?: (event: InsFilterItemCustomEvent<any>) => void;
+        "onInsSelect"?: (event: InsFilterItemCustomEvent<{ name: string; option: string }>) => void;
         "options"?: any;
         "selected"?: any;
     }
@@ -3807,16 +4487,83 @@ declare namespace LocalJSX {
         "image"?: string;
         "imgAlt"?: string;
         "imgTitle"?: string;
-        "onInsGalleryUpdate"?: (event: InsGalleryImageCustomEvent<any>) => void;
+        "onInsGalleryUpdate"?: (event: InsGalleryImageCustomEvent<{ thumbnail: string; image: string }>) => void;
         "thumbnail"?: string;
     }
+    /**
+     * IIA v6 shell header (TW#26371963) is an ADDITIVE variant of this component.
+     * `variant="v6"` renders the Admin Shell v1.5 top bar: 56px dark chrome carrying the
+     * rail toggle, logo, the support pill, the environment chip with the instance
+     * switcher, view-frontend, theme toggle, help menu and account menu, plus the 40px
+     * breadcrumb bar beneath it, the keyboard-shortcuts dialog and the production
+     * confirmation. The default render is unchanged. `toggleSidebar()` keeps its
+     * contract because adminScripts and ins-sidebar-item both call it.
+     * The instance switcher is presentational this release: the roster comes from
+     * `instances` (JSON) or, absent that, the single current instance built from the
+     * instance-* attributes. There is no Console endpoint that lists a user's
+     * instances yet, so Switch emits `insInstanceSwitch` and navigates nowhere.
+     * Tooltips use the shared `data-tip` mechanism rather than a nested component; the
+     * design's 150ms delay / instant hide / suppress-after-click live in CSS on the
+     * `iia-hdr` scope.
+     */
     interface InsHeader {
         "checkLoad"?: boolean;
+        "consoleHref"?: string;
+        "docsHref"?: string;
+        /**
+          * 'staging' | 'production' — this instance's tier.
+         */
+        "environment"?: string;
+        "frontendHref"?: string;
         "hasLoad"?: string;
         "hasMenuToggle"?: boolean;
+        /**
+          * Whether help panels are currently dismissed (restore row is actionable). Read from the preference store on load; a host may still set it.
+         */
+        "helpPanelsDismissed"?: boolean;
+        /**
+          * Show the "Show help panels" restore row in the account menu.
+         */
+        "helpRestore"?: boolean;
+        "homeHref"?: string;
+        "instanceDomain"?: string;
+        "instanceId"?: string;
+        "instanceName"?: string;
+        /**
+          * Optional JSON roster: [{ id, name, env, domain }]. Absent: the current instance alone.
+         */
+        "instances"?: string;
         "load"?: boolean;
+        "lockEndpoint"?: string;
+        "lockFormName"?: string;
+        "logoAlt"?: string;
+        "logoSrc"?: string;
+        "logoutHref"?: string;
         "onDidLoad"?: (event: InsHeaderCustomEvent<any>) => void;
+        "onInsHelpRestore"?: (event: InsHeaderCustomEvent<void>) => void;
+        "onInsInstanceSwitch"?: (event: InsHeaderCustomEvent<{ from: string; to: string; env: string }>) => void;
+        "onInsLockScreen"?: (event: InsHeaderCustomEvent<void>) => void;
+        "onInsShortcutsOpen"?: (event: InsHeaderCustomEvent<void>) => void;
+        "onInsSupportOpen"?: (event: InsHeaderCustomEvent<void>) => void;
+        "onInsThemeChange"?: (event: InsHeaderCustomEvent<{ theme: string }>) => void;
+        /**
+          * Administrator-preferences endpoint: holds the dismissed help panels and the production-switch "Don't show me again" choice, per administrator, across devices.
+         */
+        "preferencesEndpoint"?: string;
+        "profileHref"?: string;
         "supportLink"?: string;
+        /**
+          * Presence label on the support pill.
+         */
+        "supportPresence"?: string;
+        "supportReplyLine"?: string;
+        "themeEndpoint"?: string;
+        "userEmail"?: string;
+        "userName"?: string;
+        /**
+          * '' keeps the original rendering. 'v6' is the Admin Shell v1.5 header.
+         */
+        "variant"?: string;
     }
     interface InsHeaderUser {
         "app"?: boolean;
@@ -3840,8 +4587,44 @@ declare namespace LocalJSX {
         "maxlength"?: string;
         "name"?: string;
         "onDidLoad"?: (event: InsHeadingCustomEvent<any>) => void;
-        "onInsChange"?: (event: InsHeadingCustomEvent<any>) => void;
+        "onInsChange"?: (event: InsHeadingCustomEvent<{ name: string; old_label: string; new_label: string }>) => void;
         "withoutLine"?: boolean;
+    }
+    /**
+     * ins-help-panel — the IIA v6 shell's dismissible help panel (Admin Shell v1.5 design, TW#26371963).
+     * A card that explains the screen it sits on, with a small graphic, a heading, a body and a
+     * "Dismiss permanently" control. Dismissal is stored per administrator through the
+     * administrator-preferences endpoint, so a panel dismissed once stays dismissed on every device.
+     * The account menu's "Show help panels" row (ins-header) restores every dismissed panel at once.
+     * Storage: one preference row, key `help_panels:dismissed`, value a JSON array of panel keys.
+     * The header reads the same row to decide whether its restore row is live, and clears it on restore.
+     *   <ins-help-panel panel-key="dashboard" heading="…" body="…"></ins-help-panel>
+     * Copy comes from the page (`heading` / `body`, or the default slot for richer body content); the
+     * shell owns the frame, the graphic, the persistence and the restore round trip.
+     */
+    interface InsHelpPanel {
+        /**
+          * Plain-text body. Use the default slot instead for markup.
+         */
+        "body"?: string;
+        /**
+          * Toast copy shown by the header when the panel is dismissed.
+         */
+        "dismissedMessage"?: string;
+        /**
+          * 'dashboard' draws the design's animated cards graphic; 'none' draws no graphic.
+         */
+        "graphic"?: string;
+        "heading"?: string;
+        /**
+          * Fired on dismiss, bubbling to the document, so ins-header can light its restore row and toast.
+         */
+        "onInsHelpDismiss"?: (event: InsHelpPanelCustomEvent<{ key: string; message: string }>) => void;
+        /**
+          * Stable key for this panel, e.g. "dashboard". Required; without it nothing can be remembered.
+         */
+        "panelKey"?: string;
+        "preferencesEndpoint"?: string;
     }
     interface InsImagePicker {
         "buttonColor"?: string;
@@ -3903,11 +4686,11 @@ declare namespace LocalJSX {
         "min"?: string;
         "name"?: string;
         "onDidLoad"?: (event: InsInputCustomEvent<any>) => void;
-        "onInsBlur"?: (event: InsInputCustomEvent<any>) => void;
-        "onInsColorChange"?: (event: InsInputCustomEvent<any>) => void;
-        "onInsIconClick"?: (event: InsInputCustomEvent<any>) => void;
-        "onInsInput"?: (event: InsInputCustomEvent<any>) => void;
-        "onInsValueChange"?: (event: InsInputCustomEvent<any>) => void;
+        "onInsBlur"?: (event: InsInputCustomEvent<{ value: string; keyCode: number }>) => void;
+        "onInsColorChange"?: (event: InsInputCustomEvent<{ value: string | null; valid: boolean }>) => void;
+        "onInsIconClick"?: (event: InsInputCustomEvent<{ target: HTMLElement; value: string }>) => void;
+        "onInsInput"?: (event: InsInputCustomEvent<{ value: string | null; keyCode?: number }>) => void;
+        "onInsValueChange"?: (event: InsInputCustomEvent<string | null>) => void;
         "placeholder"?: string;
         "readonly"?: boolean;
         "required"?: boolean;
@@ -3990,10 +4773,10 @@ declare namespace LocalJSX {
         "label"?: string;
         "load"?: boolean;
         "name"?: string;
-        "onDidLoad"?: (event: InsInputPhoneCustomEvent<any>) => void;
+        "onDidLoad"?: (event: InsInputPhoneCustomEvent<void>) => void;
         "onInsInput"?: (event: InsInputPhoneCustomEvent<any>) => void;
-        "onInsValidation"?: (event: InsInputPhoneCustomEvent<any>) => void;
-        "onInsValueChange"?: (event: InsInputPhoneCustomEvent<any>) => void;
+        "onInsValidation"?: (event: InsInputPhoneCustomEvent<{hasError: boolean; errorMessage: string}>) => void;
+        "onInsValueChange"?: (event: InsInputPhoneCustomEvent<string>) => void;
         "placeholder"?: string;
         "readonly"?: boolean;
         "required"?: boolean;
@@ -4036,7 +4819,7 @@ declare namespace LocalJSX {
     interface InsInputSearchOption {
         "activated"?: boolean;
         "label"?: string;
-        "onInsInputSearchOptionClicked"?: (event: InsInputSearchOptionCustomEvent<any>) => void;
+        "onInsInputSearchOptionClicked"?: (event: InsInputSearchOptionCustomEvent<{ value: string; label: string }>) => void;
         "value"?: string;
     }
     interface InsInputSelect {
@@ -4089,7 +4872,7 @@ declare namespace LocalJSX {
         "disabled"?: boolean;
         "hidden"?: boolean;
         "label"?: string;
-        "onInsInputSelectOptionClicked"?: (event: InsInputSelectOptionCustomEvent<any>) => void;
+        "onInsInputSelectOptionClicked"?: (event: InsInputSelectOptionCustomEvent<{ value: string; label: string }>) => void;
         "value"?: string;
     }
     interface InsInputSlider {
@@ -4208,14 +4991,14 @@ declare namespace LocalJSX {
         "instance"?: string;
         "instanceLink"?: string;
         "logoLink"?: string;
-        "onActiveSubItem"?: (event: InsInstancesItemCustomEvent<any>) => void;
-        "onRouteInstance"?: (event: InsInstancesItemCustomEvent<any>) => void;
+        "onActiveSubItem"?: (event: InsInstancesItemCustomEvent<void>) => void;
+        "onRouteInstance"?: (event: InsInstancesItemCustomEvent<{ instance: string; logoLink: string; withSubItem: boolean }>) => void;
         "withSubItem"?: boolean;
     }
     interface InsInstancesSubItem {
         "instance"?: string;
         "link"?: string;
-        "onRouteInstanceSubItem"?: (event: InsInstancesSubItemCustomEvent<any>) => void;
+        "onRouteInstanceSubItem"?: (event: InsInstancesSubItemCustomEvent<{ instance: string; link: string }>) => void;
     }
     interface InsKanbanBoard {
         "boardGroup"?: string;
@@ -4301,6 +5084,32 @@ declare namespace LocalJSX {
         "required"?: boolean;
         "tooltip"?: string;
         "value"?: string;
+    }
+    interface InsMetricTile {
+        "card"?: boolean;
+        "checkLoad"?: boolean;
+        "clickable"?: boolean;
+        "hasLoad"?: string;
+        "hint"?: string;
+        "icon"?: string;
+        "label"?: string;
+        "load"?: boolean;
+        "loading"?: boolean;
+        "metricKey"?: string;
+        "onDidLoad"?: (event: InsMetricTileCustomEvent<void>) => void;
+        "onInsTileClick"?: (event: InsMetricTileCustomEvent<{ metricKey: string }>) => void;
+        "value"?: string;
+        "variant"?: 'default' | 'strip';
+    }
+    interface InsMetricTileGroup {
+        "card"?: boolean;
+        "checkLoad"?: boolean;
+        "clickable"?: boolean;
+        "columns"?: number;
+        "hasLoad"?: string;
+        "load"?: boolean;
+        "onDidLoad"?: (event: InsMetricTileGroupCustomEvent<void>) => void;
+        "variant"?: 'default' | 'strip';
     }
     interface InsModal {
         "buttonAlignment"?: string;
@@ -4399,8 +5208,8 @@ declare namespace LocalJSX {
         "load"?: boolean;
         "multiple"?: boolean;
         "noneLabel"?: String;
-        "onDidLoad"?: (event: InsRadioGroupCustomEvent<any>) => void;
-        "onInsInput"?: (event: InsRadioGroupCustomEvent<any>) => void;
+        "onDidLoad"?: (event: InsRadioGroupCustomEvent<void>) => void;
+        "onInsInput"?: (event: InsRadioGroupCustomEvent<{ value: any }>) => void;
         "readonly"?: boolean;
         "tooltip"?: string;
         "value"?: any;
@@ -4413,7 +5222,41 @@ declare namespace LocalJSX {
         "label"?: string;
         "link"?: string;
         "load"?: boolean;
-        "onDidLoad"?: (event: InsRendererCustomEvent<any>) => void;
+        "onDidLoad"?: (event: InsRendererCustomEvent<void>) => void;
+        /**
+          * Fires on every route change with the current crumb trail. Additive (TW#26371963): the v6 shell header renders the breadcrumb bar from this instead of the renderer drawing crumbs inside the content column.
+         */
+        "onInsRouteChange"?: (event: InsRendererCustomEvent<{ crumbs: any[]; route: any }>) => void;
+    }
+    /**
+     * The IIA v6 record-page search pill with a field-scope dropdown.
+     * Ported from module-v6-crm Companies/sections/Contacts/Contacts.vue (design: CRM Company v1.0, Contacts tab header).
+     * Markup mirrors the design so the shared record-page CSS (.crm-search, .crm-sbprefix, button[data-tip]) lands on it:
+     *   label.crm-search > span (trigger + role=menu) + input[type=search] + clear button + submit button
+     * The search only applies on submit (Enter or the search button), matching v5 and the design prototype.
+     * Set `debounce` above 0 to opt in to a live insSearch while typing.
+     */
+    interface InsSearchScope {
+        "checkLoad"?: boolean;
+        "clearLabel"?: string;
+        "debounce"?: number;
+        "disabled"?: boolean;
+        "hasLoad"?: string;
+        "load"?: boolean;
+        "loading"?: boolean;
+        "menuLabel"?: string;
+        "onDidLoad"?: (event: InsSearchScopeCustomEvent<void>) => void;
+        "onInsClear"?: (event: InsSearchScopeCustomEvent<{ scope: string }>) => void;
+        "onInsInput"?: (event: InsSearchScopeCustomEvent<{ value: string; scope: string }>) => void;
+        "onInsOpenChange"?: (event: InsSearchScopeCustomEvent<{ open: boolean }>) => void;
+        "onInsScopeChange"?: (event: InsSearchScopeCustomEvent<{ scope: string; label: string }>) => void;
+        "onInsSearch"?: (event: InsSearchScopeCustomEvent<{ value: string; scope: string }>) => void;
+        "placeholder"?: string;
+        "scope"?: string;
+        "scopeOptions"?: Array<ScopeOption | string> | string;
+        "scopePrefix"?: string;
+        "searchLabel"?: string;
+        "value"?: string;
     }
     interface InsSelect {
         "button"?: boolean;
@@ -4436,12 +5279,12 @@ declare namespace LocalJSX {
         "load"?: boolean;
         "multiple"?: boolean;
         "name"?: string;
-        "onDidLoad"?: (event: InsSelectCustomEvent<any>) => void;
-        "onInsClose"?: (event: InsSelectCustomEvent<any>) => void;
-        "onInsLoadMore"?: (event: InsSelectCustomEvent<any>) => void;
-        "onInsOptionSelect"?: (event: InsSelectCustomEvent<any>) => void;
-        "onInsSearch"?: (event: InsSelectCustomEvent<any>) => void;
-        "onInsSubmit"?: (event: InsSelectCustomEvent<any>) => void;
+        "onDidLoad"?: (event: InsSelectCustomEvent<void>) => void;
+        "onInsClose"?: (event: InsSelectCustomEvent<void>) => void;
+        "onInsLoadMore"?: (event: InsSelectCustomEvent<void>) => void;
+        "onInsOptionSelect"?: (event: InsSelectCustomEvent<{ event_type: string; selected: any[]; selectedOptions: Array<{ label: string; value: any }> }>) => void;
+        "onInsSearch"?: (event: InsSelectCustomEvent<string>) => void;
+        "onInsSubmit"?: (event: InsSelectCustomEvent<string>) => void;
         "onInsValueChange"?: (event: InsSelectCustomEvent<any>) => void;
         "optionsData"?: Array<any>;
         "placeholder"?: string;
@@ -4465,37 +5308,72 @@ declare namespace LocalJSX {
         "disabled"?: boolean;
         "hidden"?: boolean;
         "label"?: string;
-        "onInsSelectOptionClicked"?: (event: InsSelectOptionCustomEvent<any>) => void;
+        "onInsSelectOptionClicked"?: (event: InsSelectOptionCustomEvent<{ value: string; label: string }>) => void;
         "value"?: string;
     }
+    /**
+     * IIA v6 shell rail (TW#26371963) is an ADDITIVE variant of this component.
+     * `variant="v6"` renders the Admin Shell v1.5 rail: 216px expanded / 64px collapsed
+     * (56px below 768px), shared sliding hover pill, 2px active marker, Phosphor
+     * outline-to-fill icons, hover flyouts for sub-menus. The default render, the hash
+     * routing, `minimise()`/`maximise()` and the `routePage` listener are unchanged,
+     * so every module partial that emits <ins-sidebar-item> keeps working with no
+     * edit, which is the decision recorded on that task. Child items detect the
+     * variant through `closest('ins-sidebar[variant="v6"]')`.
+     * Collapsed state still rides `body.mini` + `minimised`, because ins-sidebar-item
+     * and the legacy ins-header toggle both key off those. The v6 CSS reads the
+     * `iia-rail--collapsed` host class that mirrors `minimised`.
+     */
     interface InsSidebar {
         "checkLoad"?: boolean;
         "fullLogo"?: string;
         "hasLoad"?: string;
         "iconLogo"?: string;
         "load"?: boolean;
-        "onDidLoad"?: (event: InsSidebarCustomEvent<any>) => void;
+        "onDidLoad"?: (event: InsSidebarCustomEvent<void>) => void;
+        /**
+          * v6: fires when a rail flyout opens or closes.
+         */
+        "onInsFlyoutChange"?: (event: InsSidebarCustomEvent<{ open: boolean; label: string }>) => void;
         "onInsSidebarAction"?: (event: InsSidebarCustomEvent<any>) => void;
+        /**
+          * '' keeps the original rendering. 'v6' is the Admin Shell v1.5 rail.
+         */
+        "variant"?: string;
     }
     interface InsSidebarFooter {
         "checkLoad"?: boolean;
         "hasLoad"?: string;
         "load"?: boolean;
-        "onDidLoad"?: (event: InsSidebarFooterCustomEvent<any>) => void;
+        "onDidLoad"?: (event: InsSidebarFooterCustomEvent<void>) => void;
     }
     interface InsSidebarFooterButton {
         "checkLoad"?: boolean;
         "hasLoad"?: string;
         "icon"?: string;
         "load"?: boolean;
-        "onDidLoad"?: (event: InsSidebarFooterButtonCustomEvent<any>) => void;
-        "onInsSidebarFooterButtonEvent"?: (event: InsSidebarFooterButtonCustomEvent<any>) => void;
+        "onDidLoad"?: (event: InsSidebarFooterButtonCustomEvent<void>) => void;
+        "onInsSidebarFooterButtonEvent"?: (event: InsSidebarFooterButtonCustomEvent<MouseEvent>) => void;
         "open"?: string;
     }
     interface InsSidebarFooterMenu {
         "icon"?: string;
         "label"?: string;
     }
+    /**
+     * IIA v6 rail item (TW#26371963). No new props: when the closest <ins-sidebar>
+     * carries variant="v6" this item renders the Admin Shell v1.5 row instead of the
+     * legacy one. Its public API and every method the module partials and the hash
+     * router rely on are unchanged, so the ten module rail partials and the two
+     * migration-seeded instance partials keep working untouched.
+     * In v6 a top-level item with a submenu does NOT render its children inline; the
+     * parent rail reads them and shows a flyout. Nested items render nothing
+     * themselves, but stay in the DOM so routing, crumbs and activation keep working
+     * through routePageHandler()/activate() exactly as before.
+     * The icon: the legacy `icon="icon-…"` class is resolved centrally to a Phosphor
+     * glyph (utils/phosphor-shell-icons). Unmapped classes fall back to the font icon,
+     * so an unknown module still renders.
+     */
     interface InsSidebarItem {
         "app"?: boolean;
         "checkLoad"?: boolean;
@@ -4508,9 +5386,9 @@ declare namespace LocalJSX {
         "landingPage"?: boolean;
         "link"?: any;
         "load"?: boolean;
-        "onDidHover"?: (event: InsSidebarItemCustomEvent<any>) => void;
-        "onDidLoad"?: (event: InsSidebarItemCustomEvent<any>) => void;
-        "onRoutePage"?: (event: InsSidebarItemCustomEvent<any>) => void;
+        "onDidHover"?: (event: InsSidebarItemCustomEvent<{ x: number; y: number; label: string; state: boolean }>) => void;
+        "onDidLoad"?: (event: InsSidebarItemCustomEvent<void>) => void;
+        "onRoutePage"?: (event: InsSidebarItemCustomEvent<{ crumbs: any[]; redirect: boolean }>) => void;
         "tooltip"?: boolean;
         "withSubmenu"?: boolean;
     }
@@ -4558,14 +5436,14 @@ declare namespace LocalJSX {
         "hasError"?: boolean;
         "icon"?: string;
         "indicator"?: string;
-        "onInsStepClick"?: (event: InsStepCustomEvent<any>) => void;
+        "onInsStepClick"?: (event: InsStepCustomEvent<void>) => void;
     }
     interface InsSteps {
         "clickable"?: boolean;
         "complete"?: boolean;
         "indicator"?: string;
         "inline"?: boolean;
-        "onInsClick"?: (event: InsStepsCustomEvent<any>) => void;
+        "onInsClick"?: (event: InsStepsCustomEvent<{ start?: boolean; end?: boolean; nextStep?: any; previousStep?: any; currentStep: any }>) => void;
         "withValidation"?: boolean;
     }
     interface InsStyleguide {
@@ -4757,6 +5635,8 @@ declare namespace LocalJSX {
         "ins-accordion-item": InsAccordionItem;
         "ins-accordion-item-heading": InsAccordionItemHeading;
         "ins-accordion-link": InsAccordionLink;
+        "ins-action-menu": InsActionMenu;
+        "ins-action-menu-item": InsActionMenuItem;
         "ins-admin": InsAdmin;
         "ins-alert-box": InsAlertBox;
         "ins-backdrop": InsBackdrop;
@@ -4776,9 +5656,11 @@ declare namespace LocalJSX {
         "ins-checkbox-card": InsCheckboxCard;
         "ins-checkbox-group": InsCheckboxGroup;
         "ins-code-editor": InsCodeEditor;
+        "ins-confirm-modal": InsConfirmModal;
         "ins-content": InsContent;
         "ins-credit-card": InsCreditCard;
         "ins-date-time": InsDateTime;
+        "ins-disclosure-panel": InsDisclosurePanel;
         "ins-drawer": InsDrawer;
         "ins-dropdown": InsDropdown;
         "ins-dropdown-item": InsDropdownItem;
@@ -4790,6 +5672,7 @@ declare namespace LocalJSX {
         "ins-header": InsHeader;
         "ins-header-user": InsHeaderUser;
         "ins-heading": InsHeading;
+        "ins-help-panel": InsHelpPanel;
         "ins-image-picker": InsImagePicker;
         "ins-info-table": InsInfoTable;
         "ins-input": InsInput;
@@ -4816,6 +5699,8 @@ declare namespace LocalJSX {
         "ins-loader": InsLoader;
         "ins-markdown": InsMarkdown;
         "ins-markdown-editor": InsMarkdownEditor;
+        "ins-metric-tile": InsMetricTile;
+        "ins-metric-tile-group": InsMetricTileGroup;
         "ins-modal": InsModal;
         "ins-notifications": InsNotifications;
         "ins-notifications-item": InsNotificationsItem;
@@ -4825,6 +5710,7 @@ declare namespace LocalJSX {
         "ins-radio": InsRadio;
         "ins-radio-group": InsRadioGroup;
         "ins-renderer": InsRenderer;
+        "ins-search-scope": InsSearchScope;
         "ins-select": InsSelect;
         "ins-select-group": InsSelectGroup;
         "ins-select-option": InsSelectOption;
@@ -4861,6 +5747,8 @@ declare module "@stencil/core" {
             "ins-accordion-item": LocalJSX.InsAccordionItem & JSXBase.HTMLAttributes<HTMLInsAccordionItemElement>;
             "ins-accordion-item-heading": LocalJSX.InsAccordionItemHeading & JSXBase.HTMLAttributes<HTMLInsAccordionItemHeadingElement>;
             "ins-accordion-link": LocalJSX.InsAccordionLink & JSXBase.HTMLAttributes<HTMLInsAccordionLinkElement>;
+            "ins-action-menu": LocalJSX.InsActionMenu & JSXBase.HTMLAttributes<HTMLInsActionMenuElement>;
+            "ins-action-menu-item": LocalJSX.InsActionMenuItem & JSXBase.HTMLAttributes<HTMLInsActionMenuItemElement>;
             "ins-admin": LocalJSX.InsAdmin & JSXBase.HTMLAttributes<HTMLInsAdminElement>;
             "ins-alert-box": LocalJSX.InsAlertBox & JSXBase.HTMLAttributes<HTMLInsAlertBoxElement>;
             "ins-backdrop": LocalJSX.InsBackdrop & JSXBase.HTMLAttributes<HTMLInsBackdropElement>;
@@ -4880,9 +5768,23 @@ declare module "@stencil/core" {
             "ins-checkbox-card": LocalJSX.InsCheckboxCard & JSXBase.HTMLAttributes<HTMLInsCheckboxCardElement>;
             "ins-checkbox-group": LocalJSX.InsCheckboxGroup & JSXBase.HTMLAttributes<HTMLInsCheckboxGroupElement>;
             "ins-code-editor": LocalJSX.InsCodeEditor & JSXBase.HTMLAttributes<HTMLInsCodeEditorElement>;
+            /**
+             * Type-to-confirm destructive dialog (IIA v6 CRM record pages).
+             * Design: div[role="dialog"] > div[data-screen-label="Delete confirmation"] in
+             * CRM Company v1.0 and CRM Contact v1.4 (handoff-confirm-delete.md, handoff.md section 5).
+             * Reference implementation: module-v6-crm ConfirmDeleteModal.vue.
+             * The confirm button is never `disabled`. It dims to 0.45 with aria-disabled and the
+             * handler returns early until the field reads the confirm word, so it stays focusable
+             * and screen readers can reach the requirement text. The typed word is compared trimmed
+             * and case-insensitively, so "delete" passes for "DELETE".
+             * Lead copy (the bold spans, the "are you sure" lines) comes in through the default slot.
+             * The kept-records note can come through the slot too, or through the `keptNote` prop.
+             */
+            "ins-confirm-modal": LocalJSX.InsConfirmModal & JSXBase.HTMLAttributes<HTMLInsConfirmModalElement>;
             "ins-content": LocalJSX.InsContent & JSXBase.HTMLAttributes<HTMLInsContentElement>;
             "ins-credit-card": LocalJSX.InsCreditCard & JSXBase.HTMLAttributes<HTMLInsCreditCardElement>;
             "ins-date-time": LocalJSX.InsDateTime & JSXBase.HTMLAttributes<HTMLInsDateTimeElement>;
+            "ins-disclosure-panel": LocalJSX.InsDisclosurePanel & JSXBase.HTMLAttributes<HTMLInsDisclosurePanelElement>;
             "ins-drawer": LocalJSX.InsDrawer & JSXBase.HTMLAttributes<HTMLInsDrawerElement>;
             "ins-dropdown": LocalJSX.InsDropdown & JSXBase.HTMLAttributes<HTMLInsDropdownElement>;
             "ins-dropdown-item": LocalJSX.InsDropdownItem & JSXBase.HTMLAttributes<HTMLInsDropdownItemElement>;
@@ -4891,9 +5793,38 @@ declare module "@stencil/core" {
             "ins-filter-item": LocalJSX.InsFilterItem & JSXBase.HTMLAttributes<HTMLInsFilterItemElement>;
             "ins-gallery": LocalJSX.InsGallery & JSXBase.HTMLAttributes<HTMLInsGalleryElement>;
             "ins-gallery-image": LocalJSX.InsGalleryImage & JSXBase.HTMLAttributes<HTMLInsGalleryImageElement>;
+            /**
+             * IIA v6 shell header (TW#26371963) is an ADDITIVE variant of this component.
+             * `variant="v6"` renders the Admin Shell v1.5 top bar: 56px dark chrome carrying the
+             * rail toggle, logo, the support pill, the environment chip with the instance
+             * switcher, view-frontend, theme toggle, help menu and account menu, plus the 40px
+             * breadcrumb bar beneath it, the keyboard-shortcuts dialog and the production
+             * confirmation. The default render is unchanged. `toggleSidebar()` keeps its
+             * contract because adminScripts and ins-sidebar-item both call it.
+             * The instance switcher is presentational this release: the roster comes from
+             * `instances` (JSON) or, absent that, the single current instance built from the
+             * instance-* attributes. There is no Console endpoint that lists a user's
+             * instances yet, so Switch emits `insInstanceSwitch` and navigates nowhere.
+             * Tooltips use the shared `data-tip` mechanism rather than a nested component; the
+             * design's 150ms delay / instant hide / suppress-after-click live in CSS on the
+             * `iia-hdr` scope.
+             */
             "ins-header": LocalJSX.InsHeader & JSXBase.HTMLAttributes<HTMLInsHeaderElement>;
             "ins-header-user": LocalJSX.InsHeaderUser & JSXBase.HTMLAttributes<HTMLInsHeaderUserElement>;
             "ins-heading": LocalJSX.InsHeading & JSXBase.HTMLAttributes<HTMLInsHeadingElement>;
+            /**
+             * ins-help-panel — the IIA v6 shell's dismissible help panel (Admin Shell v1.5 design, TW#26371963).
+             * A card that explains the screen it sits on, with a small graphic, a heading, a body and a
+             * "Dismiss permanently" control. Dismissal is stored per administrator through the
+             * administrator-preferences endpoint, so a panel dismissed once stays dismissed on every device.
+             * The account menu's "Show help panels" row (ins-header) restores every dismissed panel at once.
+             * Storage: one preference row, key `help_panels:dismissed`, value a JSON array of panel keys.
+             * The header reads the same row to decide whether its restore row is live, and clears it on restore.
+             *   <ins-help-panel panel-key="dashboard" heading="…" body="…"></ins-help-panel>
+             * Copy comes from the page (`heading` / `body`, or the default slot for richer body content); the
+             * shell owns the frame, the graphic, the persistence and the restore round trip.
+             */
+            "ins-help-panel": LocalJSX.InsHelpPanel & JSXBase.HTMLAttributes<HTMLInsHelpPanelElement>;
             "ins-image-picker": LocalJSX.InsImagePicker & JSXBase.HTMLAttributes<HTMLInsImagePickerElement>;
             "ins-info-table": LocalJSX.InsInfoTable & JSXBase.HTMLAttributes<HTMLInsInfoTableElement>;
             "ins-input": LocalJSX.InsInput & JSXBase.HTMLAttributes<HTMLInsInputElement>;
@@ -4920,6 +5851,8 @@ declare module "@stencil/core" {
             "ins-loader": LocalJSX.InsLoader & JSXBase.HTMLAttributes<HTMLInsLoaderElement>;
             "ins-markdown": LocalJSX.InsMarkdown & JSXBase.HTMLAttributes<HTMLInsMarkdownElement>;
             "ins-markdown-editor": LocalJSX.InsMarkdownEditor & JSXBase.HTMLAttributes<HTMLInsMarkdownEditorElement>;
+            "ins-metric-tile": LocalJSX.InsMetricTile & JSXBase.HTMLAttributes<HTMLInsMetricTileElement>;
+            "ins-metric-tile-group": LocalJSX.InsMetricTileGroup & JSXBase.HTMLAttributes<HTMLInsMetricTileGroupElement>;
             "ins-modal": LocalJSX.InsModal & JSXBase.HTMLAttributes<HTMLInsModalElement>;
             "ins-notifications": LocalJSX.InsNotifications & JSXBase.HTMLAttributes<HTMLInsNotificationsElement>;
             "ins-notifications-item": LocalJSX.InsNotificationsItem & JSXBase.HTMLAttributes<HTMLInsNotificationsItemElement>;
@@ -4929,13 +5862,49 @@ declare module "@stencil/core" {
             "ins-radio": LocalJSX.InsRadio & JSXBase.HTMLAttributes<HTMLInsRadioElement>;
             "ins-radio-group": LocalJSX.InsRadioGroup & JSXBase.HTMLAttributes<HTMLInsRadioGroupElement>;
             "ins-renderer": LocalJSX.InsRenderer & JSXBase.HTMLAttributes<HTMLInsRendererElement>;
+            /**
+             * The IIA v6 record-page search pill with a field-scope dropdown.
+             * Ported from module-v6-crm Companies/sections/Contacts/Contacts.vue (design: CRM Company v1.0, Contacts tab header).
+             * Markup mirrors the design so the shared record-page CSS (.crm-search, .crm-sbprefix, button[data-tip]) lands on it:
+             *   label.crm-search > span (trigger + role=menu) + input[type=search] + clear button + submit button
+             * The search only applies on submit (Enter or the search button), matching v5 and the design prototype.
+             * Set `debounce` above 0 to opt in to a live insSearch while typing.
+             */
+            "ins-search-scope": LocalJSX.InsSearchScope & JSXBase.HTMLAttributes<HTMLInsSearchScopeElement>;
             "ins-select": LocalJSX.InsSelect & JSXBase.HTMLAttributes<HTMLInsSelectElement>;
             "ins-select-group": LocalJSX.InsSelectGroup & JSXBase.HTMLAttributes<HTMLInsSelectGroupElement>;
             "ins-select-option": LocalJSX.InsSelectOption & JSXBase.HTMLAttributes<HTMLInsSelectOptionElement>;
+            /**
+             * IIA v6 shell rail (TW#26371963) is an ADDITIVE variant of this component.
+             * `variant="v6"` renders the Admin Shell v1.5 rail: 216px expanded / 64px collapsed
+             * (56px below 768px), shared sliding hover pill, 2px active marker, Phosphor
+             * outline-to-fill icons, hover flyouts for sub-menus. The default render, the hash
+             * routing, `minimise()`/`maximise()` and the `routePage` listener are unchanged,
+             * so every module partial that emits <ins-sidebar-item> keeps working with no
+             * edit, which is the decision recorded on that task. Child items detect the
+             * variant through `closest('ins-sidebar[variant="v6"]')`.
+             * Collapsed state still rides `body.mini` + `minimised`, because ins-sidebar-item
+             * and the legacy ins-header toggle both key off those. The v6 CSS reads the
+             * `iia-rail--collapsed` host class that mirrors `minimised`.
+             */
             "ins-sidebar": LocalJSX.InsSidebar & JSXBase.HTMLAttributes<HTMLInsSidebarElement>;
             "ins-sidebar-footer": LocalJSX.InsSidebarFooter & JSXBase.HTMLAttributes<HTMLInsSidebarFooterElement>;
             "ins-sidebar-footer-button": LocalJSX.InsSidebarFooterButton & JSXBase.HTMLAttributes<HTMLInsSidebarFooterButtonElement>;
             "ins-sidebar-footer-menu": LocalJSX.InsSidebarFooterMenu & JSXBase.HTMLAttributes<HTMLInsSidebarFooterMenuElement>;
+            /**
+             * IIA v6 rail item (TW#26371963). No new props: when the closest <ins-sidebar>
+             * carries variant="v6" this item renders the Admin Shell v1.5 row instead of the
+             * legacy one. Its public API and every method the module partials and the hash
+             * router rely on are unchanged, so the ten module rail partials and the two
+             * migration-seeded instance partials keep working untouched.
+             * In v6 a top-level item with a submenu does NOT render its children inline; the
+             * parent rail reads them and shows a flyout. Nested items render nothing
+             * themselves, but stay in the DOM so routing, crumbs and activation keep working
+             * through routePageHandler()/activate() exactly as before.
+             * The icon: the legacy `icon="icon-…"` class is resolved centrally to a Phosphor
+             * glyph (utils/phosphor-shell-icons). Unmapped classes fall back to the font icon,
+             * so an unknown module still renders.
+             */
             "ins-sidebar-item": LocalJSX.InsSidebarItem & JSXBase.HTMLAttributes<HTMLInsSidebarItemElement>;
             "ins-sort": LocalJSX.InsSort & JSXBase.HTMLAttributes<HTMLInsSortElement>;
             "ins-sparkline": LocalJSX.InsSparkline & JSXBase.HTMLAttributes<HTMLInsSparklineElement>;

@@ -2,7 +2,7 @@ import { h,Component, Prop, Event, EventEmitter } from "@stencil/core";
 
 @Component({ tag: "ins-instances-sub-item" })
 export class InsInstancesSubItem {
-  @Event() routeInstanceSubItem: EventEmitter;
+  @Event() routeInstanceSubItem: EventEmitter<{ instance: string; link: string }>;
   @Prop({ mutable: true }) instance: string = "";
   @Prop({ mutable: true }) link: string = "";
 

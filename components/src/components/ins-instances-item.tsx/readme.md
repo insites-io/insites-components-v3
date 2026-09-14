@@ -17,10 +17,10 @@
 
 ## Events
 
-| Event           | Description | Type               |
-| --------------- | ----------- | ------------------ |
-| `activeSubItem` |             | `CustomEvent<any>` |
-| `routeInstance` |             | `CustomEvent<any>` |
+| Event           | Description | Type                                                                         |
+| --------------- | ----------- | ---------------------------------------------------------------------------- |
+| `activeSubItem` |             | `CustomEvent<void>`                                                          |
+| `routeInstance` |             | `CustomEvent<{ instance: string; logoLink: string; withSubItem: boolean; }>` |
 
 
 ----------------------------------------------

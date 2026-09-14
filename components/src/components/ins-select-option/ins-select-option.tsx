@@ -3,7 +3,7 @@ import { h, Component, Prop, Event, EventEmitter, Method } from "@stencil/core";
 @Component({ tag: 'ins-select-option' })
 
 export class InsSelectOption {
-  @Event() insSelectOptionClicked: EventEmitter;
+  @Event() insSelectOptionClicked: EventEmitter<{ value: string; label: string }>;
 
   @Prop({mutable: true}) label: string = 'Option';
   @Prop({mutable: true}) value: string = '';

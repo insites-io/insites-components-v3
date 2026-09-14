@@ -6,7 +6,6 @@ www/
 *~
 *.sw[mnpcod]
 *.log
-*.lock
 *.tmp
 *.tmp.*
 log.txt
@@ -28,3 +27,7 @@ UserInterfaceState.xcuserstate
 
 local_backup/
 *__snapshots__
+loader/
+# Playwright (TW#26737045)
+components/test-results/
+components/playwright-report/

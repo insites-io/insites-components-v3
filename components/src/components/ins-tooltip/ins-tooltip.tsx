@@ -28,7 +28,7 @@ export class InsTooltip {
             html: this.html,
             closeOnClickOutside: this.closeOnClick,
             popperOptions: {
-                onCreate: (data) => {
+                onCreate: (data: any) => {
                     let tempData = data as any;
                     tempData.instance.scheduleUpdate(); // trigger plugin reset => compute element's position
                     return tempData;
@@ -43,7 +43,7 @@ export class InsTooltip {
                     setCustomStyle: {
                         order: 301,
                         enabled: true,
-                        fn: (data) => {
+                        fn: (data: any) => {
                              if (!!this.width) {
                                 data.styles.width = this.width
                             } else if(this.autoWidth) {

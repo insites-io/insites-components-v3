@@ -16,9 +16,9 @@
 
 ## Events
 
-| Event     | Description | Type               |
-| --------- | ----------- | ------------------ |
-| `didLoad` |             | `CustomEvent<any>` |
+| Event     | Description | Type                |
+| --------- | ----------- | ------------------- |
+| `didLoad` |             | `CustomEvent<void>` |
 
 
 ## Methods

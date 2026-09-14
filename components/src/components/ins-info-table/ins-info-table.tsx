@@ -28,7 +28,7 @@ export class InsInfoTable {
     }
   }
 
-  renderTableItems(item){
+  renderTableItems(item: Record<string, any>){
     let myValue, myKey;
     for (let key in item) {
       myKey = key;

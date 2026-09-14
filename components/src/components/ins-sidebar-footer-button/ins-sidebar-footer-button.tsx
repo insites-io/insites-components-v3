@@ -3,8 +3,8 @@ import { h, Component, Prop, Method, Event, EventEmitter, Element } from "@stenc
 @Component({ tag: 'ins-sidebar-footer-button' })
 export class InsSidebarFooterButton {
   @Element() insSidebarFooterButtonEl: HTMLElement;
-  @Event() insSidebarFooterButtonEvent: EventEmitter;
-  @Event() didLoad: EventEmitter;
+  @Event() insSidebarFooterButtonEvent: EventEmitter<MouseEvent>;
+  @Event() didLoad: EventEmitter<void>;
   @Prop() hasLoad: string;
   @Prop({ mutable: true }) icon: string = '';
   @Prop({ mutable: true }) open: string = '';
@@ -21,7 +21,7 @@ export class InsSidebarFooterButton {
   }
 
   @Method()
-  async insSidebarFooterButtonOnClick(event){
+  async insSidebarFooterButtonOnClick(event: MouseEvent){
     this.insSidebarFooterButtonEvent.emit(event);
   }
 

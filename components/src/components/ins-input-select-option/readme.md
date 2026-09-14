@@ -19,9 +19,9 @@
 
 ## Events
 
-| Event                         | Description | Type               |
-| ----------------------------- | ----------- | ------------------ |
-| `insInputSelectOptionClicked` |             | `CustomEvent<any>` |
+| Event                         | Description | Type                                             |
+| ----------------------------- | ----------- | ------------------------------------------------ |
+| `insInputSelectOptionClicked` |             | `CustomEvent<{ value: string; label: string; }>` |
 
 
 ## Methods

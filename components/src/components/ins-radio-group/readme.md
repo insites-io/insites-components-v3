@@ -29,10 +29,10 @@
 
 ## Events
 
-| Event      | Description | Type               |
-| ---------- | ----------- | ------------------ |
-| `didLoad`  |             | `CustomEvent<any>` |
-| `insInput` |             | `CustomEvent<any>` |
+| Event      | Description | Type                           |
+| ---------- | ----------- | ------------------------------ |
+| `didLoad`  |             | `CustomEvent<void>`            |
+| `insInput` |             | `CustomEvent<{ value: any; }>` |
 
 
 ## Methods
@@ -67,15 +67,15 @@ Type: `Promise<void>`
 
 
 
-### `setValue(value: any) => Promise<void>`
+### `setValue(value: string | any[]) => Promise<void>`
 
 
 
 #### Parameters
 
-| Name    | Type  | Description |
-| ------- | ----- | ----------- |
-| `value` | `any` |             |
+| Name    | Type              | Description |
+| ------- | ----------------- | ----------- |
+| `value` | `string \| any[]` |             |
 
 #### Returns
 

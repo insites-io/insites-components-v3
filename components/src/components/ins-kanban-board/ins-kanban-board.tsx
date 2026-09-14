@@ -1,4 +1,4 @@
-import { h, Component, Element, Prop, Event, EventEmitter } from "@stencil/core";
+import { h, Component, Prop, Event, EventEmitter } from "@stencil/core";
 
 @Component({
   tag: 'ins-kanban-board',
@@ -6,7 +6,6 @@ import { h, Component, Element, Prop, Event, EventEmitter } from "@stencil/core"
 })
 
 export class InsKanbanBoard {
-  @Element() insKanbanBoardEl: HTMLElement;
   @Event() didLoad: EventEmitter;
   @Prop({ mutable: true }) uniqueId: string;
   @Prop({ mutable: true }) boardGroup: string;

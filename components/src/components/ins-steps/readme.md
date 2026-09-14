@@ -18,9 +18,9 @@
 
 ## Events
 
-| Event      | Description | Type               |
-| ---------- | ----------- | ------------------ |
-| `insClick` |             | `CustomEvent<any>` |
+| Event      | Description | Type                                                                                                     |
+| ---------- | ----------- | -------------------------------------------------------------------------------------------------------- |
+| `insClick` |             | `CustomEvent<{ start?: boolean; end?: boolean; nextStep?: any; previousStep?: any; currentStep: any; }>` |
 
 
 ## Methods
@@ -35,13 +35,13 @@ Type: `Promise<boolean>`
 
 
 
-### `getAllSteps() => Promise<any>`
+### `getAllSteps() => Promise<NodeListOf<any>>`
 
 
 
 #### Returns
 
-Type: `Promise<any>`
+Type: `Promise<NodeListOf<any>>`
 
 
 
@@ -85,15 +85,15 @@ Type: `Promise<boolean>`
 
 
 
-### `setStep(i: any) => Promise<{ previousStep: any; currentStep: any; }>`
+### `setStep(i: number) => Promise<{ previousStep: any; currentStep: any; }>`
 
 
 
 #### Parameters
 
-| Name | Type  | Description |
-| ---- | ----- | ----------- |
-| `i`  | `any` |             |
+| Name | Type     | Description |
+| ---- | -------- | ----------- |
+| `i`  | `number` |             |
 
 #### Returns
 

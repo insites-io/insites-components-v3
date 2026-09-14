@@ -43,17 +43,17 @@ Type: `Promise<{ value: string; trueValue: string; falseValue: string; }>`
 
 
 
-### `setValue(value: any, trueValue: any, falseValue: any) => Promise<void>`
+### `setValue(value: string, trueValue: string, falseValue: string) => Promise<void>`
 
 
 
 #### Parameters
 
-| Name         | Type  | Description |
-| ------------ | ----- | ----------- |
-| `value`      | `any` |             |
-| `trueValue`  | `any` |             |
-| `falseValue` | `any` |             |
+| Name         | Type     | Description |
+| ------------ | -------- | ----------- |
+| `value`      | `string` |             |
+| `trueValue`  | `string` |             |
+| `falseValue` | `string` |             |
 
 #### Returns
 
@@ -61,15 +61,15 @@ Type: `Promise<void>`
 
 
 
-### `updateCheckState(state: any) => Promise<void>`
+### `updateCheckState(state: boolean) => Promise<void>`
 
 
 
 #### Parameters
 
-| Name    | Type  | Description |
-| ------- | ----- | ----------- |
-| `state` | `any` |             |
+| Name    | Type      | Description |
+| ------- | --------- | ----------- |
+| `state` | `boolean` |             |
 
 #### Returns
 
@@ -82,6 +82,7 @@ Type: `Promise<void>`
 
 ### Used by
 
+ - [ins-header](../ins-header)
  - [ins-table](../ins-table)
 
 ### Depends on
@@ -92,6 +93,7 @@ Type: `Promise<void>`
 ```mermaid
 graph TD;
   ins-checkbox --> ins-input-tooltip
+  ins-header --> ins-checkbox
   ins-table --> ins-checkbox
   style ins-checkbox fill:#f9f,stroke:#333,stroke-width:4px
 ```

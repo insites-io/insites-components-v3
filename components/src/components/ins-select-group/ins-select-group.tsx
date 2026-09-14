@@ -1,7 +1,7 @@
 import { h, Component, Prop } from "@stencil/core";
 
 @Component({ tag: 'ins-select-group' })
-export class InsBackdrop {
+export class InsSelectGroup {
   @Prop({mutable: true}) label: string = "Options Group"
   render() {
     return (

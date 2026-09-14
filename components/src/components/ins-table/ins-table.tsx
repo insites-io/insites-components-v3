@@ -69,7 +69,7 @@ export class InsTable {
   @Prop({ mutable: true }) initialSearch: string = "";
   @Prop({ mutable: true }) timezoneIcon: string = "icon-clock";
 
-  @State() pageInfo: any = "0-0 of 0";
+  @State() pageInfo: string = "0-0 of 0";
   @State() nextDisabled: boolean = false;
   @State() tableUpdated: boolean = false;
 
@@ -92,7 +92,6 @@ export class InsTable {
     ) as any;
     if (bulkActionEl) {
       bulkActionEl.reset();
-      // this.selectedBulkAction = "";
       this.resetSelections();
     }
   }
@@ -165,7 +164,7 @@ export class InsTable {
     this.updatePageInfo();
   }
 
-  numberWithCommas(x) {
+  numberWithCommas(x: number | string) {
     let formatted = x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     if (this.isTotalCountEstimated) {
       formatted = `~${formatted}`;
@@ -174,28 +173,26 @@ export class InsTable {
   }
 
   @Listen("insInput")
-  onSearchHandler(event) {
+  onSearchHandler(event: any) {
     if (event.target.icon === "icon-search") {
       this.insTableSearch.emit(event.detail);
     }
   }
 
   @Listen("insClick")
-  onClickInsButtonHandler(event) {
+  onClickInsButtonHandler(event: any) {
     if (event.target.className.includes("insTableBulkButton")) {
       this.bulkActionHandler();
     }
   }
 
   @Listen("insCheck")
-  onCheckInsCheckbox(event) {
+  onCheckInsCheckbox(event: any) {
     let self = this;
     if (event.detail.value === "checkAll") {
-      // this.selectedRows = [];
       let tdCheckboxes = this.insTableEl.querySelectorAll(
         "ins-checkbox"
       ) as any;
-      // [...tdCheckboxes].forEach(checkbox => {
       if (event.detail.checked) {
         for (let i = 0; i < tdCheckboxes.length; i++) {
           if (tdCheckboxes[i].value !== "checkAll") {
@@ -240,7 +237,6 @@ export class InsTable {
         }
       }
       this.selectedRows = this.selectedRows.slice();
-      // });
     } else {
       let checkAllEl = this.insTableEl.querySelector("#checkAll") as any;
       checkAllEl.updateCheckState(false);
@@ -253,7 +249,7 @@ export class InsTable {
     }
   }
 
-  enterEditMode(el, checked, item) {
+  enterEditMode(el: HTMLElement, checked: boolean, item: any) {
     let trEl = el.closest(".ibt-table_tr");
     let trAccEl = el.closest(".ibt-table-accordion_row-td");
 
@@ -282,7 +278,7 @@ export class InsTable {
     }
   }
 
-  updateSelectedRows(value) {
+  updateSelectedRows(value: any) {
     let selectionIndex = this.selectedRows.findIndex((item) => {
       return item.id === value.id;
     });
@@ -298,7 +294,7 @@ export class InsTable {
     this.selectedRows = [...this.selectedRows];
   }
 
-  updateUpdatedRows(value, prop) {
+  updateUpdatedRows(value: any, prop: string) {
     let selectionIndex = this.updatedRows.findIndex((item) => {
       return item.id === value.id;
     });
@@ -310,7 +306,7 @@ export class InsTable {
     }
   }
 
-  removeUpdatedRow(value) {
+  removeUpdatedRow(value: any) {
     let selectionIndex = this.updatedRows.findIndex((item) => {
       return item.id === value.id;
     });
@@ -320,11 +316,7 @@ export class InsTable {
     }
   }
 
-  // componentWillUpdate(){
-  //   this.updatePageInfo();
-  // }
-
-  pageSizeChangeHandler(event) {
+  pageSizeChangeHandler(event: any) {
     this.pageNumber = 1;
     this.pageSize = parseInt(event.target.value);
 
@@ -346,9 +338,6 @@ export class InsTable {
     } else {
       this.pageNumber = key;
     }
-
-    // this.uncheckAll();
-    // this.selectedRows = [];
 
     this.insPaginationChange.emit({
       pageSize: this.pageSize,
@@ -376,7 +365,7 @@ export class InsTable {
     this.pageInfo = from + "-" + to + " of " + totalCountDisplay;
   }
 
-  sortTable(column) {
+  sortTable(column: string) {
     if (this.sortKeyword === column) {
       this.sortOrder = !this.sortOrder;
     } else {
@@ -401,7 +390,7 @@ export class InsTable {
     }
   }
 
-  rowActionHandler(action, data, header) {
+  rowActionHandler(action: string, data: any, header: string) {
     this.insTableRowAction.emit({ action, header, data });
   }
 
@@ -414,14 +403,14 @@ export class InsTable {
     }
   }
   @Method()
-  async setBulkAction(value) {
+  async setBulkAction(value: string) {
     let bulkActionEl = this.insTableEl.querySelector(
       'ins-select[data-type="bulk-action"]'
     ) as any;
     bulkActionEl.setSelectedFromValue(value);
   }
 
-  toggleSelectOptionsWrap(event) {
+  toggleSelectOptionsWrap(event: any) {
     let section;
     let parent = event.target.parentNode;
     let classes = parent.className;
@@ -449,7 +438,7 @@ export class InsTable {
     }
   }
 
-  closeBody(element) {
+  closeBody(element: HTMLElement) {
     let sectionHeight = element.scrollHeight > 400 ? 400 : element.scrollHeight;
     let elementTransition = element.style.transition;
     element.style.transition = "";
@@ -463,20 +452,20 @@ export class InsTable {
     });
     element.classList.remove("opened");
     element.setAttribute("data-opened", "false");
-    element.parentNode.classList.remove("activated");
+    (element.parentNode as HTMLElement).classList.remove("activated");
   }
 
-  openBody(element) {
+  openBody(element: HTMLElement) {
     let sectionHeight = element.scrollHeight + 26;
     if (element.getAttribute("data-opened") != "true") {
       element.style.height = sectionHeight + "px";
     }
     element.classList.add("opened");
     element.setAttribute("data-opened", "true");
-    element.parentNode.classList.add("activated");
+    (element.parentNode as HTMLElement).classList.add("activated");
   }
 
-  getInitials(value) {
+  getInitials(value: string) {
     if (value) {
       let split = value.split(" ");
 
@@ -492,11 +481,10 @@ export class InsTable {
     }
   }
 
-  canHaveRowActions(index, tableHeader /*, item */) {
+  canHaveRowActions(index: number, tableHeader: any /*, item */) {
     if (
       index === 0 ||
-      tableHeader.hasColumnAction /*&&
-    (item[tableHeader.label] && item[tableHeader.label] !== this.emptyValue)*/
+      tableHeader.hasColumnAction
     ) {
       return true;
     } else {
@@ -506,7 +494,7 @@ export class InsTable {
 
   @Listen("insValueChange")
   @Listen("insInput")
-  processEvent(event) {
+  processEvent(event: any) {
     if (event.target.id) {
       if (event.target.attributes["data-id"]) {
         let dataId = event.target.attributes["data-id"].value;
@@ -529,12 +517,12 @@ export class InsTable {
     }
   }
 
-  checkEditedItems(item) {
+  checkEditedItems(item: any) {
     let res = this.updatedRows.find((editedItem) => item.id === editedItem.id);
     return res ? res : item;
   }
 
-  renderField(item, tableHeader) {
+  renderField(item: any, tableHeader: any) {
     let editedItem = this.checkEditedItems(item);
 
     switch (tableHeader.type) {
@@ -642,13 +630,13 @@ export class InsTable {
     return offsetDateTime.format(format);
   }
 
-  setDefaultTime(timeValue, timeFormat) {
+  setDefaultTime(timeValue: string, timeFormat: string) {
     if (timeValue) return timeValue;
 
     return dayjs('00:00:00', 'HH:mm:ss').format(timeFormat);
   }
 
-  rowDataRenderer(item, tableHeader) {
+  rowDataRenderer(item: any, tableHeader: any) {
     if ((tableHeader.type === "date" || tableHeader.type === "date_time" || tableHeader.type === "datetime")
       && (tableHeader.date_format || tableHeader.timezone_overlay)) {
       let timezoneOverlay = tableHeader.timezone_overlay || tableHeader.date_format;
@@ -755,7 +743,7 @@ export class InsTable {
     );
   }
 
-  updateKebabCase(value) {
+  updateKebabCase(value: string): string {
     if (value)
       return value
         .trim()
@@ -765,7 +753,7 @@ export class InsTable {
     return "";
   }
 
-  rowActionMapper(rowAction, item, tableHeader) {
+  rowActionMapper(rowAction: string, item: any, tableHeader: any) {
     let header = tableHeader ? tableHeader.label : "";
 
     if (this.rowActionsSettings) {
@@ -856,7 +844,7 @@ export class InsTable {
     }
   }
 
-  renderMobileImage(item, headerLabel, mobileHeader, hasImage) {
+  renderMobileImage(item: any, headerLabel: string, mobileHeader: any, hasImage: boolean) {
     return hasImage && item[headerLabel] && !mobileHeader ? (
       <div class="img-wrap">
         {item[`${headerLabel}_Img`] ? (
@@ -872,7 +860,7 @@ export class InsTable {
     );
   }
 
-  renderMobileHeader(item, headerLabel) {
+  renderMobileHeader(item: any, headerLabel: string) {
     return (
       <div class="text-label">
         <span>{item[headerLabel] ? item[headerLabel] : "-"}</span>
@@ -979,7 +967,7 @@ export class InsTable {
             )}
 
             {this.withoutSearch ? (
-              "" // || this.loadingScreen
+              ""
             ) : (
               <div
                 class={`ins-searchbar-container ${
@@ -1005,7 +993,7 @@ export class InsTable {
               <div class={`ibt-table ${this.staticTable ? "static" : ""}`}>
                 <slot />
               </div>
-              {this.loadingScreen /* || !this.tableData.length */ ? (
+              {this.loadingScreen ? (
                 <div class={`loading-screen`}>
                   <ins-loader
                     image-source={this.loaderImageSource}
@@ -1288,7 +1276,7 @@ export class InsTable {
                             class="ibt-table-accordion_row-body"
                             data-opened="false"
                           >
-                            <table>
+                            <table class="ins-table">
                               {this.tableHeaders.map((tableHeader) => {
                                 return (
                                   <tr>
@@ -1366,7 +1354,7 @@ export class InsTable {
                   : ""}
               </div>
 
-              {this.loadingScreen /* || !this.tableData.length */ ? (
+              {this.loadingScreen ? (
                 <div class={`loading-screen`}>
                   <ins-loader
                     image-source={this.loaderImageSource}
@@ -1425,7 +1413,7 @@ export class InsTable {
                 }`}
               >
                 <div class="ibt-table-wrap__page-nav">
-                  <div class="ibt-table-wrap__pagination">
+                  <div class="ibt-table-wrap__pagination ins-pagination">
                     <span>{this.paginationText}</span>
                     <select
                       class="ibt-table-wrap__pagination--option"

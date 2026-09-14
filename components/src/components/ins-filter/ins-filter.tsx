@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 @Component({ tag: 'ins-filter' })
 export class InsFilter {
   @Element() insFilterEl: HTMLElement;
-  @Event() insFilterApply: EventEmitter;
+  @Event() insFilterApply: EventEmitter<Record<string, any>>;
   @Event() didLoad: EventEmitter;
   @Prop() hasLoad: string;
   @Prop({ mutable: true }) label: string = "Filter:";
@@ -28,21 +28,20 @@ export class InsFilter {
   @Prop({ mutable: true }) load: boolean = false;
   @Prop({ mutable: true }) checkLoad: boolean = false;
 
-  @State() dateFilterState: any;
-  @State() selectedRange: any = "All";
+  @State() dateFilterState: boolean;
+  @State() selectedRange: string = "All";
 
-  filterItem: any;
+  filterItem: number;
   selectedCustom: boolean = false;
-  pickerInstance: any;
-  currentFilter: any = "All";
+  currentFilter: string = "All";
   isAll: boolean = true;
   fromPicker: any;
-  fromInput: any;
+  fromInput: HTMLInputElement;
   toPicker: any;
-  toInput: any;
-  dateFilterEl: any;
+  toInput: HTMLInputElement;
+  dateFilterEl: Element;
 
-  temp: any = {
+  temp: { from: string; to: string; range: string } = {
     from: "",
     to: "",
     range: "All"
@@ -90,7 +89,7 @@ export class InsFilter {
   }
 
   @Listen('insInput')
-  datePickerChanged(e){
+  datePickerChanged(e: CustomEvent){
     let name = e.detail.name;
     // let date = e.detail.date_string;
     let date = dayjs(e.detail.selected_dates).format("YYYY-MM-DD");
@@ -111,7 +110,7 @@ export class InsFilter {
 
   @Listen('insSelect')
   async onFilterHandler() {
-    let insFilterItems = this.insFilterEl.querySelectorAll('ins-filter-item') as any;
+    let insFilterItems = this.insFilterEl.querySelectorAll('ins-filter-item');
     let selections = {};
 
     for (let i = 0; i < insFilterItems.length; i++) {
@@ -138,7 +137,7 @@ export class InsFilter {
     }
   }
 
-  async dateOptEHandler(option, settingDefault?: Boolean) {
+  async dateOptEHandler(option: string, settingDefault?: boolean) {
     this.selectedRange = option;
     this.selectedCustom = false;
 
@@ -234,12 +233,12 @@ export class InsFilter {
   customFormat() {
     if (!this.isAll) {
       this.selectedCustom = true;
-      let filter = this.getLocDate() as any;
+      let filter = this.getLocDate() as { from: string; to: string };
       return `Custom (${dayjs(filter.from, 'YYYY-MM-DD').format(this.dateFormat)} to ${dayjs(filter.to, 'YYYY-MM-DD').format(this.dateFormat)})`;
     } return 'All'
   }
 
-  getLocDate() {
+  getLocDate(): { from: string; to: string } | "All" {
     let from = this.fromInput.value;
     let to = this.toInput.value;
 
@@ -249,7 +248,7 @@ export class InsFilter {
 
   addClickOutside(){
     window.addEventListener("click", e => {
-      let target = e.target as any;
+      let target = e.target as HTMLElement;
       let closest = target.closest(".filter__date")
 
       if (closest !== this.dateFilterEl) {
@@ -280,7 +279,7 @@ export class InsFilter {
     }
   }
 
-  initDatePickerInput(prop) {
+  initDatePickerInput(prop: string) {
     this[`${prop}Picker`] = this.insFilterEl
       .querySelector(`.${prop} ins-date-time`);
 
@@ -310,7 +309,7 @@ export class InsFilter {
     }
   }
 
-  updatePickers(e, range) {
+  updatePickers(e, range: string) {
     let date = e.target.value;
     this[`${range}Picker`].value = date;
 

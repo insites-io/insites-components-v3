@@ -43,25 +43,25 @@
 
 ## Methods
 
-### `getColumnCardsOrder() => Promise<{}>`
+### `getColumnCardsOrder() => Promise<Record<number, string>>`
 
 
 
 #### Returns
 
-Type: `Promise<{}>`
+Type: `Promise<Record<number, string>>`
 
 
 
-### `reorderCards(sortable: any) => Promise<void>`
+### `reorderCards(sortable: string | any[]) => Promise<void>`
 
 
 
 #### Parameters
 
-| Name       | Type  | Description |
-| ---------- | ----- | ----------- |
-| `sortable` | `any` |             |
+| Name       | Type              | Description |
+| ---------- | ----------------- | ----------- |
+| `sortable` | `string \| any[]` |             |
 
 #### Returns
 

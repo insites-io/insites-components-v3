@@ -1,11 +1,28 @@
-import { h, Component, Prop, Event, EventEmitter, State, Method, Element } from '@stencil/core';
+import { h, Component, Prop, Event, EventEmitter, State, Method, Element, Host } from '@stencil/core';
+import { glyphForLegacyIcon } from '../../utils/phosphor-shell-icons';
 
+/**
+ * IIA v6 rail item (TW#26371963). No new props: when the closest <ins-sidebar>
+ * carries variant="v6" this item renders the Admin Shell v1.5 row instead of the
+ * legacy one. Its public API and every method the module partials and the hash
+ * router rely on are unchanged, so the ten module rail partials and the two
+ * migration-seeded instance partials keep working untouched.
+ *
+ * In v6 a top-level item with a submenu does NOT render its children inline; the
+ * parent rail reads them and shows a flyout. Nested items render nothing
+ * themselves, but stay in the DOM so routing, crumbs and activation keep working
+ * through routePageHandler()/activate() exactly as before.
+ *
+ * The icon: the legacy `icon="icon-…"` class is resolved centrally to a Phosphor
+ * glyph (utils/phosphor-shell-icons). Unmapped classes fall back to the font icon,
+ * so an unknown module still renders.
+ */
 @Component({ tag: 'ins-sidebar-item' })
 export class InsSidebarItem {
   @Element() insSidebarItemEl: HTMLElement;
-  @Event() routePage: EventEmitter;
-  @Event() didLoad: EventEmitter;
-  @Event() didHover: EventEmitter;
+  @Event() routePage: EventEmitter<{ crumbs: any[]; redirect: boolean }>;
+  @Event() didLoad: EventEmitter<void>;
+  @Event() didHover: EventEmitter<{ x: number; y: number; label: string; state: boolean }>;
   @Prop() hasLoad: string;
 
   @Prop({mutable: true}) link: any = '';
@@ -20,20 +37,26 @@ export class InsSidebarItem {
   @Prop({ mutable: true }) load: boolean = false;
   @Prop({ mutable: true }) checkLoad: boolean = false;
   @Prop({ mutable: true }) tooltip: boolean = false;
-  // @Prop({ context: 'formatUrl' }) formatUrl: any = () => {};
-  // @Prop({ context: 'addRippleEffect' }) addRippleEffect: any;
 
   @State() submenuVisible: boolean;
   @State() isActive: boolean;
   @State() formattedRoute: string;
+  @State() v6: boolean = false;
+  @State() v6Nested: boolean = false;
+  @State() v6Collapsed: boolean = false;
+  /** Mirrors the rail's iia-rail--flyout-open class so aria-expanded re-renders when the rail opens a flyout. */
+  @State() v6FlyoutOpen: boolean = false;
+
+  private railEl: HTMLInsSidebarElement | null = null;
+  private railObserver: MutationObserver | null = null;
 
   @Method()
-  async routePageHandler(e){
+  async routePageHandler(e?: Event | string){
     let redirect = false;
 
     if (e) {
       if (e === "landing") redirect = true
-      else e.preventDefault();
+      else (e as Event).preventDefault();
     }
 
     this.activate();
@@ -69,7 +92,6 @@ export class InsSidebarItem {
 
     this.toggleMenuNav();
     this.routePage.emit({ crumbs, redirect });
-    // await this.hideSiblingsMenu();
 
     let body = document.querySelector('body');
     body.style.overflowY = null;
@@ -80,7 +102,7 @@ export class InsSidebarItem {
 
     const mq = window.matchMedia("(max-width: 1260px)");
     let menuBar = document.querySelector('ins-sidebar') as any;
-    if (mq.matches) {
+    if (mq.matches && menuBar) {
       document.querySelector('body').classList.add('mini');
       menuBar.minimise();
     }
@@ -89,15 +111,18 @@ export class InsSidebarItem {
   }
 
   toggleMenuNav() {
-    let insHeaderEl = document.querySelector('ins-header') as any,
-        menuNav = insHeaderEl.querySelector('.full-width-navs');
+    let insHeaderEl = document.querySelector('ins-header') as any;
+    // The v6 header has no .full-width-navs; the legacy one may be absent too.
+    if (!insHeaderEl) return;
+    let menuNav = insHeaderEl.querySelector('.full-width-navs');
+    if (!menuNav) return;
 
     if (this.hasClass(menuNav, 'active')) {
       insHeaderEl.toggleNav();
     }
   }
 
-  hasClass(element, cls){
+  hasClass(element: Element, cls: string){
     return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
   }
 
@@ -118,7 +143,8 @@ export class InsSidebarItem {
     }
 
     this.submenuVisible = true;
-    this.toggleSidebar();
+    // v6 flyouts are opened by the rail on hover/click; do not un-collapse the rail here.
+    if (!this.v6) this.toggleSidebar();
     return true;
   }
 
@@ -132,6 +158,12 @@ export class InsSidebarItem {
   async activate(){
     await this.deactivateSiblings();
     let checkIfSubMenu = this.insSidebarItemEl.closest('.submenu-wrap');
+    if (!checkIfSubMenu && this.v6) {
+      // v6 renders no .submenu-wrap; the parent is simply the closest ancestor item.
+      const parentItem = this.insSidebarItemEl.parentElement && this.insSidebarItemEl.parentElement.closest('ins-sidebar-item') as any;
+      if (parentItem) await parentItem.activateParent();
+      return true;
+    }
     if (checkIfSubMenu) {
       let parent = checkIfSubMenu.closest('ins-sidebar-item');
       await parent.activateParent();
@@ -174,10 +206,10 @@ export class InsSidebarItem {
     return true;
   }
 
-  addRippleEffect(startingPoint, target){
+  addRippleEffect(startingPoint: MouseEvent, target: HTMLElement){
 
     let rect = target.getBoundingClientRect();
-    let ripple = target.querySelector('.ripple-wave');
+    let ripple = target.querySelector('.ripple-wave') as HTMLSpanElement;
 
     if (!ripple) {
       ripple = document.createElement('span');
@@ -205,18 +237,36 @@ export class InsSidebarItem {
 
   componentWillLoad(){
     this.formattedRoute = this.locFormatRoute();
+    this.railEl = this.insSidebarItemEl.closest('ins-sidebar[variant="v6"]') as HTMLInsSidebarElement;
+    this.v6 = !!this.railEl;
+    if (this.v6) {
+      this.v6Nested = !!(this.insSidebarItemEl.parentElement && this.insSidebarItemEl.parentElement.closest('ins-sidebar-item'));
+      this.v6Collapsed = this.railEl.classList.contains('iia-rail--collapsed');
+    }
   }
 
   componentDidLoad(){
-    let target = this.insSidebarItemEl.querySelector('.ins-ripple-button') as HTMLElement;
-    this.insSidebarItemEl.addEventListener('click', e => {
-      e.stopPropagation();
-      let tgt = e.target as any;
-      let parent = tgt.parentNode;
-      if (!parent.classList.contains('btn-nav')){
-        this.addRippleEffect(e, target);
-      }
-    });
+    if (!this.v6) {
+      let target = this.insSidebarItemEl.querySelector('.ins-ripple-button') as HTMLElement;
+      this.insSidebarItemEl.addEventListener('click', e => {
+        e.stopPropagation();
+        let tgt = e.target as any;
+        let parent = tgt.parentNode;
+        if (target && !parent.classList.contains('btn-nav')){
+          this.addRippleEffect(e, target);
+        }
+      });
+    } else if (this.railEl) {
+      // The rail may have rendered its classes between our willLoad and now.
+      this.v6Collapsed = this.railEl.classList.contains('iia-rail--collapsed');
+      this.v6FlyoutOpen = this.railEl.classList.contains('iia-rail--flyout-open');
+      // Mirror the rail's classes: collapsed drives label visibility, flyout-open drives aria-expanded.
+      this.railObserver = new MutationObserver(() => {
+        this.v6Collapsed = this.railEl.classList.contains('iia-rail--collapsed');
+        this.v6FlyoutOpen = this.railEl.classList.contains('iia-rail--flyout-open');
+      });
+      this.railObserver.observe(this.railEl, { attributes: true, attributeFilter: ['class'] });
+    }
 
     if (this.checkLoad) this.load = true;
     this.didLoad.emit();
@@ -226,12 +276,26 @@ export class InsSidebarItem {
     }
   }
 
+  disconnectedCallback(){
+    if (this.railObserver) this.railObserver.disconnect();
+  }
+
+  connectedCallback(){
+    // The v6 rail regroups its items into wrapper divs, which moves this element once. Re-arm the
+    // class observer so collapse and flyout state keep flowing after the move.
+    if (this.railObserver && this.railEl) {
+      this.v6Collapsed = this.railEl.classList.contains('iia-rail--collapsed');
+      this.v6FlyoutOpen = this.railEl.classList.contains('iia-rail--flyout-open');
+      this.railObserver.observe(this.railEl, { attributes: true, attributeFilter: ['class'] });
+    }
+  }
+
   @Method()
   async formatRoute() {
     return this.locFormatRoute();
   }
 
-  formatUrl(e){
+  formatUrl(e: string){
     return e.toLowerCase()
         .replace(/ +(?= )/g, '')
         .replace(/- | - | -| /gi, '-')
@@ -256,13 +320,96 @@ export class InsSidebarItem {
     }
   }
 
-  toggleTooltip(event, state){
+  toggleTooltip(event: MouseEvent, state: boolean){
     this.didHover.emit({
-      x: event.target.getBoundingClientRect().right, y:  event.target.getBoundingClientRect().top, label: this.label, state: state
+      x: (event.target as HTMLElement).getBoundingClientRect().right, y:  (event.target as HTMLElement).getBoundingClientRect().top, label: this.label, state: state
     });
   }
 
+  // ---------------------------------------------------------------------------
+  // v6
+  // ---------------------------------------------------------------------------
+
+  private v6Click = (e: MouseEvent) => {
+    if (this.withSubmenu) {
+      e.preventDefault();
+      if (this.railEl) this.railEl.toggleFlyout(this.insSidebarItemEl as any);
+      return;
+    }
+    // Plain and `app` items: let the anchor navigate. The legacy render has no click handler on
+    // these either; ins-sidebar's onhashchange matches the new hash to this item and routes it.
+    // Calling routePageHandler(event) here preventDefault-ed the anchor and killed navigation.
+    if (this.externalLink) return;
+    // Two cases produce no hashchange the rail could resolve: Dashboard (`href="#"`, and no item
+    // carries landing-page on the seeded index menu) and a re-click on the current page. Route
+    // those here without the event, so the anchor still navigates and the marker still moves.
+    const target = this.app ? this.formattedRoute : (this.link || '#');
+    if (target === '#' || target === '' || target === window.location.hash) this.routePageHandler();
+  };
+
+  private v6KeyDown = (e: KeyboardEvent) => {
+    if (this.withSubmenu && (e.key === 'ArrowRight' || e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      if (this.railEl) this.railEl.toggleFlyout(this.insSidebarItemEl as any);
+    }
+  };
+
+  renderV6(){
+    // Nested items are rendered by the parent rail's flyout; keep them in the DOM but unrendered.
+    if (this.v6Nested || !this.label) {
+      return <Host class="iia-rail-item--nested" hidden></Host>;
+    }
+
+    const glyph = glyphForLegacyIcon(this.icon);
+    const isDashboard = this.icon === 'icon-dashboard' || this.landingPage;
+    const collapsed = this.v6Collapsed;
+    const href = this.externalLink ? (this.link || '#') : (this.app ? this.formattedRoute : (this.link || '#'));
+
+    return (
+      <Host class={{ 'iia-rail-item': true, 'is-active': !!this.isActive, 'has-submenu': !!this.withSubmenu, 'iia-rail-item--dashboard': isDashboard }}
+            onMouseEnter={() => this.railEl && this.railEl.railItemEnter(this.insSidebarItemEl)}>
+        <span class="iia-rail-item__marker" aria-hidden="true"></span>
+        <a class="iia-rail-item__link"
+           href={href}
+           target={this.externalLink ? '_blank' : undefined}
+           rel={this.externalLink ? 'noopener noreferrer' : undefined}
+           aria-label={this.label}
+           aria-current={this.isActive ? 'page' : undefined}
+           aria-haspopup={this.withSubmenu ? 'menu' : undefined}
+           aria-expanded={this.withSubmenu ? (this.v6FlyoutOpen && this.isActiveFlyout() ? 'true' : 'false') : undefined}
+           onClick={this.v6Click}
+           onKeyDown={this.v6KeyDown}>
+          <span class="iia-rail-item__group">
+            <span class="iia-rail-item__icon">
+              {glyph
+                ? [
+                    <svg viewBox="0 0 256 256" width="16" height="16" fill="currentColor" aria-hidden="true" class="iia-rail-item__glyph iia-rail-item__glyph--reg"><path d={glyph.r}></path></svg>,
+                    glyph.f
+                      ? <svg viewBox="0 0 256 256" width="16" height="16" fill="currentColor" aria-hidden="true" class="iia-rail-item__glyph iia-rail-item__glyph--fill"><path d={glyph.f}></path></svg>
+                      : null,
+                  ]
+                : <i class={`${this.icon} iia-rail-item__fonticon`} aria-hidden="true"></i>}
+            </span>
+            <span class={{ 'iia-rail-item__label': true, 'is-hidden': collapsed }}>{this.label}</span>
+          </span>
+          {this.withSubmenu && !collapsed
+            ? <svg viewBox="0 0 256 256" width="10" height="10" fill="currentColor" aria-hidden="true" class="iia-rail-item__chevron"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"></path></svg>
+            : null}
+        </a>
+        {/* Children stay in the light DOM for routing; the flyout renders them. */}
+        <div class="iia-rail-item__children" hidden><slot /></div>
+      </Host>
+    );
+  }
+
+  private isActiveFlyout(){
+    // The rail exposes which item owns the open flyout through the flyout label; cheap check by label.
+    const fly = this.railEl && this.railEl.querySelector('.iia-flyout') as HTMLElement;
+    return !!(fly && fly.getAttribute('aria-label') === this.label);
+  }
+
   render(){
+    if (this.v6) return this.renderV6();
 
     if (this.withSubmenu) {
       return (

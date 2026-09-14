@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRM v6.2.0 components — dev</title>
+  <script type="module" src="/build/insites.esm.js"></script>
+  <script nomodule src="/build/insites.js"></script>
+  <link rel="stylesheet" href="/assets/insites/css/insites.css">
+  <link rel="stylesheet" href="/assets/insites/css/insites-font-icons.css">
+  <style>
+    body { font-family: var(--ins-font-family, sans-serif); margin: 0; background: #f4f5f7; }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 32px 24px 96px; }
+    h1 { font-size: 20px; } h2 { font-size: 15px; margin: 40px 0 12px; color: #444; }
+    section { background: #fff; border: 1px solid #e1e4ea; border-radius: 4px; padding: 20px; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>CRM v6.2.0 components</h1>
+
+  <h2>ins-metric-tile-group / ins-metric-tile</h2>
+  <section>
+    <ins-metric-tile-group columns="3">
+      <ins-metric-tile label="Open opportunities" value="4" metric-key="opportunities" clickable="true"></ins-metric-tile>
+      <ins-metric-tile label="Orders total (incl. tax)" value="AUD 12,300" hint="Last 12 months" metric-key="orders" clickable="true"></ins-metric-tile>
+      <ins-metric-tile label="Last contacted" value="3 days ago" loading="false"></ins-metric-tile>
+    </ins-metric-tile-group>
+  </section>
+
+  <h2>ins-disclosure-panel × 3 (stacked)</h2>
+  <section id="panels" style="padding:0">
+    <ins-disclosure-panel heading="Custom fields" count="12" open="true">
+      <p style="margin:0 0 8px">Xero identifier: 8842-AA · Membership tier: Gold · Region: APAC</p>
+    </ins-disclosure-panel>
+    <ins-disclosure-panel heading="Addresses" count="2">
+      <p>Head office · Billing</p>
+    </ins-disclosure-panel>
+    <ins-disclosure-panel heading="System info">
+      <p>Created 12 Mar 2024 · Last changed 1 Sep 2026</p>
+    </ins-disclosure-panel>
+  </section>
+
+  <h2>ins-action-menu (nested email/phone flyouts)</h2>
+  <section style="min-height:340px">
+    <ins-action-menu id="kebab" aria-label-text="Company actions">
+      <ins-action-menu-item label="Email company" icon="icon-mail">
+        <ins-action-menu-item label="accounts@stellar.com" value="email:accounts"></ins-action-menu-item>
+        <ins-action-menu-item label="info@stellar.com" value="email:info"></ins-action-menu-item>
+      </ins-action-menu-item>
+      <ins-action-menu-item label="Call company" icon="icon-phone">
+        <ins-action-menu-item label="+61 2 9000 0000" value="tel:main"></ins-action-menu-item>
+      </ins-action-menu-item>
+      <ins-action-menu-item label="Add an activity"></ins-action-menu-item>
+      <ins-action-menu-item label="Configure metrics"></ins-action-menu-item>
+      <ins-action-menu-item label="Delete company" danger="true"></ins-action-menu-item>
+    </ins-action-menu>
+  </section>
+
+  <h2>ins-search-scope</h2>
+  <section>
+    <ins-search-scope placeholder="Search contacts"
+      scope-options='[{"label":"All fields","value":"all"},{"label":"Name","value":"name"},{"label":"Email","value":"email"}]'>
+    </ins-search-scope>
+  </section>
+
+  <h2>ins-confirm-modal (opened via button)</h2>
+  <section>
+    <button id="openConfirm">Delete "Stellar Solutions"…</button>
+    <ins-confirm-modal id="confirm" heading='Delete "Stellar Solutions"?' confirm-word="DELETE" confirm-button-label="Delete company">
+      <p><strong>This removes the company record and its alert messages.</strong> Contacts, opportunities and orders are kept.</p>
+    </ins-confirm-modal>
+  </section>
+</div>
+<script>
+  document.getElementById('openConfirm').addEventListener('click', () => {
+    document.getElementById('confirm').show();
+  });
+  ['insToggle','insTileClick','insSelect','insSearch','insScopeChange','insConfirm','insClose','insOpenChange'].forEach(ev =>
+    document.addEventListener(ev, e => console.log('[demo]', ev, JSON.stringify(e.detail))));
+</script>
+</body>
+</html>

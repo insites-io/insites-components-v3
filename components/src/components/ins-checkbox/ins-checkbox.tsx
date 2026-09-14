@@ -54,12 +54,12 @@ export class InsCheckbox {
   }
 
   @Method()
-  async updateCheckState(state){
+  async updateCheckState(state: boolean){
     this.checked = state;
   }
 
   @Method()
-  async setValue(value, trueValue, falseValue){
+  async setValue(value: string, trueValue: string, falseValue: string){
     this.value = value;
     this.trueValue = trueValue;
     this.falseValue = falseValue;

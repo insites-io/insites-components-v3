@@ -31,12 +31,12 @@
 
 ## Events
 
-| Event            | Description | Type               |
-| ---------------- | ----------- | ------------------ |
-| `didLoad`        |             | `CustomEvent<any>` |
-| `insInput`       |             | `CustomEvent<any>` |
-| `insValidation`  |             | `CustomEvent<any>` |
-| `insValueChange` |             | `CustomEvent<any>` |
+| Event            | Description | Type                                                        |
+| ---------------- | ----------- | ----------------------------------------------------------- |
+| `didLoad`        |             | `CustomEvent<void>`                                         |
+| `insInput`       |             | `CustomEvent<any>`                                          |
+| `insValidation`  |             | `CustomEvent<{ hasError: boolean; errorMessage: string; }>` |
+| `insValueChange` |             | `CustomEvent<string>`                                       |
 
 
 ## Methods
@@ -51,15 +51,15 @@ Type: `Promise<any>`
 
 
 
-### `setValue(value: any) => Promise<void>`
+### `setValue(value: string) => Promise<void>`
 
 
 
 #### Parameters
 
-| Name    | Type  | Description |
-| ------- | ----- | ----------- |
-| `value` | `any` |             |
+| Name    | Type     | Description |
+| ------- | -------- | ----------- |
+| `value` | `string` |             |
 
 #### Returns
 

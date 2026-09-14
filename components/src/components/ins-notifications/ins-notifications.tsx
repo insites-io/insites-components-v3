@@ -3,12 +3,12 @@ import { h, Component, State, Method } from "@stencil/core";
 @Component({ tag: 'ins-notifications' })
 export class InsNotifications {
   @State() showNotifications: boolean;
-  @State() insNotificationsitemsEl: any;
+  @State() insNotificationsitemsEl: NodeListOf<Element>;
 
   @Method()
   async toggleNotificationshandler(){
     this.showNotifications = !this.showNotifications;
-    this.insNotificationsitemsEl.forEach( function (item, i) {
+    this.insNotificationsitemsEl.forEach( function (item: Element, i: number) {
       setTimeout(function () {
         item.querySelector('.ins-notifications-item-wrap').className += " show";
       }, 100 * i);

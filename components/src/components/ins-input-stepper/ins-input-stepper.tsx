@@ -4,7 +4,6 @@ import { h, Component, Prop, Event, EventEmitter, Element, Method } from "@stenc
 export class InsStepper {
   @Element() el: HTMLElement;
   @Event() insBlur: EventEmitter;
-  // @Event() insInput: EventEmitter;
   @Event() insValueChange: EventEmitter;
   @Event() didLoad: EventEmitter;
   @Prop() hasLoad: string;
@@ -32,7 +31,7 @@ export class InsStepper {
   @Prop({mutable: true}) htmlDescription: boolean = false;
   @Prop({mutable: true}) noValueChangeOnBlur: boolean = false;
 
-  labelEl; inputEl; active;
+  labelEl: HTMLElement; inputEl: HTMLElement; active: boolean;
 
   @Prop({ mutable: true }) checkValue: boolean = false;
   @Method()
@@ -63,7 +62,7 @@ export class InsStepper {
   }
 
   @Method()
-  async setValue(value) {
+  async setValue(value: string) {
     this.value = value;
     this.insValueChange.emit(this.value);
   }
@@ -89,8 +88,8 @@ export class InsStepper {
   }
 
   bindEls(){
-    this.labelEl = this.el.querySelector('.ins-form-label');
-    this.inputEl = this.el.querySelector('.ins-input-stepper_input-wrap');
+    this.labelEl = this.el.querySelector('.ins-form-label') as HTMLElement;
+    this.inputEl = this.el.querySelector('.ins-input-stepper_input-wrap') as HTMLElement;
   }
 
   stepDown(){
@@ -100,6 +99,7 @@ export class InsStepper {
 
     this.insValueChange.emit(value);
     this.value = value;
+    return undefined;
   }
 
   validateInput(input){
@@ -117,6 +117,7 @@ export class InsStepper {
 
     this.insValueChange.emit(value);
     this.value = value;
+    return undefined;
   }
 
   activateLabel(){
@@ -133,15 +134,6 @@ export class InsStepper {
     if (this.inputEl) this.inputEl.classList.remove('active');
   }
 
-  // onInputHandler(event){
-  //   let x = event.which || event.keyCode;
-  //   this.insInput.emit({
-  //     value: event.target.value,
-  //     validated: this.value,
-  //     keyCode: x
-  //   });
-  // }
-
   insBlurHandler(event){
     let keyCode = event.which || event.keyCode;
     let value = this.validateInput(event.target.value);
@@ -149,7 +141,6 @@ export class InsStepper {
 
     this.deactivateLabel();
     this.insBlur.emit({ value, keyCode });
-    // this.insValueChange.emit(+value);
 
     if (!this.noValueChangeOnBlur) {
       if (event.target.value) {
@@ -172,7 +163,7 @@ export class InsStepper {
 
   addClickOutside(){
     window.addEventListener("click", e => {
-      let target = e.target as any;
+      let target = e.target as HTMLElement;
       let closest = target.closest("ins-input-stepper")
 
       if (closest !== this.el) {
@@ -181,11 +172,11 @@ export class InsStepper {
     });
   }
 
-  validateDescription(value) {
+  validateDescription(value: string) {
     let allowed = '<a>,<abbr>,<acronym>,<address>,<article>,<aside>,<b>,<base>,<bdi>,<bdo>,<blockquote>,<br>,<caption>,<code>,<dd>,<del>,<details>,<dfn>,<dir>,<div>,<dl>,<dt>,<em>,<font>,<h1>,<h2>,<h3>,<h4>,<h5>,<h6>,<hr>,<i>,<ins>,<label>,<li>,<link>,<mark>,<menu>,<meter>,<nav>,<ol>,<p>,<pre>,<q>,<s>,<samp>,<section>,<small>,<span>,<strike>,<strong>,<sub>,<summary>,<sup>,<table>,<tbody>,<td>,<tfoot>,<th>,<thead>,<time>,<tr>,<tt>,<u>,<ul>,<wbr>';
     allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
 
-    var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
+    const tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
     commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
     return value.replace(commentsAndPhpTags, '').replace(tags, ($0, $1) => {
       return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
@@ -234,8 +225,6 @@ export class InsStepper {
               onInput={e => this.insInputHandler(e)}
               onFocus={() => this.activateLabel()}
               onBlur={e => this.insBlurHandler(e)}
-              // onKeyUp={e => this.onInputHandler(e)}
-              // onInput={e => this.inputChanged(e)}
               />
           </div>
 

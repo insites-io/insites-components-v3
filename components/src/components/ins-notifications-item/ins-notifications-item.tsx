@@ -1,9 +1,7 @@
-import { h, Component, Prop, Element } from "@stencil/core";
+import { h, Component, Prop } from "@stencil/core";
 
 @Component({ tag: 'ins-notifications-item' })
 export class InsNotificationsItem {
-  @Element() InsNotificationsItemEl: HTMLElement;
-
   @Prop({mutable:true}) eventType: string;
   @Prop({mutable:true}) heading: string;
   @Prop({mutable:true}) duration: string;

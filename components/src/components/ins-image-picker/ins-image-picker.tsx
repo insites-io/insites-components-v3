@@ -29,15 +29,13 @@ export class Insimagepicker {
   @Prop({ mutable: true }) load: boolean = false;
   @Prop({ mutable: true }) checkLoad: boolean = false;
 
-  cropper;
-  base64;
-  originalImg;
-  imagePreviewEl;
-  controllersEl;
-  imageEl;
-  modalEl;
-  hiddenInputEl;
-  croppedImage;
+  cropper: Cropper;
+  base64: string;
+  imagePreviewEl: Element;
+  controllersEl: Element;
+  imageEl: HTMLImageElement;
+  modalEl: Element;
+  hiddenInputEl: HTMLInputElement;
 
   @Method()
   async getValue(){
@@ -45,7 +43,7 @@ export class Insimagepicker {
   }
 
   @Method()
-  async setValue(value, file_name){
+  async setValue(value: string, file_name: string){
     this.value = value;
     this.fileName = file_name;
 
@@ -67,19 +65,19 @@ export class Insimagepicker {
 
   initEls(){
     this.modalEl = this.insImagePickerEl.querySelector('.modal');
-    this.hiddenInputEl = this.insImagePickerEl.querySelector('.hidden-input');
+    this.hiddenInputEl = this.insImagePickerEl.querySelector('.hidden-input') as HTMLInputElement;
     this.imagePreviewEl = this.insImagePickerEl.querySelector('.image-preview');
     this.controllersEl = this.insImagePickerEl.querySelector('.controllers');
-    this.imageEl = this.insImagePickerEl.querySelector('.image');
+    this.imageEl = this.insImagePickerEl.querySelector('.image') as HTMLImageElement;
   }
 
-  displayImage(evt) {
+  displayImage(evt: any) {
     let tgt = evt.target || window.event.srcElement;
     this.openModal();
     this.processImgFile(tgt.files);
   }
 
-  handleDrop(event) {
+  handleDrop(event: DragEvent) {
     event.preventDefault();
     let dt = event.dataTransfer;
     this.openModal();
@@ -93,13 +91,13 @@ export class Insimagepicker {
     return;
   }
 
-  validateFormat(type){
+  validateFormat(type: string){
     return this.uploadImgFileFormats
       .toLocaleLowerCase()
       .includes(type);
   }
 
-  processImgFile(files) {
+  processImgFile(files: FileList) {
     if (!files.length) return;
     if (!files[0].type.includes('image/')) return this.invalidFile();
 
@@ -124,8 +122,8 @@ export class Insimagepicker {
     }
   }
 
-  showImage(fr){
-    let img = fr.result as any;
+  showImage(fr: FileReader){
+    let img = fr.result as string;
     this.base64 = img;
     this.imageEl.src = img;
     this.imageEl.style.marginTop = "0px";
@@ -150,10 +148,9 @@ export class Insimagepicker {
   cancelCropping(){
     if (this.cropper) this.cropper.destroy();
     this.controllersEl.classList.remove('cropping');
-    this.croppedImage = "";
   }
 
-  exportImage(e) {
+  exportImage(e: Event) {
     e.preventDefault();
     this.base64 = this.cropper
       ? this.cropper.getCroppedCanvas({}).toDataURL()
@@ -173,7 +170,7 @@ export class Insimagepicker {
     this.modalEl.classList.add('show');
   }
 
-  closeModal(e) {
+  closeModal(e: Event) {
     e.preventDefault();
     this.modalEl.classList.remove('show');
     this.imageEl.src = "";
@@ -185,7 +182,7 @@ export class Insimagepicker {
     this.hiddenInputEl.click();
   }
 
-  handleDrag(event) {
+  handleDrag(event: Event) {
     event.preventDefault();
   }
 

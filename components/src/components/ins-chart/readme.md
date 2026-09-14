@@ -7,16 +7,16 @@
 
 ## Methods
 
-### `generateColor(color: any, count: any) => Promise<Highcharts.ColorType>`
+### `generateColor(color: string, count: number) => Promise<Highcharts.ColorType>`
 
 
 
 #### Parameters
 
-| Name    | Type  | Description |
-| ------- | ----- | ----------- |
-| `color` | `any` |             |
-| `count` | `any` |             |
+| Name    | Type     | Description |
+| ------- | -------- | ----------- |
+| `color` | `string` |             |
+| `count` | `number` |             |
 
 #### Returns
 
@@ -24,15 +24,15 @@ Type: `Promise<ColorType>`
 
 
 
-### `renderChart(options: any) => Promise<void>`
+### `renderChart(options: Highcharts.Options) => Promise<void>`
 
 
 
 #### Parameters
 
-| Name      | Type  | Description |
-| --------- | ----- | ----------- |
-| `options` | `any` |             |
+| Name      | Type      | Description |
+| --------- | --------- | ----------- |
+| `options` | `Options` |             |
 
 #### Returns
 
