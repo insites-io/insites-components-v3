@@ -1563,16 +1563,44 @@ export namespace Components {
     interface InsStyleguide {
         "label": string;
     }
+    /**
+     * Tabs. Two renderings share one public API (props, methods, insTabChange payload, header
+     * class names, the :scope > .ins-tab > .ins-tab-headers > .ins-tab-header structure), so the
+     * 63 module views that drive this component keep working untouched:
+     * - legacy: the original strip, unchanged.
+     * - v6 (TW#26778152): the IIA v6 tab strip from the CRM record pages (ViewContact /
+     *   ViewCompany's RecordTabs). Icon + label + optional count chip per tab, the design's
+     *   colours and underline, icons dropped below 1280px, and no sideways scroll: tabs that do
+     *   not fit move into a "More" menu at the end of the strip. The active tab is always visible
+     *   in the strip; when it comes from the menu it takes the last visible slot.
+     * The v6 rendering switches on automatically inside the v6 Admin Shell (a
+     * <ins-sidebar variant="v6"> is on the page), the same detection the rail item uses, so no
+     * module needs a commit. `variant="v6"` forces it (tests, pages outside the shell) and
+     * `variant="legacy"` opts out.
+     * Tab icons come from the item's icon="…" or, when absent, from utils/tab-icons by label.
+     */
     interface InsTab {
         "activateTab": (place: number) => Promise<void>;
         "checkLoad": boolean;
         "hasLoad": string;
         "load": boolean;
+        /**
+          * Label of the overflow menu trigger in the v6 strip.
+         */
+        "moreLabel": string;
         "tabs": any;
+        /**
+          * '' = detect from the page (v6 inside the Admin Shell, legacy elsewhere); 'v6' or 'legacy' to force.
+         */
+        "variant": string;
     }
     interface InsTabItem {
         "activate": () => Promise<void>;
         "active": boolean;
+        /**
+          * Optional badge on the tab header (the CRM record pages show a record count per tab). Only a number, or a non-empty string, renders; null/undefined/'' render no chip. Only drawn by the v6 strip; the legacy header ignores it.
+         */
+        "count": any;
         "deactivate": () => Promise<void>;
         "disabled": boolean;
         "hasError": boolean;
@@ -3656,6 +3684,22 @@ declare global {
         "insTabChange": any;
         "didLoad": any;
     }
+    /**
+     * Tabs. Two renderings share one public API (props, methods, insTabChange payload, header
+     * class names, the :scope > .ins-tab > .ins-tab-headers > .ins-tab-header structure), so the
+     * 63 module views that drive this component keep working untouched:
+     * - legacy: the original strip, unchanged.
+     * - v6 (TW#26778152): the IIA v6 tab strip from the CRM record pages (ViewContact /
+     *   ViewCompany's RecordTabs). Icon + label + optional count chip per tab, the design's
+     *   colours and underline, icons dropped below 1280px, and no sideways scroll: tabs that do
+     *   not fit move into a "More" menu at the end of the strip. The active tab is always visible
+     *   in the strip; when it comes from the menu it takes the last visible slot.
+     * The v6 rendering switches on automatically inside the v6 Admin Shell (a
+     * <ins-sidebar variant="v6"> is on the page), the same detection the rail item uses, so no
+     * module needs a commit. `variant="v6"` forces it (tests, pages outside the shell) and
+     * `variant="legacy"` opts out.
+     * Tab icons come from the item's icon="…" or, when absent, from utils/tab-icons by label.
+     */
     interface HTMLInsTabElement extends Components.InsTab, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsTabElementEventMap>(type: K, listener: (this: HTMLInsTabElement, ev: InsTabCustomEvent<HTMLInsTabElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3674,6 +3718,7 @@ declare global {
         "insTabError": any;
         "insTabDisableToggle": any;
         "insTabLoad": any;
+        "insTabItemChange": { prop: string };
     }
     interface HTMLInsTabItemElement extends Components.InsTabItem, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsTabItemElementEventMap>(type: K, listener: (this: HTMLInsTabItemElement, ev: InsTabItemCustomEvent<HTMLInsTabItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -5449,16 +5494,44 @@ declare namespace LocalJSX {
     interface InsStyleguide {
         "label"?: string;
     }
+    /**
+     * Tabs. Two renderings share one public API (props, methods, insTabChange payload, header
+     * class names, the :scope > .ins-tab > .ins-tab-headers > .ins-tab-header structure), so the
+     * 63 module views that drive this component keep working untouched:
+     * - legacy: the original strip, unchanged.
+     * - v6 (TW#26778152): the IIA v6 tab strip from the CRM record pages (ViewContact /
+     *   ViewCompany's RecordTabs). Icon + label + optional count chip per tab, the design's
+     *   colours and underline, icons dropped below 1280px, and no sideways scroll: tabs that do
+     *   not fit move into a "More" menu at the end of the strip. The active tab is always visible
+     *   in the strip; when it comes from the menu it takes the last visible slot.
+     * The v6 rendering switches on automatically inside the v6 Admin Shell (a
+     * <ins-sidebar variant="v6"> is on the page), the same detection the rail item uses, so no
+     * module needs a commit. `variant="v6"` forces it (tests, pages outside the shell) and
+     * `variant="legacy"` opts out.
+     * Tab icons come from the item's icon="…" or, when absent, from utils/tab-icons by label.
+     */
     interface InsTab {
         "checkLoad"?: boolean;
         "hasLoad"?: string;
         "load"?: boolean;
+        /**
+          * Label of the overflow menu trigger in the v6 strip.
+         */
+        "moreLabel"?: string;
         "onDidLoad"?: (event: InsTabCustomEvent<any>) => void;
         "onInsTabChange"?: (event: InsTabCustomEvent<any>) => void;
         "tabs"?: any;
+        /**
+          * '' = detect from the page (v6 inside the Admin Shell, legacy elsewhere); 'v6' or 'legacy' to force.
+         */
+        "variant"?: string;
     }
     interface InsTabItem {
         "active"?: boolean;
+        /**
+          * Optional badge on the tab header (the CRM record pages show a record count per tab). Only a number, or a non-empty string, renders; null/undefined/'' render no chip. Only drawn by the v6 strip; the legacy header ignores it.
+         */
+        "count"?: any;
         "disabled"?: boolean;
         "hasError"?: boolean;
         "icon"?: string;
@@ -5466,6 +5539,10 @@ declare namespace LocalJSX {
         "noPadding"?: boolean;
         "onInsTabDisableToggle"?: (event: InsTabItemCustomEvent<any>) => void;
         "onInsTabError"?: (event: InsTabItemCustomEvent<any>) => void;
+        /**
+          * Fired when label, icon, count or active changes after load, so the parent <ins-tab> redraws the header it renders for this item (TW#26778152). The parent reads these props once at load; without this a count arriving from an async fetch never reached the strip.
+         */
+        "onInsTabItemChange"?: (event: InsTabItemCustomEvent<{ prop: string }>) => void;
         "onInsTabLoad"?: (event: InsTabItemCustomEvent<any>) => void;
     }
     interface InsTable {
@@ -5911,6 +5988,22 @@ declare module "@stencil/core" {
             "ins-step": LocalJSX.InsStep & JSXBase.HTMLAttributes<HTMLInsStepElement>;
             "ins-steps": LocalJSX.InsSteps & JSXBase.HTMLAttributes<HTMLInsStepsElement>;
             "ins-styleguide": LocalJSX.InsStyleguide & JSXBase.HTMLAttributes<HTMLInsStyleguideElement>;
+            /**
+             * Tabs. Two renderings share one public API (props, methods, insTabChange payload, header
+             * class names, the :scope > .ins-tab > .ins-tab-headers > .ins-tab-header structure), so the
+             * 63 module views that drive this component keep working untouched:
+             * - legacy: the original strip, unchanged.
+             * - v6 (TW#26778152): the IIA v6 tab strip from the CRM record pages (ViewContact /
+             *   ViewCompany's RecordTabs). Icon + label + optional count chip per tab, the design's
+             *   colours and underline, icons dropped below 1280px, and no sideways scroll: tabs that do
+             *   not fit move into a "More" menu at the end of the strip. The active tab is always visible
+             *   in the strip; when it comes from the menu it takes the last visible slot.
+             * The v6 rendering switches on automatically inside the v6 Admin Shell (a
+             * <ins-sidebar variant="v6"> is on the page), the same detection the rail item uses, so no
+             * module needs a commit. `variant="v6"` forces it (tests, pages outside the shell) and
+             * `variant="legacy"` opts out.
+             * Tab icons come from the item's icon="…" or, when absent, from utils/tab-icons by label.
+             */
             "ins-tab": LocalJSX.InsTab & JSXBase.HTMLAttributes<HTMLInsTabElement>;
             "ins-tab-item": LocalJSX.InsTabItem & JSXBase.HTMLAttributes<HTMLInsTabItemElement>;
             "ins-table": LocalJSX.InsTable & JSXBase.HTMLAttributes<HTMLInsTableElement>;
