@@ -152,9 +152,11 @@ export class Insimagepicker {
 
   exportImage(e: Event) {
     e.preventDefault();
-    this.base64 = this.cropper
-      ? this.cropper.getCroppedCanvas({}).toDataURL()
-      : this.imageEl.src;
+    // getCroppedCanvas returns null when the crop is confirmed before the image has
+    // loaded, or after cancelCropping destroyed the cropper (`null.toDataURL`).
+    const croppedCanvas = this.cropper ? this.cropper.getCroppedCanvas({}) : null;
+    this.base64 = croppedCanvas ? croppedCanvas.toDataURL() : (this.imageEl ? this.imageEl.src : '');
+    if (!this.base64) return;
 
     this.value = this.base64;
     this.insValueChange.emit({

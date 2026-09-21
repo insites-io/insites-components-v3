@@ -43,6 +43,9 @@ export class InsDrawer {
   @Watch('backdropCanClose')
   backDropClickHandler() {
     let backdropEl = this.insDrawer.querySelector('.ins-backdrop-wrap');
+    // componentDidLoad can run for a drawer whose host was already torn down by a fast
+    // navigation, in which case the backdrop is gone (`null.addEventListener`).
+    if (!backdropEl) return;
     if (this.backdropCanClose) {
       backdropEl.addEventListener('click', () => {
         this.setDrawerState(false);
