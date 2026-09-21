@@ -260,6 +260,10 @@ export class InsSidebar {
   }
 
   async matchHash(currentHash, deeplink){
+    // activateSidebarFromCrumbs feeds crumb.link straight from localStorage, and a stored
+    // crumb is not always a string (`t.includes is not a function` in #insites-errors).
+    if (typeof currentHash !== 'string') return false;
+
     for (let i = 0; i < this.sidebarItemEls.length; i++) {
       let formattedRoute = await this.sidebarItemEls[i].formatRoute();
 

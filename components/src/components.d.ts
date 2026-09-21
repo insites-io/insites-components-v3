@@ -1311,6 +1311,74 @@ export namespace Components {
         "tooltip": string;
         "value": any;
     }
+    /**
+     * IIA v6 record identity header (TW#26778152).
+     * The card at the top of a record page: avatar (image, or initials on the brand colour),
+     * the record's name as the page h1, a subtitle line, an optional website link, a row of
+     * short facts, status/category pills, a metric strip and an actions area. It is the CRM
+     * Contact v1.4 / Company v1.0 `section.crm-hdr` moved into the bundle so every module's
+     * record page draws the same header from one place instead of each SPA carrying its own
+     * SubHeader markup.
+     * Content that differs per record type comes in through slots, all light DOM:
+     *   - `pills`    extra chips after the status pill (category, type…)
+     *   - `metrics`  an <ins-metric-tile-group variant="strip"> (or any strip); inline on wide
+     *                headers, on its own full-width row from 1180px down
+     *   - `actions`  buttons / <ins-action-menu>; pinned top-right below 600px
+     *   - `extra`    anything that used to sit under the old SubHeader (toggles, mid display)
+     * Styling is in insites.css ("IIA v6 record header layer"), tokens only. The host is an
+     * inline-size container so the breakpoints follow the header's own width, not the viewport,
+     * the same way the CRM record page does it.
+     */
+    interface InsRecordHeader {
+        /**
+          * Dim the header (archived / disabled record).
+         */
+        "archived": boolean;
+        /**
+          * Short facts rendered as a separated row ("Sydney · 12 Oct · 240 capacity"). JSON array or comma-separated string.
+         */
+        "facts": any;
+        /**
+          * Icon-font class shown in the avatar circle instead of initials (e.g. icon-calendar for an event).
+         */
+        "icon": string;
+        /**
+          * Avatar image URL. When empty the initials of `name` render on the brand colour.
+         */
+        "image": string;
+        /**
+          * Record name. Rendered as the page h1 and used for the initials.
+         */
+        "name": string;
+        /**
+          * Hide the avatar entirely (records with no natural portrait: an event, a product, a form).
+         */
+        "noAvatar": boolean;
+        /**
+          * Status pill label (Active, Enabled, Draft…). Empty renders no pill.
+         */
+        "status": string;
+        /**
+          * Status pill colour: green | red | orange | yellow | blue | grey, or one of the status words the old <ins-tag> accepted (enabled, active, published, valid, positive, open, new → green; disabled, archived, error, invalid, negative, closed → red; pending, flagged → orange). Anything else falls back to grey.
+         */
+        "statusColor": string;
+        /**
+          * Small muted text before the status pill (the old SubHeader `tagInfo`).
+         */
+        "statusInfo": string;
+        /**
+          * One line under the name: a role, a company, a date range. Plain text.
+         */
+        "subtitle": string;
+        /**
+          * External link shown under the subtitle, opened in a new tab.
+         */
+        "website": string;
+        /**
+          * Text for the website link; defaults to the URL.
+         */
+        "websiteText": string;
+    }
     interface InsRenderer {
         "app": boolean;
         "checkLoad": boolean;
@@ -1563,16 +1631,44 @@ export namespace Components {
     interface InsStyleguide {
         "label": string;
     }
+    /**
+     * Tabs. Two renderings share one public API (props, methods, insTabChange payload, header
+     * class names, the :scope > .ins-tab > .ins-tab-headers > .ins-tab-header structure), so the
+     * 63 module views that drive this component keep working untouched:
+     * - legacy: the original strip, unchanged.
+     * - v6 (TW#26778152): the IIA v6 tab strip from the CRM record pages (ViewContact /
+     *   ViewCompany's RecordTabs). Icon + label + optional count chip per tab, the design's
+     *   colours and underline, icons dropped below 1280px, and no sideways scroll: tabs that do
+     *   not fit move into a "More" menu at the end of the strip. The active tab is always visible
+     *   in the strip; when it comes from the menu it takes the last visible slot.
+     * The v6 rendering switches on automatically inside the v6 Admin Shell (a
+     * <ins-sidebar variant="v6"> is on the page), the same detection the rail item uses, so no
+     * module needs a commit. `variant="v6"` forces it (tests, pages outside the shell) and
+     * `variant="legacy"` opts out.
+     * Tab icons come from the item's icon="…" or, when absent, from utils/tab-icons by label.
+     */
     interface InsTab {
         "activateTab": (place: number) => Promise<void>;
         "checkLoad": boolean;
         "hasLoad": string;
         "load": boolean;
+        /**
+          * Label of the overflow menu trigger in the v6 strip.
+         */
+        "moreLabel": string;
         "tabs": any;
+        /**
+          * '' = detect from the page (v6 inside the Admin Shell, legacy elsewhere); 'v6' or 'legacy' to force.
+         */
+        "variant": string;
     }
     interface InsTabItem {
         "activate": () => Promise<void>;
         "active": boolean;
+        /**
+          * Optional badge on the tab header (the CRM record pages show a record count per tab). Only a number, or a non-empty string, renders; null/undefined/'' render no chip. Only drawn by the v6 strip; the legacy header ignores it.
+         */
+        "count": any;
         "deactivate": () => Promise<void>;
         "disabled": boolean;
         "hasError": boolean;
@@ -3368,6 +3464,30 @@ declare global {
         prototype: HTMLInsRadioGroupElement;
         new (): HTMLInsRadioGroupElement;
     };
+    /**
+     * IIA v6 record identity header (TW#26778152).
+     * The card at the top of a record page: avatar (image, or initials on the brand colour),
+     * the record's name as the page h1, a subtitle line, an optional website link, a row of
+     * short facts, status/category pills, a metric strip and an actions area. It is the CRM
+     * Contact v1.4 / Company v1.0 `section.crm-hdr` moved into the bundle so every module's
+     * record page draws the same header from one place instead of each SPA carrying its own
+     * SubHeader markup.
+     * Content that differs per record type comes in through slots, all light DOM:
+     *   - `pills`    extra chips after the status pill (category, type…)
+     *   - `metrics`  an <ins-metric-tile-group variant="strip"> (or any strip); inline on wide
+     *                headers, on its own full-width row from 1180px down
+     *   - `actions`  buttons / <ins-action-menu>; pinned top-right below 600px
+     *   - `extra`    anything that used to sit under the old SubHeader (toggles, mid display)
+     * Styling is in insites.css ("IIA v6 record header layer"), tokens only. The host is an
+     * inline-size container so the breakpoints follow the header's own width, not the viewport,
+     * the same way the CRM record page does it.
+     */
+    interface HTMLInsRecordHeaderElement extends Components.InsRecordHeader, HTMLStencilElement {
+    }
+    var HTMLInsRecordHeaderElement: {
+        prototype: HTMLInsRecordHeaderElement;
+        new (): HTMLInsRecordHeaderElement;
+    };
     interface HTMLInsRendererElementEventMap {
         "didLoad": void;
         "insRouteChange": { crumbs: any[]; route: any };
@@ -3656,6 +3776,22 @@ declare global {
         "insTabChange": any;
         "didLoad": any;
     }
+    /**
+     * Tabs. Two renderings share one public API (props, methods, insTabChange payload, header
+     * class names, the :scope > .ins-tab > .ins-tab-headers > .ins-tab-header structure), so the
+     * 63 module views that drive this component keep working untouched:
+     * - legacy: the original strip, unchanged.
+     * - v6 (TW#26778152): the IIA v6 tab strip from the CRM record pages (ViewContact /
+     *   ViewCompany's RecordTabs). Icon + label + optional count chip per tab, the design's
+     *   colours and underline, icons dropped below 1280px, and no sideways scroll: tabs that do
+     *   not fit move into a "More" menu at the end of the strip. The active tab is always visible
+     *   in the strip; when it comes from the menu it takes the last visible slot.
+     * The v6 rendering switches on automatically inside the v6 Admin Shell (a
+     * <ins-sidebar variant="v6"> is on the page), the same detection the rail item uses, so no
+     * module needs a commit. `variant="v6"` forces it (tests, pages outside the shell) and
+     * `variant="legacy"` opts out.
+     * Tab icons come from the item's icon="…" or, when absent, from utils/tab-icons by label.
+     */
     interface HTMLInsTabElement extends Components.InsTab, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsTabElementEventMap>(type: K, listener: (this: HTMLInsTabElement, ev: InsTabCustomEvent<HTMLInsTabElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3674,6 +3810,7 @@ declare global {
         "insTabError": any;
         "insTabDisableToggle": any;
         "insTabLoad": any;
+        "insTabItemChange": { prop: string };
     }
     interface HTMLInsTabItemElement extends Components.InsTabItem, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsTabItemElementEventMap>(type: K, listener: (this: HTMLInsTabItemElement, ev: InsTabItemCustomEvent<HTMLInsTabItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3899,6 +4036,7 @@ declare global {
         "ins-progress-bar": HTMLInsProgressBarElement;
         "ins-radio": HTMLInsRadioElement;
         "ins-radio-group": HTMLInsRadioGroupElement;
+        "ins-record-header": HTMLInsRecordHeaderElement;
         "ins-renderer": HTMLInsRendererElement;
         "ins-search-scope": HTMLInsSearchScopeElement;
         "ins-select": HTMLInsSelectElement;
@@ -5214,6 +5352,74 @@ declare namespace LocalJSX {
         "tooltip"?: string;
         "value"?: any;
     }
+    /**
+     * IIA v6 record identity header (TW#26778152).
+     * The card at the top of a record page: avatar (image, or initials on the brand colour),
+     * the record's name as the page h1, a subtitle line, an optional website link, a row of
+     * short facts, status/category pills, a metric strip and an actions area. It is the CRM
+     * Contact v1.4 / Company v1.0 `section.crm-hdr` moved into the bundle so every module's
+     * record page draws the same header from one place instead of each SPA carrying its own
+     * SubHeader markup.
+     * Content that differs per record type comes in through slots, all light DOM:
+     *   - `pills`    extra chips after the status pill (category, type…)
+     *   - `metrics`  an <ins-metric-tile-group variant="strip"> (or any strip); inline on wide
+     *                headers, on its own full-width row from 1180px down
+     *   - `actions`  buttons / <ins-action-menu>; pinned top-right below 600px
+     *   - `extra`    anything that used to sit under the old SubHeader (toggles, mid display)
+     * Styling is in insites.css ("IIA v6 record header layer"), tokens only. The host is an
+     * inline-size container so the breakpoints follow the header's own width, not the viewport,
+     * the same way the CRM record page does it.
+     */
+    interface InsRecordHeader {
+        /**
+          * Dim the header (archived / disabled record).
+         */
+        "archived"?: boolean;
+        /**
+          * Short facts rendered as a separated row ("Sydney · 12 Oct · 240 capacity"). JSON array or comma-separated string.
+         */
+        "facts"?: any;
+        /**
+          * Icon-font class shown in the avatar circle instead of initials (e.g. icon-calendar for an event).
+         */
+        "icon"?: string;
+        /**
+          * Avatar image URL. When empty the initials of `name` render on the brand colour.
+         */
+        "image"?: string;
+        /**
+          * Record name. Rendered as the page h1 and used for the initials.
+         */
+        "name"?: string;
+        /**
+          * Hide the avatar entirely (records with no natural portrait: an event, a product, a form).
+         */
+        "noAvatar"?: boolean;
+        /**
+          * Status pill label (Active, Enabled, Draft…). Empty renders no pill.
+         */
+        "status"?: string;
+        /**
+          * Status pill colour: green | red | orange | yellow | blue | grey, or one of the status words the old <ins-tag> accepted (enabled, active, published, valid, positive, open, new → green; disabled, archived, error, invalid, negative, closed → red; pending, flagged → orange). Anything else falls back to grey.
+         */
+        "statusColor"?: string;
+        /**
+          * Small muted text before the status pill (the old SubHeader `tagInfo`).
+         */
+        "statusInfo"?: string;
+        /**
+          * One line under the name: a role, a company, a date range. Plain text.
+         */
+        "subtitle"?: string;
+        /**
+          * External link shown under the subtitle, opened in a new tab.
+         */
+        "website"?: string;
+        /**
+          * Text for the website link; defaults to the URL.
+         */
+        "websiteText"?: string;
+    }
     interface InsRenderer {
         "app"?: boolean;
         "checkLoad"?: boolean;
@@ -5449,16 +5655,44 @@ declare namespace LocalJSX {
     interface InsStyleguide {
         "label"?: string;
     }
+    /**
+     * Tabs. Two renderings share one public API (props, methods, insTabChange payload, header
+     * class names, the :scope > .ins-tab > .ins-tab-headers > .ins-tab-header structure), so the
+     * 63 module views that drive this component keep working untouched:
+     * - legacy: the original strip, unchanged.
+     * - v6 (TW#26778152): the IIA v6 tab strip from the CRM record pages (ViewContact /
+     *   ViewCompany's RecordTabs). Icon + label + optional count chip per tab, the design's
+     *   colours and underline, icons dropped below 1280px, and no sideways scroll: tabs that do
+     *   not fit move into a "More" menu at the end of the strip. The active tab is always visible
+     *   in the strip; when it comes from the menu it takes the last visible slot.
+     * The v6 rendering switches on automatically inside the v6 Admin Shell (a
+     * <ins-sidebar variant="v6"> is on the page), the same detection the rail item uses, so no
+     * module needs a commit. `variant="v6"` forces it (tests, pages outside the shell) and
+     * `variant="legacy"` opts out.
+     * Tab icons come from the item's icon="…" or, when absent, from utils/tab-icons by label.
+     */
     interface InsTab {
         "checkLoad"?: boolean;
         "hasLoad"?: string;
         "load"?: boolean;
+        /**
+          * Label of the overflow menu trigger in the v6 strip.
+         */
+        "moreLabel"?: string;
         "onDidLoad"?: (event: InsTabCustomEvent<any>) => void;
         "onInsTabChange"?: (event: InsTabCustomEvent<any>) => void;
         "tabs"?: any;
+        /**
+          * '' = detect from the page (v6 inside the Admin Shell, legacy elsewhere); 'v6' or 'legacy' to force.
+         */
+        "variant"?: string;
     }
     interface InsTabItem {
         "active"?: boolean;
+        /**
+          * Optional badge on the tab header (the CRM record pages show a record count per tab). Only a number, or a non-empty string, renders; null/undefined/'' render no chip. Only drawn by the v6 strip; the legacy header ignores it.
+         */
+        "count"?: any;
         "disabled"?: boolean;
         "hasError"?: boolean;
         "icon"?: string;
@@ -5466,6 +5700,10 @@ declare namespace LocalJSX {
         "noPadding"?: boolean;
         "onInsTabDisableToggle"?: (event: InsTabItemCustomEvent<any>) => void;
         "onInsTabError"?: (event: InsTabItemCustomEvent<any>) => void;
+        /**
+          * Fired when label, icon, count or active changes after load, so the parent <ins-tab> redraws the header it renders for this item (TW#26778152). The parent reads these props once at load; without this a count arriving from an async fetch never reached the strip.
+         */
+        "onInsTabItemChange"?: (event: InsTabItemCustomEvent<{ prop: string }>) => void;
         "onInsTabLoad"?: (event: InsTabItemCustomEvent<any>) => void;
     }
     interface InsTable {
@@ -5709,6 +5947,7 @@ declare namespace LocalJSX {
         "ins-progress-bar": InsProgressBar;
         "ins-radio": InsRadio;
         "ins-radio-group": InsRadioGroup;
+        "ins-record-header": InsRecordHeader;
         "ins-renderer": InsRenderer;
         "ins-search-scope": InsSearchScope;
         "ins-select": InsSelect;
@@ -5861,6 +6100,25 @@ declare module "@stencil/core" {
             "ins-progress-bar": LocalJSX.InsProgressBar & JSXBase.HTMLAttributes<HTMLInsProgressBarElement>;
             "ins-radio": LocalJSX.InsRadio & JSXBase.HTMLAttributes<HTMLInsRadioElement>;
             "ins-radio-group": LocalJSX.InsRadioGroup & JSXBase.HTMLAttributes<HTMLInsRadioGroupElement>;
+            /**
+             * IIA v6 record identity header (TW#26778152).
+             * The card at the top of a record page: avatar (image, or initials on the brand colour),
+             * the record's name as the page h1, a subtitle line, an optional website link, a row of
+             * short facts, status/category pills, a metric strip and an actions area. It is the CRM
+             * Contact v1.4 / Company v1.0 `section.crm-hdr` moved into the bundle so every module's
+             * record page draws the same header from one place instead of each SPA carrying its own
+             * SubHeader markup.
+             * Content that differs per record type comes in through slots, all light DOM:
+             *   - `pills`    extra chips after the status pill (category, type…)
+             *   - `metrics`  an <ins-metric-tile-group variant="strip"> (or any strip); inline on wide
+             *                headers, on its own full-width row from 1180px down
+             *   - `actions`  buttons / <ins-action-menu>; pinned top-right below 600px
+             *   - `extra`    anything that used to sit under the old SubHeader (toggles, mid display)
+             * Styling is in insites.css ("IIA v6 record header layer"), tokens only. The host is an
+             * inline-size container so the breakpoints follow the header's own width, not the viewport,
+             * the same way the CRM record page does it.
+             */
+            "ins-record-header": LocalJSX.InsRecordHeader & JSXBase.HTMLAttributes<HTMLInsRecordHeaderElement>;
             "ins-renderer": LocalJSX.InsRenderer & JSXBase.HTMLAttributes<HTMLInsRendererElement>;
             /**
              * The IIA v6 record-page search pill with a field-scope dropdown.
@@ -5911,6 +6169,22 @@ declare module "@stencil/core" {
             "ins-step": LocalJSX.InsStep & JSXBase.HTMLAttributes<HTMLInsStepElement>;
             "ins-steps": LocalJSX.InsSteps & JSXBase.HTMLAttributes<HTMLInsStepsElement>;
             "ins-styleguide": LocalJSX.InsStyleguide & JSXBase.HTMLAttributes<HTMLInsStyleguideElement>;
+            /**
+             * Tabs. Two renderings share one public API (props, methods, insTabChange payload, header
+             * class names, the :scope > .ins-tab > .ins-tab-headers > .ins-tab-header structure), so the
+             * 63 module views that drive this component keep working untouched:
+             * - legacy: the original strip, unchanged.
+             * - v6 (TW#26778152): the IIA v6 tab strip from the CRM record pages (ViewContact /
+             *   ViewCompany's RecordTabs). Icon + label + optional count chip per tab, the design's
+             *   colours and underline, icons dropped below 1280px, and no sideways scroll: tabs that do
+             *   not fit move into a "More" menu at the end of the strip. The active tab is always visible
+             *   in the strip; when it comes from the menu it takes the last visible slot.
+             * The v6 rendering switches on automatically inside the v6 Admin Shell (a
+             * <ins-sidebar variant="v6"> is on the page), the same detection the rail item uses, so no
+             * module needs a commit. `variant="v6"` forces it (tests, pages outside the shell) and
+             * `variant="legacy"` opts out.
+             * Tab icons come from the item's icon="…" or, when absent, from utils/tab-icons by label.
+             */
             "ins-tab": LocalJSX.InsTab & JSXBase.HTMLAttributes<HTMLInsTabElement>;
             "ins-tab-item": LocalJSX.InsTabItem & JSXBase.HTMLAttributes<HTMLInsTabItemElement>;
             "ins-table": LocalJSX.InsTable & JSXBase.HTMLAttributes<HTMLInsTableElement>;

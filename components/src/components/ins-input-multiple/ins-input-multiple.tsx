@@ -126,7 +126,7 @@ export class InsInputMultiple {
 		if (eventValue.trim() && !this.readonly) {
 			this.updateValue(value, eventValue);
       this.insInputMultipleEl.querySelector('input').value = null;
-			setTimeout(() => { this.insInputMultipleEl.querySelector('input').focus(); }, 200);
+			setTimeout(() => { this.insInputMultipleEl.querySelector('input')?.focus(); }, 200);
 		}
 	}
 

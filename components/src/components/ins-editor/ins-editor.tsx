@@ -314,13 +314,18 @@ export class InsEditor {
 			}
 		} else {
 			setTimeout(() => {
-				this.insEditorEl.querySelector('.redactor-styles').innerHTML = this.visualEditorRedactor();
+				// The editor can be unmounted inside this window (a closing drawer), so the node may be gone.
+				const redactorEl = this.insEditorEl.querySelector('.redactor-styles');
+				if (redactorEl) redactorEl.innerHTML = this.visualEditorRedactor();
 			}, 100)
 		}
 
 		if (this.disableVisualEditor && this.firstLoadRedactor) {
 			this.insEditorEl.querySelector('.redactor-styles').innerHTML = "";
-			setTimeout(() => { this.insEditorEl.querySelector('.re-button.re-html').className += " redactor-button-disabled"; }, 100);
+			setTimeout(() => {
+				const htmlButton = this.insEditorEl.querySelector('.re-button.re-html');
+				if (htmlButton) htmlButton.className += " redactor-button-disabled";
+			}, 100);
 		}
 
 		this.firstLoadRedactor = false;

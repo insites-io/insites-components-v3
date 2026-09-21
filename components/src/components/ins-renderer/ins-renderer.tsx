@@ -34,6 +34,14 @@ export class InsRenderer {
   breadcrumbsEl: HTMLElement;
   wrapEl: HTMLElement;
 
+  // The renderer iframe is torn down and rebuilt as the shell navigates, and route work
+  // that is already in flight lands on the old frame. Its contentWindow is null once it
+  // is detached, which is the `Cannot read properties of null (reading 'location')` error
+  // in #insites-errors. Every access goes through here so a detached frame is a no-op.
+  frameWindow() {
+    return this.insRendererFrameEl ? this.insRendererFrameEl.contentWindow : null;
+  }
+
   @Method()
   async updateRoute(newRoutes: any[], noRedirect = false, iframe: boolean) {
     if (newRoutes && newRoutes.length) {
@@ -45,7 +53,7 @@ export class InsRenderer {
 
       if (this.route.app) {
         if (!noRedirect || iframe) {
-          this.insRendererFrameEl.contentWindow.location.replace(this.route.link);
+          this.frameWindow()?.location.replace(this.route.link);
         }
       }
     }
@@ -110,7 +118,9 @@ export class InsRenderer {
 
   @Method()
   async resizeIframe() {
-    this.insRendererFrameEl.style.height = this.insRendererFrameEl.contentWindow.document.body.scrollHeight + 'px';
+    const frameBody = this.frameWindow()?.document?.body;
+    if (!frameBody) return;
+    this.insRendererFrameEl.style.height = frameBody.scrollHeight + 'px';
     this.insRendererFrameEl.style.opacity = '1';
   }
 
@@ -154,7 +164,7 @@ export class InsRenderer {
           queryStrings.forEach(item => {
             if (item.includes("reroute=")) {
               let route = item.substring(8, item.length);
-              this.insRendererFrameEl.contentWindow.location.replace(route);
+              this.frameWindow()?.location.replace(route);
             } else if (item.includes("reroutelabel=")) {
               let reroutelabel = decodeURIComponent(item.substring(13, item.length))
               if (reroutelabel) {
@@ -165,7 +175,7 @@ export class InsRenderer {
           });
 
         } else if (!this.rerouting) {
-          this.insRendererFrameEl.contentWindow.location.replace(e);
+          this.frameWindow()?.location.replace(e);
         } else this.rerouting = false;
         // }
       });
@@ -176,7 +186,11 @@ export class InsRenderer {
     let lastDispatched: string | null = null;
 
     let dispatchChange = function () {
-      let newHref = iframe.contentWindow.location.href;
+      // The frame can be detached between the unload event and this timeout when the
+      // user navigates again quickly; a detached frame has no contentWindow.
+      let frameWindow = iframe.contentWindow;
+      if (!frameWindow) return;
+      let newHref = frameWindow.location.href;
 
       if (newHref !== lastDispatched) {
         callback(newHref);
@@ -189,8 +203,10 @@ export class InsRenderer {
     };
 
     function attachUnload() {
-      iframe.contentWindow.removeEventListener("unload", unloadHandler);
-      iframe.contentWindow.addEventListener("unload", unloadHandler);
+      let frameWindow = iframe.contentWindow;
+      if (!frameWindow) return;
+      frameWindow.removeEventListener("unload", unloadHandler);
+      frameWindow.addEventListener("unload", unloadHandler);
     }
 
     iframe.addEventListener("load", function () {
