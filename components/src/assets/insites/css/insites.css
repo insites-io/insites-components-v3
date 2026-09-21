@@ -14604,3 +14604,85 @@ ins-tab .ins-tab.iia-tabs .iia-tabs__menu-item.disabled { opacity: var(--ins-dis
 @media (prefers-reduced-motion: reduce) {
   ins-tab .ins-tab.iia-tabs .iia-tabs__menu { animation: none; }
 }
+
+/* ============================================================================
+   IIA v6 record header layer (TW#26778152)
+   ----------------------------------------------------------------------------
+   <ins-record-header>: the CRM Contact v1.4 / Company v1.0 identity card
+   (section.crm-hdr) as a bundle component, so every module's record page
+   draws the same header. Values are the prototype's own, taken from the
+   inline styles on module-v6-crm ViewContact.vue. The host is an inline-size
+   container: the metrics row and the stacked layout follow the header's own
+   width like .crm-pagewrap does for the CRM record grid.
+   ============================================================================ */
+ins-record-header.ins-record-header { display: block; container-type: inline-size; }
+ins-record-header.ins-record-header.is-archived .ins-record-header__card { opacity: 0.6; }
+.ins-record-header__card {
+  /* z-index above the tab strip that follows it (its headers sit at z 1), so a kebab menu opened
+     from the actions area paints over the tabs instead of behind them */
+  position: relative; z-index: 5; display: flex; align-items: center; gap: var(--ins-space-md); flex-wrap: wrap;
+  background: var(--ins-card); border: 1px solid var(--ins-border-color); border-radius: var(--ins-radius); padding: var(--ins-space-sm);
+  font-family: var(--ins-font-family);
+}
+.ins-record-header__avatar {
+  width: 80px; height: 80px; flex: none; border-radius: 50%; background: var(--ins-main); color: var(--iia-text-white);
+  font-size: var(--ins-title-5); font-weight: var(--ins-weight-semibold); display: inline-flex; align-items: center; justify-content: center;
+  background-size: cover; background-position: center; overflow: hidden;
+}
+.ins-record-header__avatar i { font-size: 32px; line-height: 1; }
+.ins-record-header__identity { min-width: 0; flex: 1 1 240px; display: flex; align-items: center; gap: var(--ins-space-sm); flex-wrap: wrap; }
+.ins-record-header__text { min-width: 0; }
+.ins-record-header__name {
+  margin: 0; font-size: var(--ins-title-5); line-height: var(--ins-leading-tight); font-weight: var(--ins-weight-semibold);
+  letter-spacing: -0.5px; color: var(--iia-text-1); overflow-wrap: anywhere;
+}
+.ins-record-header__subtitle { margin-top: var(--ins-space-3xs); font-size: var(--ins-text-sm); color: var(--iia-text-3); }
+.ins-record-header__website {
+  display: inline-flex; align-items: center; gap: var(--ins-space-3xs); margin-top: var(--ins-space-3xs);
+  font-size: var(--ins-text-sm); color: var(--ins-main); text-decoration: none;
+}
+.ins-record-header__website:hover { color: var(--ins-main-dark); text-decoration: underline; }
+.ins-record-header__website i { font-size: var(--ins-text-xs); }
+.ins-record-header__facts { display: flex; flex-wrap: wrap; align-items: center; margin-top: var(--ins-space-2xs); font-size: var(--ins-text-sm); color: var(--iia-text-2); }
+.ins-record-header__fact + .ins-record-header__fact::before { content: "·"; margin: 0 var(--ins-space-xs); color: var(--iia-text-3); }
+.ins-record-header__pills { display: flex; align-items: center; gap: var(--ins-space-xs); flex: none; align-self: flex-start; margin-top: 4px; flex-wrap: wrap; }
+.ins-record-header__status-info { font-size: var(--ins-text-xs); color: var(--iia-text-3); }
+.ins-record-header__pill,
+.ins-record-header__pills [slot="pills"] .ins-record-header__pill {
+  display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 3px 10px;
+  font-size: var(--ins-text-xs); font-weight: var(--ins-weight-semibold); line-height: 1.4; white-space: nowrap;
+  background: var(--iia-ui-1); color: var(--iia-text-3);
+}
+.ins-record-header__pill--green  { background: var(--ins-alert-positive-light); color: var(--ins-alert-positive); }
+.ins-record-header__pill--red    { background: var(--ins-alert-negative-light); color: var(--ins-alert-negative); }
+.ins-record-header__pill--orange,
+.ins-record-header__pill--yellow { background: var(--ins-alert-warning-light);  color: var(--ins-alert-warning-dark); }
+.ins-record-header__pill--blue   { background: var(--ins-main-light); color: var(--ins-main); }
+.ins-record-header__pill--grey   { background: var(--iia-ui-1); color: var(--iia-text-3); }
+/* metrics + actions sit at the end of the row; the metrics wrapper is empty (0 width) when nothing is slotted */
+.ins-record-header__metrics { display: flex; align-items: center; flex: none; margin-left: auto; }
+.ins-record-header__metrics:empty { display: none; }
+.ins-record-header__actions { display: flex; align-items: center; gap: var(--ins-space-xs); flex: none; position: relative; }
+.ins-record-header__actions:empty { display: none; }
+ins-record-header.ins-record-header:not(.has-metrics) .ins-record-header__actions { margin-left: auto; }
+.ins-record-header__extra:empty { display: none; }
+.ins-record-header__extra { margin-top: var(--ins-space-sm); }
+/* the strip inside: the same cell geometry the CRM inline header uses (hm-cell already comes from the record-page layer) */
+.ins-record-header__metrics .hm-strip { position: relative; display: flex; align-items: stretch; }
+/* From 1180px down the metric strip leaves the identity row and becomes a full-width row under it (crm-record.css rule for .crm-hm-inline). */
+@container (max-width: 1180px) {
+  .ins-record-header__metrics { width: 100%; order: 5; margin-left: 0; border-top: 1px solid var(--ins-border-color); padding-top: var(--ins-space-xs); }
+  .ins-record-header__metrics .hm-strip { width: 100%; justify-content: space-between; }
+  .ins-record-header__metrics .hm-cell { border-left: none !important; min-width: 0 !important; padding: 0 !important; align-items: flex-start !important; }
+  .ins-record-header__metrics .hm-cell span { text-align: left !important; }
+}
+/* Narrow: stacked identity, actions pinned top-right (crm-record.css 560px rule for .crm-hdr / .crm-hdr-kebab). */
+@container (max-width: 600px) {
+  .ins-record-header__card { flex-direction: column; align-items: flex-start; gap: var(--ins-space-sm); }
+  .ins-record-header__identity { width: 100%; }
+  .ins-record-header__avatar { margin-right: calc(36px + var(--ins-space-sm)); }
+  .ins-record-header__actions { position: absolute; top: var(--ins-space-sm); right: var(--ins-space-sm); }
+  .ins-record-header__metrics { border-top: none; padding-top: 0; }
+  .ins-record-header__metrics .hm-strip { flex-wrap: wrap; gap: var(--ins-space-xs); }
+  .ins-record-header__metrics .hm-strip > div { flex-basis: 100% !important; }
+}

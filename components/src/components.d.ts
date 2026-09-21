@@ -1311,6 +1311,74 @@ export namespace Components {
         "tooltip": string;
         "value": any;
     }
+    /**
+     * IIA v6 record identity header (TW#26778152).
+     * The card at the top of a record page: avatar (image, or initials on the brand colour),
+     * the record's name as the page h1, a subtitle line, an optional website link, a row of
+     * short facts, status/category pills, a metric strip and an actions area. It is the CRM
+     * Contact v1.4 / Company v1.0 `section.crm-hdr` moved into the bundle so every module's
+     * record page draws the same header from one place instead of each SPA carrying its own
+     * SubHeader markup.
+     * Content that differs per record type comes in through slots, all light DOM:
+     *   - `pills`    extra chips after the status pill (category, type…)
+     *   - `metrics`  an <ins-metric-tile-group variant="strip"> (or any strip); inline on wide
+     *                headers, on its own full-width row from 1180px down
+     *   - `actions`  buttons / <ins-action-menu>; pinned top-right below 600px
+     *   - `extra`    anything that used to sit under the old SubHeader (toggles, mid display)
+     * Styling is in insites.css ("IIA v6 record header layer"), tokens only. The host is an
+     * inline-size container so the breakpoints follow the header's own width, not the viewport,
+     * the same way the CRM record page does it.
+     */
+    interface InsRecordHeader {
+        /**
+          * Dim the header (archived / disabled record).
+         */
+        "archived": boolean;
+        /**
+          * Short facts rendered as a separated row ("Sydney · 12 Oct · 240 capacity"). JSON array or comma-separated string.
+         */
+        "facts": any;
+        /**
+          * Icon-font class shown in the avatar circle instead of initials (e.g. icon-calendar for an event).
+         */
+        "icon": string;
+        /**
+          * Avatar image URL. When empty the initials of `name` render on the brand colour.
+         */
+        "image": string;
+        /**
+          * Record name. Rendered as the page h1 and used for the initials.
+         */
+        "name": string;
+        /**
+          * Hide the avatar entirely (records with no natural portrait: an event, a product, a form).
+         */
+        "noAvatar": boolean;
+        /**
+          * Status pill label (Active, Enabled, Draft…). Empty renders no pill.
+         */
+        "status": string;
+        /**
+          * Status pill colour: green | red | orange | yellow | blue | grey, or one of the status words the old <ins-tag> accepted (enabled, active, published, valid, positive, open, new → green; disabled, archived, error, invalid, negative, closed → red; pending, flagged → orange). Anything else falls back to grey.
+         */
+        "statusColor": string;
+        /**
+          * Small muted text before the status pill (the old SubHeader `tagInfo`).
+         */
+        "statusInfo": string;
+        /**
+          * One line under the name: a role, a company, a date range. Plain text.
+         */
+        "subtitle": string;
+        /**
+          * External link shown under the subtitle, opened in a new tab.
+         */
+        "website": string;
+        /**
+          * Text for the website link; defaults to the URL.
+         */
+        "websiteText": string;
+    }
     interface InsRenderer {
         "app": boolean;
         "checkLoad": boolean;
@@ -3396,6 +3464,30 @@ declare global {
         prototype: HTMLInsRadioGroupElement;
         new (): HTMLInsRadioGroupElement;
     };
+    /**
+     * IIA v6 record identity header (TW#26778152).
+     * The card at the top of a record page: avatar (image, or initials on the brand colour),
+     * the record's name as the page h1, a subtitle line, an optional website link, a row of
+     * short facts, status/category pills, a metric strip and an actions area. It is the CRM
+     * Contact v1.4 / Company v1.0 `section.crm-hdr` moved into the bundle so every module's
+     * record page draws the same header from one place instead of each SPA carrying its own
+     * SubHeader markup.
+     * Content that differs per record type comes in through slots, all light DOM:
+     *   - `pills`    extra chips after the status pill (category, type…)
+     *   - `metrics`  an <ins-metric-tile-group variant="strip"> (or any strip); inline on wide
+     *                headers, on its own full-width row from 1180px down
+     *   - `actions`  buttons / <ins-action-menu>; pinned top-right below 600px
+     *   - `extra`    anything that used to sit under the old SubHeader (toggles, mid display)
+     * Styling is in insites.css ("IIA v6 record header layer"), tokens only. The host is an
+     * inline-size container so the breakpoints follow the header's own width, not the viewport,
+     * the same way the CRM record page does it.
+     */
+    interface HTMLInsRecordHeaderElement extends Components.InsRecordHeader, HTMLStencilElement {
+    }
+    var HTMLInsRecordHeaderElement: {
+        prototype: HTMLInsRecordHeaderElement;
+        new (): HTMLInsRecordHeaderElement;
+    };
     interface HTMLInsRendererElementEventMap {
         "didLoad": void;
         "insRouteChange": { crumbs: any[]; route: any };
@@ -3944,6 +4036,7 @@ declare global {
         "ins-progress-bar": HTMLInsProgressBarElement;
         "ins-radio": HTMLInsRadioElement;
         "ins-radio-group": HTMLInsRadioGroupElement;
+        "ins-record-header": HTMLInsRecordHeaderElement;
         "ins-renderer": HTMLInsRendererElement;
         "ins-search-scope": HTMLInsSearchScopeElement;
         "ins-select": HTMLInsSelectElement;
@@ -5259,6 +5352,74 @@ declare namespace LocalJSX {
         "tooltip"?: string;
         "value"?: any;
     }
+    /**
+     * IIA v6 record identity header (TW#26778152).
+     * The card at the top of a record page: avatar (image, or initials on the brand colour),
+     * the record's name as the page h1, a subtitle line, an optional website link, a row of
+     * short facts, status/category pills, a metric strip and an actions area. It is the CRM
+     * Contact v1.4 / Company v1.0 `section.crm-hdr` moved into the bundle so every module's
+     * record page draws the same header from one place instead of each SPA carrying its own
+     * SubHeader markup.
+     * Content that differs per record type comes in through slots, all light DOM:
+     *   - `pills`    extra chips after the status pill (category, type…)
+     *   - `metrics`  an <ins-metric-tile-group variant="strip"> (or any strip); inline on wide
+     *                headers, on its own full-width row from 1180px down
+     *   - `actions`  buttons / <ins-action-menu>; pinned top-right below 600px
+     *   - `extra`    anything that used to sit under the old SubHeader (toggles, mid display)
+     * Styling is in insites.css ("IIA v6 record header layer"), tokens only. The host is an
+     * inline-size container so the breakpoints follow the header's own width, not the viewport,
+     * the same way the CRM record page does it.
+     */
+    interface InsRecordHeader {
+        /**
+          * Dim the header (archived / disabled record).
+         */
+        "archived"?: boolean;
+        /**
+          * Short facts rendered as a separated row ("Sydney · 12 Oct · 240 capacity"). JSON array or comma-separated string.
+         */
+        "facts"?: any;
+        /**
+          * Icon-font class shown in the avatar circle instead of initials (e.g. icon-calendar for an event).
+         */
+        "icon"?: string;
+        /**
+          * Avatar image URL. When empty the initials of `name` render on the brand colour.
+         */
+        "image"?: string;
+        /**
+          * Record name. Rendered as the page h1 and used for the initials.
+         */
+        "name"?: string;
+        /**
+          * Hide the avatar entirely (records with no natural portrait: an event, a product, a form).
+         */
+        "noAvatar"?: boolean;
+        /**
+          * Status pill label (Active, Enabled, Draft…). Empty renders no pill.
+         */
+        "status"?: string;
+        /**
+          * Status pill colour: green | red | orange | yellow | blue | grey, or one of the status words the old <ins-tag> accepted (enabled, active, published, valid, positive, open, new → green; disabled, archived, error, invalid, negative, closed → red; pending, flagged → orange). Anything else falls back to grey.
+         */
+        "statusColor"?: string;
+        /**
+          * Small muted text before the status pill (the old SubHeader `tagInfo`).
+         */
+        "statusInfo"?: string;
+        /**
+          * One line under the name: a role, a company, a date range. Plain text.
+         */
+        "subtitle"?: string;
+        /**
+          * External link shown under the subtitle, opened in a new tab.
+         */
+        "website"?: string;
+        /**
+          * Text for the website link; defaults to the URL.
+         */
+        "websiteText"?: string;
+    }
     interface InsRenderer {
         "app"?: boolean;
         "checkLoad"?: boolean;
@@ -5786,6 +5947,7 @@ declare namespace LocalJSX {
         "ins-progress-bar": InsProgressBar;
         "ins-radio": InsRadio;
         "ins-radio-group": InsRadioGroup;
+        "ins-record-header": InsRecordHeader;
         "ins-renderer": InsRenderer;
         "ins-search-scope": InsSearchScope;
         "ins-select": InsSelect;
@@ -5938,6 +6100,25 @@ declare module "@stencil/core" {
             "ins-progress-bar": LocalJSX.InsProgressBar & JSXBase.HTMLAttributes<HTMLInsProgressBarElement>;
             "ins-radio": LocalJSX.InsRadio & JSXBase.HTMLAttributes<HTMLInsRadioElement>;
             "ins-radio-group": LocalJSX.InsRadioGroup & JSXBase.HTMLAttributes<HTMLInsRadioGroupElement>;
+            /**
+             * IIA v6 record identity header (TW#26778152).
+             * The card at the top of a record page: avatar (image, or initials on the brand colour),
+             * the record's name as the page h1, a subtitle line, an optional website link, a row of
+             * short facts, status/category pills, a metric strip and an actions area. It is the CRM
+             * Contact v1.4 / Company v1.0 `section.crm-hdr` moved into the bundle so every module's
+             * record page draws the same header from one place instead of each SPA carrying its own
+             * SubHeader markup.
+             * Content that differs per record type comes in through slots, all light DOM:
+             *   - `pills`    extra chips after the status pill (category, type…)
+             *   - `metrics`  an <ins-metric-tile-group variant="strip"> (or any strip); inline on wide
+             *                headers, on its own full-width row from 1180px down
+             *   - `actions`  buttons / <ins-action-menu>; pinned top-right below 600px
+             *   - `extra`    anything that used to sit under the old SubHeader (toggles, mid display)
+             * Styling is in insites.css ("IIA v6 record header layer"), tokens only. The host is an
+             * inline-size container so the breakpoints follow the header's own width, not the viewport,
+             * the same way the CRM record page does it.
+             */
+            "ins-record-header": LocalJSX.InsRecordHeader & JSXBase.HTMLAttributes<HTMLInsRecordHeaderElement>;
             "ins-renderer": LocalJSX.InsRenderer & JSXBase.HTMLAttributes<HTMLInsRendererElement>;
             /**
              * The IIA v6 record-page search pill with a field-scope dropdown.
