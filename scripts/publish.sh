@@ -1,20 +1,23 @@
 #!/usr/bin/env bash
-# Publish the built bundle to the admin CDN as a pinned version AND as the `v3/latest` alias.
+# Publish the built bundle to the admin CDN as a PINNED version only (TW#26796432, audit P1 item 1).
 #
-#   scripts/publish.sh 3.1.0
+#   scripts/publish.sh 3.4.0          # pinned: s3://insites-style-guide/v3/3.4.0/, immutable
+#   scripts/promote.sh 3.4.0          # later, once tested: move the v3/latest alias to it
+#
+# Until 23 Sep 2026 this script wrote the pinned folder AND v3/latest in one go, so a bundle reached every
+# instance the moment it was tested nowhere. Now a publish is invisible until promoted. Test the pinned
+# build on staging first with ?insites_component_version=v3/<version> on any admin URL; modules that pin
+# the bundle with SRI (insites_core insites_admin/insites_components.liquid) pick a new version up only
+# when their pin and hashes are bumped, and v3/latest is a rollback alias for instances not yet pinned.
 #
 # What it does, in order:
 #   1. refuses to run unless the build is fresh (components/www/build/insites.esm.js exists) and the
 #      version matches components/package.json;
-#   2. syncs the build and the CSS to  s3://insites-style-guide/v3/<version>/   (pinned, immutable: never re-published);
-#   3. syncs the same files to          s3://insites-style-guide/v3/latest/     (the alias every instance loads);
-#   4. writes a fresh epoch to dist/version-cache.txt, which the insites_core layouts append as ?updated= to
-#      every bundle URL, so browsers stop serving the previous loader from cache;
-#   5. invalidates /v3/latest/* and the stamp on CloudFront and waits;
-#   6. verifies the edge serves the new stamp and the new CSS.
+#   2. syncs the build, the CSS and the icon font to s3://insites-style-guide/v3/<version>/ (never re-published);
+#   3. verifies the edge serves the pinned build and prints the four SRI hashes the module pins need.
 #
-# Rollback is scripts/rollback.sh <version>: it re-syncs a pinned folder onto latest. Never publish to v2/*:
-# that line is frozen for Combinate and old client websites and takes backports in insites-components-v2 only.
+# Never publish to v2/*: that line is frozen for Combinate and old client websites and takes backports in
+# insites-components-v2 only.
 #
 # Requires: aws sso login --profile insites  (Styleguide account 959727866136)
 set -euo pipefail
@@ -54,27 +57,20 @@ sync_to() {
 }
 
 echo "== pinned: v3/$VERSION =="; sync_to "v3/$VERSION"
-echo "== alias:  v3/latest =="; sync_to "v3/latest"
 
-echo "== cache-buster stamp =="
-STAMP=$(date +%s)
-printf '%s' "$STAMP" > /tmp/version-cache.txt
-aws s3 cp /tmp/version-cache.txt "s3://$BUCKET/dist/version-cache.txt" --profile "$PROFILE" \
-  --content-type text/plain --cache-control "no-cache" --only-show-errors
-echo "dist/version-cache.txt -> $STAMP"
-
-echo "== invalidate =="
+echo "== invalidate the pinned prefix (first publish only, so a stale negative cache cannot mask it) =="
 INV=$(aws cloudfront create-invalidation --distribution-id "$DIST_ID" --profile "$PROFILE" \
-  --paths "/v3/latest/*" "/dist/version-cache.txt" --query 'Invalidation.Id' --output text)
+  --paths "/v3/$VERSION/*" --query 'Invalidation.Id' --output text)
 echo "invalidation $INV; waiting..."
 aws cloudfront wait invalidation-completed --distribution-id "$DIST_ID" --id "$INV" --profile "$PROFILE"
 
 echo "== verify edge =="
-EDGE_STAMP=$(curl -s "https://components.insites.io/dist/version-cache.txt")
-[[ "$EDGE_STAMP" == "$STAMP" ]] && echo "stamp at edge: $EDGE_STAMP (ok)" || { echo "stamp at edge is $EDGE_STAMP, expected $STAMP"; exit 1; }
 LOCAL_SHA=$(shasum -a 256 "$BUILD/insites.esm.js" | cut -d' ' -f1)
-for p in "v3/$VERSION" "v3/latest"; do
-  EDGE_SHA=$(curl -s "https://components.insites.io/$p/insites.esm.js?x=$STAMP" | shasum -a 256 | cut -d' ' -f1)
-  [[ "$EDGE_SHA" == "$LOCAL_SHA" ]] && echo "$p/insites.esm.js matches the local build" || { echo "$p/insites.esm.js differs from the local build"; exit 1; }
+EDGE_SHA=$(curl -s "https://components.insites.io/v3/$VERSION/insites.esm.js" | shasum -a 256 | cut -d' ' -f1)
+[[ "$EDGE_SHA" == "$LOCAL_SHA" ]] && echo "v3/$VERSION/insites.esm.js matches the local build" || { echo "v3/$VERSION/insites.esm.js differs from the local build"; exit 1; }
+
+echo "== SRI hashes for the module pins (insites_core insites_admin/insites_components.liquid and friends) =="
+for f in insites.js insites.esm.js css/insites.css css/insites-font-icons.css; do
+  printf '  %-28s sha384-%s\n' "$f" "$(curl -s "https://components.insites.io/v3/$VERSION/$f" | openssl dgst -sha384 -binary | openssl base64 -A)"
 done
-echo "published v3/$VERSION and v3/latest. Now: cd module-v6-crm/pos && insites-cli deploy staging (only if the module changed too)"
+echo "published v3/$VERSION (pinned). v3/latest is unchanged: test with ?insites_component_version=v3/$VERSION, then scripts/promote.sh $VERSION"
