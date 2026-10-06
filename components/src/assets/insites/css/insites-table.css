@@ -583,6 +583,38 @@
   margin-right: 0
 }
 
+/* TW#26847666: colour classes for a hasTag cell. ins-table puts row["<Label>_tagClass"] on the
+   cell (tagged green | red | yellow | orange | blue | grey), so a screen colours a status pill
+   without its status word having to be on the word-keyed lists in dist/styles/app.min.css.
+   Same look as those v6 pills: a light tint behind the alert colour. */
+.ibt-table-wrap .ibt-table_td.tagged.green span,
+.ibt-table-wrap .ibt-table_td.tagged.positive span {
+  background-color: var(--iia-alert-positive-light, #04880114);
+  color: var(--iia-alert-positive, #048801)
+}
+
+.ibt-table-wrap .ibt-table_td.tagged.red span,
+.ibt-table-wrap .ibt-table_td.tagged.negative span {
+  background-color: var(--iia-alert-negative-light, #DF1F1F14);
+  color: var(--iia-alert-negative, #DF1F1F)
+}
+
+.ibt-table-wrap .ibt-table_td.tagged.yellow span,
+.ibt-table-wrap .ibt-table_td.tagged.orange span {
+  background-color: var(--iia-alert-warning-light, #FBAC1314);
+  color: var(--iia-alert-warning, #EC9C00)
+}
+
+.ibt-table-wrap .ibt-table_td.tagged.blue span {
+  background-color: var(--iia-main-light, #436CF214);
+  color: var(--iia-main, #436CF2)
+}
+
+.ibt-table-wrap .ibt-table_td.tagged.grey span {
+  background-color: var(--iia-ui-3, #DFDFDF);
+  color: var(--iia-text-1, #000000)
+}
+
 .ibt-table-wrap .ibt-image {
   max-width: 100%;
   height: auto;
