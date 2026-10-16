@@ -75,6 +75,11 @@ as the newest once a second v6 instance exists.
 Infrastructure: bucket `insites-style-guide` (us-west-2), CloudFront `E35G635O6GR2HY`, Styleguide AWS
 account 959727866136, SSO profile `insites`. Older docs naming `ins-styleguide` / `EKAHJ8SFS25OG` are wrong.
 
+Caching: hashed `p-*.js` chunks are published immutable for a year; loaders (`insites.esm.js`, `insites.js`)
+for five minutes. The `/v3/*` CloudFront behaviour keys on the query string and no 4xx/5xx is cached at the
+edge, so the bundle's in-page retry (`?retry=<n>`, `scripts/stencil-lazy-retry.js`) fetches a fresh copy.
+`scripts/cdn-cache-settings.sh` sets that up and is a no-op once applied (TW#26896897).
+
 **Never repeat this process against `v2/*`.** `v2` is frozen for Combinate and
 old client websites — it takes security/data-loss backports only, applied
 directly in `insites-components-v2`, not from this repo.

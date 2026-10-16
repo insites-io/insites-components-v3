@@ -7,7 +7,8 @@
 # an alias of this file kept for the muscle memory in the runbooks.
 #
 # Re-syncs s3://insites-style-guide/v3/<version>/ onto v3/latest/ (deleting files the pinned version does
-# not have), bumps dist/version-cache.txt so every instance's browsers fetch the loader again, invalidates,
+# not have, except hashed p-*.js chunks, which stay so a recently cached loader still finds its own),
+# bumps dist/version-cache.txt so every instance's browsers fetch the loader again, invalidates,
 # and verifies the edge serves the pinned build. Pinned folders are never touched.
 #
 # Every instance on the v6 shell loads v3/latest, so this changes what every instance runs within minutes.
@@ -25,8 +26,14 @@ aws s3 ls "s3://$BUCKET/v3/$VERSION/insites.esm.js" --profile "$PROFILE" >/dev/n
 
 echo "== identity =="; aws sts get-caller-identity --profile "$PROFILE" --output text
 echo "== v3/latest <- v3/$VERSION =="
+# Hashed chunks first, and never deleted: a browser that cached the previous loader in the last five minutes
+# still asks v3/latest for that loader's chunks, and deleting them is what used to break those pages until a
+# reload (TW#26896897). Chunks are named after their content, so leaving old ones costs only storage. Without
+# --cache-control the copy keeps the pinned object's metadata (immutable for pins published since 3.3.5).
+aws s3 sync "s3://$BUCKET/v3/$VERSION/" "s3://$BUCKET/v3/latest/" --profile "$PROFILE" \
+  --exclude "*" --include "p-*.js" --only-show-errors
 aws s3 sync "s3://$BUCKET/v3/$VERSION/" "s3://$BUCKET/v3/latest/" --profile "$PROFILE" --delete \
-  --cache-control "public, max-age=300" --only-show-errors
+  --exclude "p-*.js" --cache-control "public, max-age=300" --only-show-errors
 
 echo "== cache-buster stamp =="
 STAMP=$(date +%s)

@@ -1,5 +1,18 @@
 Release Notes
 
+*Insites Components* `v3.3.5` — pinned at `v3/3.3.5` (TW#26896897)
+
+Admin screens sometimes rendered without tables, editors or file inputs ("Constructor for ins-table#undefined was not found") when one component download failed, and a refresh often did not fix it.
+
+- A component whose code fails to download now retries in the page three times (after 0.4 s, 1.5 s and 4 s) at `<chunk>.entry.js?retry=<n>`, before Stencil gives up. CRM's reload guard only sees the last failure. `scripts/stencil-lazy-retry.js` patches Stencil's loader on every build and test run, and fails the build if a Stencil upgrade changes the code it patches.
+- `publish.sh` serves hashed `p-*.js` chunks as `max-age=31536000, immutable`, so browsers stop re-checking 90 files every five minutes. Loaders stay at five minutes.
+- `promote.sh` no longer deletes old chunks from `v3/latest`, so a loader cached just before a promote still finds its own chunks.
+- `scripts/cdn-cache-settings.sh` (run once): a `/v3/*` CloudFront behaviour that keys on the query string, so a retry reaches a fresh copy, and no edge caching of 403/404/5xx responses.
+
+*Rollback*: re-pin CRM to `v3/3.3.4`.
+
+---
+
 *Insites Components* `v3.1.0` — 2026-09-10 (admin CDN line, `v3/latest`; pinned at `v3/3.1.0`)
 
 First pinned release of the v6 admin shell line. `v3/3.0.0` (4 Sep) was the byte-identical fork of insites-components-v2 at v2.15.6 plus the seven CRM record-page components; everything since went to `v3/latest` only. This pin captures what is live.

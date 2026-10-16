@@ -48,8 +48,13 @@ echo "== identity =="; aws sts get-caller-identity --profile "$PROFILE" --output
 
 sync_to() {
   local prefix="$1"
+  # p-<hash>.js and p-<hash>.entry.js are named after their content, so a browser can keep them for a year
+  # and never re-check (TW#26896897). Only the unhashed loaders (insites.esm.js, insites.js, index.esm.js)
+  # stay short-lived. promote.sh copies the objects with this metadata onto v3/latest.
+  aws s3 sync "$BUILD/" "s3://$BUCKET/$prefix/" --profile "$PROFILE" --exclude "*" --include "p-*.js" \
+    --cache-control "public, max-age=31536000, immutable" --only-show-errors
   aws s3 sync "$BUILD/" "s3://$BUCKET/$prefix/" --profile "$PROFILE" --exclude "*.map" --exclude "*.log" \
-    --cache-control "public, max-age=300" --only-show-errors
+    --exclude "p-*.js" --cache-control "public, max-age=300" --only-show-errors
   aws s3 sync "$CSS/" "s3://$BUCKET/$prefix/css/" --profile "$PROFILE" --exclude "*.log" \
     --cache-control "public, max-age=300" --only-show-errors
   aws s3 sync "$FONTS/" "s3://$BUCKET/$prefix/fonts/" --profile "$PROFILE" \
