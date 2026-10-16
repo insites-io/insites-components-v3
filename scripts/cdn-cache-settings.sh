@@ -36,7 +36,7 @@ else
   BEHAVIOUR_EXISTS=false
 fi
 
-DEFAULT_POLICY=$(jq -r '.DefaultCacheBehavior.CachePolicyId // empty' "$WORK/before.json")
+DEFAULT_POLICY=$(jq -r '.DefaultCacheBehavior.CachePolicyId // ""' "$WORK/before.json")
 NEW_POLICY_ID="<created on --apply>"
 if [[ "$BEHAVIOUR_EXISTS" == false && -n "$DEFAULT_POLICY" ]]; then
   # The default behaviour uses a cache policy: clone it with every query string in the key.
@@ -61,10 +61,12 @@ jq --arg p "$PATTERN" --arg pid "$NEW_POLICY_ID" --argjson exists "$BEHAVIOUR_EX
    --argjson codes "$(printf '%s\n' "${ERROR_CODES[@]}" | jq -s .)" '
   (if $exists then . else
     (.DefaultCacheBehavior + {PathPattern: $p}
-      | if .CachePolicyId then .CachePolicyId = $pid
+      | if (.CachePolicyId // "") != "" then .CachePolicyId = $pid
         else .ForwardedValues.QueryString = true
            | .ForwardedValues.QueryStringCacheKeys = {Quantity: 0} end) as $b
-    | .CacheBehaviors.Items = ([$b] + (.CacheBehaviors.Items // []))
+    # Appended, not prepended: CloudFront takes the first matching pattern, so any narrower behaviour that
+    # already exists keeps applying. Read the dry-run diff for a broader pattern listed earlier.
+    | .CacheBehaviors.Items = ((.CacheBehaviors.Items // []) + [$b])
     | .CacheBehaviors.Quantity = (.CacheBehaviors.Items | length)
   end)
   | ((.CustomErrorResponses.Items // []) | map({key: (.ErrorCode | tostring), value: .}) | from_entries) as $have
@@ -87,9 +89,14 @@ aws cloudfront update-distribution --id "$DIST_ID" --if-match "$ETAG" \
 echo "waiting for the distribution to deploy (several minutes)..."
 aws cloudfront wait distribution-deployed --id "$DIST_ID" --profile "$PROFILE"
 
-echo "== verify: a new query string must miss the edge =="
-CHUNK=$(curl -s https://components.insites.io/v3/latest/insites.esm.js | grep -o 'p-[0-9a-f]*\.js' | head -1)
-Q="?retry=verify$RANDOM$RANDOM"
-X=$(curl -s -o /dev/null -D - "https://components.insites.io/v3/latest/$CHUNK$Q" | grep -i '^x-cache' | tr -d '\r')
-echo "$CHUNK$Q -> $X"
-[[ "$X" == *Miss* ]] && echo "query string is in the /v3/* cache key" || { echo "expected a Miss"; exit 1; }
+echo "== verify: the plain URL hits the edge and a new query string misses it =="
+CHUNK=$(curl -s https://components.insites.io/v3/latest/insites.esm.js | grep -o 'p-[0-9a-f]*\.js' | head -1 || true)
+[[ -n "$CHUNK" ]] || { echo "could not find a chunk name in v3/latest/insites.esm.js"; exit 1; }
+xcache() { curl -s -o /dev/null -D - "$1" | tr -d '\r' | grep -i '^x-cache' || echo "x-cache: (none)"; }
+BASE="https://components.insites.io/v3/latest/$CHUNK"
+xcache "$BASE" >/dev/null
+PLAIN=$(xcache "$BASE")
+FRESH=$(xcache "$BASE?retry=verify$RANDOM$RANDOM")
+echo "plain: $PLAIN"; echo "fresh query: $FRESH"
+[[ "$PLAIN" == *Hit* ]] || { echo "the plain URL did not hit the edge twice in a row; cannot judge the cache key, check by hand"; exit 1; }
+[[ "$FRESH" == *Miss* ]] && echo "query string is in the /v3/* cache key" || { echo "a new query string hit the edge: the query string is not in the cache key"; exit 1; }

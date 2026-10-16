@@ -12,6 +12,12 @@
 // Only the last failure reaches console.error, which is what CRM's component_load_guard listens for, so the
 // guard's reload stays the fallback after the retries, not the first response.
 //
+// Limit: the retry re-fetches the entry file only. When the entry's own download succeeded but a shared chunk it
+// imports failed (five shared library chunks, imported by up to 11 entries), the browser keeps that chunk's
+// failure for the page's life and every retry fails the same way. CRM's reload guard stays the fallback for
+// that case. Retrying it in place would mean rewriting the entry into a blob: URL, which breaks import.meta.url
+// asset paths and can load a library twice.
+//
 // Idempotent. Fails the build if Stencil's source no longer matches, so an upgrade cannot drop the retry
 // silently: re-check loadModule in @stencil/core/internal/client/index.js and update ORIGINAL below.
 const fs = require("fs");

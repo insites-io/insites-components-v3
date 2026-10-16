@@ -5,6 +5,7 @@ Release Notes
 Admin screens sometimes rendered without tables, editors or file inputs ("Constructor for ins-table#undefined was not found") when one component download failed, and a refresh often did not fix it.
 
 - A component whose code fails to download now retries in the page three times (after 0.4 s, 1.5 s and 4 s) at `<chunk>.entry.js?retry=<n>`, before Stencil gives up. CRM's reload guard only sees the last failure. `scripts/stencil-lazy-retry.js` patches Stencil's loader on every build and test run, and fails the build if a Stencil upgrade changes the code it patches.
+- Known limit: if the component's own file loads but one of the five shared library chunks it imports fails, the retry cannot recover (the browser keeps that chunk's failure for the page's life), and CRM's reload guard takes over as before.
 - `publish.sh` serves hashed `p-*.js` chunks as `max-age=31536000, immutable`, so browsers stop re-checking 90 files every five minutes. Loaders stay at five minutes.
 - `promote.sh` no longer deletes old chunks from `v3/latest`, so a loader cached just before a promote still finds its own chunks.
 - `scripts/cdn-cache-settings.sh` (run once): a `/v3/*` CloudFront behaviour that keys on the query string, so a retry reaches a fresh copy, and no edge caching of 403/404/5xx responses.

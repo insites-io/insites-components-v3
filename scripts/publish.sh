@@ -39,6 +39,8 @@ FONTS="$ROOT/components/www/assets/insites/fonts"
 PKG_VERSION=$(node -e "process.stdout.write(require('$ROOT/components/package.json').version)")
 
 [[ -f "$BUILD/insites.esm.js" ]] || { echo "no build at $BUILD — run npm run build in components/ first"; exit 1; }
+# npm test rebuilds www/ in dev mode (unhashed <tag>.entry.js names, no minification). Only ship a production build.
+ls "$BUILD"/p-*.entry.js >/dev/null 2>&1 || { echo "$BUILD is a dev build (no hashed p-*.entry.js) — run npm run build in components/"; exit 1; }
 [[ "$PKG_VERSION" == "$VERSION" ]] || { echo "components/package.json says $PKG_VERSION, not $VERSION — bump it first"; exit 1; }
 if aws s3 ls "s3://$BUCKET/v3/$VERSION/insites.esm.js" --profile "$PROFILE" >/dev/null 2>&1; then
   echo "v3/$VERSION is already published; pinned versions are immutable. Bump the version."; exit 1
