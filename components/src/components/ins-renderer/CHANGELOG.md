@@ -1,4 +1,5 @@
 # Unreleased
+- [TW#26897281](https://pm.cbo.me/#tasks/26897281) Stop only the renderer's own frame before `location.replace()`. `window.frames.stop()` stopped the whole admin page and cancelled every download in flight. The Internet Explorer branch is removed.
 - [TW#26371963](https://pm.cbo.me/#tasks/26371963) Add `insRouteChange`, emitted from `updateRoute()` with the crumb trail and the resolved route. Additive; the v6 shell header draws its breadcrumb bar from it instead of the renderer drawing crumbs inside the content column.
 
 # 1.0.21 (07-27-2018)

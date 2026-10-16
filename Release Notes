@@ -1,5 +1,17 @@
 Release Notes
 
+*Insites Components* `v3.3.7` — pinned at `v3/3.3.7` (TW#26897281)
+
+Admin pages lost their logo, module screens stayed blank, and Google Maps or component files failed, mostly on slow or VPN connections.
+
+- `ins-renderer` stopped the frame's load before each `location.replace()` with `window.frames.stop()`. `window.frames` is the top window, so it stopped the whole admin page and cancelled every download still in flight, once per frame navigation (measured 4.4 to 8.6 s after start on 16 Oct 2026). It now stops only its own frame, and the Internet Explorer branch is gone. Rerouting (`?reroute=`, `?reroutelabel=`) is unchanged.
+- This also explains many failed shared chunks (`p-0462f723.js` was among the cancelled files), the case the 3.3.5 retry cannot recover.
+- The v2 bundle (`insites-components-v2`, v5 admin) has the same line and is not changed here.
+
+*Rollback*: re-pin CRM to `v3/3.3.6`.
+
+---
+
 *Insites Components* `v3.3.6` — pinned at `v3/3.3.6` (TW#26897268)
 
 Record views left 56px of empty space under the breadcrumb bar instead of the 24px gutter.

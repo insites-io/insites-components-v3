@@ -152,11 +152,14 @@ export class InsRenderer {
     if (this.insRendererFrameEl) {
       this.iframeURLChange(this.insRendererFrameEl, e => {
         // if (this.route.app){
-        if (navigator.appName == 'Microsoft Internet Explorer') {
-          window.frames.document.execCommand('Stop');
-        } else {
-          window.frames.stop();
-        }
+        // Stop the frame's own load before the location.replace() below. This used to call
+        // window.frames.stop(), but window.frames is the top window, so it stopped the whole
+        // admin page and cancelled every download still in flight: the logo, module app.js,
+        // Google Maps libraries and component chunks (TW#26897281). A cross-origin frame
+        // throws on stop(); there is nothing to stop there.
+        try {
+          this.frameWindow()?.stop();
+        } catch (err) {}
 
         if (e.includes("?reroute=")) {
           this.rerouting = true;
