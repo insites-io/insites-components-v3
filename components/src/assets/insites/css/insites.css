@@ -14166,6 +14166,10 @@ body.mini .iia-shell--v6 .ins-renderer-wrap.content { margin-left: 0; width: aut
 .iia-shell--v6 .ins-renderer-wrap .ins-breadcrumbs-wrap,
 .iia-shell--v6 .page-title-wrapper ins-breadcrumbs,
 .iia-shell--v6 .page-title-wrapper .hide-last-breadcrumb { display: none; }
+/* With its crumbs hidden, a page title that has no title text, no buttons and no filters is an empty box that still
+   kept its 24px bottom margin and the empty h1's 8px, leaving 56px instead of the 24px gutter under the breadcrumb bar
+   on every record view (TW#26897268). Collapse it; a title or buttons keep it. Browsers without :has() keep the gap. */
+.iia-shell--v6 .page-title-wrapper:not(:has(.header-title:not(:empty))):not(:has(.buttons-wrapper)):not(:has(> :nth-child(2))) { display: none; }
 /* The content column is the scroller, as in the prototype (<main style="flex:1;overflow-y:auto">): header and rail
    stay put, the page scrolls beneath the breadcrumb bar. Legacy app.min.css gives .ins-renderer-wrap overflow:hidden
    from the iframe era, which inside this fixed-height frame clipped every SPA page taller than the viewport and left

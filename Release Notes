@@ -1,5 +1,15 @@
 Release Notes
 
+*Insites Components* `v3.3.6` — pinned at `v3/3.3.6` (TW#26897268)
+
+Record views left 56px of empty space under the breadcrumb bar instead of the 24px gutter.
+
+- Every module's page title (`.page-title-wrapper`) used to carry the module's own breadcrumbs, which the shell already hides. On a record view with no title text and no buttons the wrapper was an empty box that kept its 24px bottom margin and the empty heading's 8px. The shell now collapses it. A page title with text, buttons or filters is unchanged. CSS only, in `css/insites.css`.
+
+*Rollback*: re-pin CRM to `v3/3.3.5`.
+
+---
+
 *Insites Components* `v3.3.5` — pinned at `v3/3.3.5` (TW#26896897)
 
 Admin screens sometimes rendered without tables, editors or file inputs ("Constructor for ins-table#undefined was not found") when one component download failed, and a refresh often did not fix it.
