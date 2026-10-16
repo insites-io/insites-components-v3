@@ -71,7 +71,7 @@ jq --arg p "$PATTERN" --arg pid "$NEW_POLICY_ID" --argjson exists "$BEHAVIOUR_EX
   end)
   | ((.CustomErrorResponses.Items // []) | map({key: (.ErrorCode | tostring), value: .}) | from_entries) as $have
   | .CustomErrorResponses.Items = ([$codes[] | tostring] + ($have | keys) | unique
-      | map(($have[.] // {ErrorCode: (. | tonumber)}) + (if (. | tonumber) as $c | $codes | index($c) then {ErrorCachingMinTTL: 0} else {} end)))
+      | map(($have[.] // {ErrorCode: (. | tonumber), ResponsePagePath: "", ResponseCode: ""}) + (if (. | tonumber) as $c | $codes | index($c) then {ErrorCachingMinTTL: 0} else {} end)))
   | .CustomErrorResponses.Quantity = (.CustomErrorResponses.Items | length)
 ' "$WORK/before.json" > "$WORK/after.json"
 
