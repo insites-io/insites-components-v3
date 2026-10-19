@@ -211,7 +211,7 @@ test.describe('ins-header support chat toggle', () => {
   test('the phone-width icon button toggles the same way', async ({ page }) => {
     await page.setViewportSize({ width: 600, height: 800 });
     await mount(page, header());
-    const btn = page.locator('ins-header button.iia-hdr__btn[aria-label="Open support chat"]');
+    const btn = page.locator('ins-header button.iia-hdr__btn[aria-label^="Open support chat"]');
     await expect(pill(page)).toHaveCount(0);
 
     await btn.click();

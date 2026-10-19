@@ -158,6 +158,16 @@ export class InsHeader {
   get isV6() { return this.variant === 'v6'; }
 
   connectedCallback() {
+    this.startSupportPresence();
+  }
+
+  /** A host may set variant as a property after connect; start the office-hours check then too. */
+  @Watch('variant')
+  variantChanged() {
+    this.startSupportPresence();
+  }
+
+  private startSupportPresence() {
     if (!this.isV6) return;
     this.evaluateSupportHours();
     if (!this.supportTimer) this.supportTimer = setInterval(() => { this.bindIntercom(); this.evaluateSupportHours(); }, 60000);
@@ -863,7 +873,7 @@ export class InsHeader {
             ) : null}
 
             {this.mobile ? (
-              <button type="button" class="iia-hdr__btn" data-tip="Help & support" aria-haspopup="dialog" aria-expanded={String(this.supportChatOpen)} aria-label="Open support chat" onClick={this.toggleSupport}>
+              <button type="button" class="iia-hdr__btn" data-tip="Help & support" aria-haspopup="dialog" aria-expanded={String(this.supportChatOpen)} aria-label={`Open support chat, ${this.unread} unread messages`} onClick={this.toggleSupport}>
                 <span class="iia-hdr__badgewrap"><i class="icon-message-circle" aria-hidden="true"></i>{this.unread > 0 ? <span class="iia-chat__badge" aria-hidden="true">{this.unread}</span> : null}</span>
               </button>
             ) : null}

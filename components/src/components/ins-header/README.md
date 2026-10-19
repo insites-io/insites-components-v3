@@ -55,7 +55,7 @@ corner bubble never shows.
   account menus always open.
 - The unread badge counts from `Intercom('onUnreadCountChange')`. The pill's screen reader label is
   "Open support chat, N unread messages".
-- Intercom may load after the header (Google Tag Manager). The header subscribes once, on load, on
+- Intercom may load after the header (the host boots it asynchronously). The header subscribes once, on load, on
   the first support click or on the next minute tick, whichever finds `window.Intercom` first.
 
 Availability follows office hours, because Intercom has no public live-presence API. Inside
