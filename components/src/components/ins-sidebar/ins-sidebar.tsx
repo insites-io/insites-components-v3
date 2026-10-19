@@ -1,6 +1,11 @@
 import { h, Component, Prop, Event, EventEmitter, State, Method, Listen, Element, Host } from "@stencil/core";
 import { RAIL_GROUPS, railGroupForLegacyIcon } from "../../utils/phosphor-shell-icons";
 
+/** v6: the groups a module may name with `rail-group` on its top-level item (TW#26868377). */
+const DECLARABLE_RAIL_GROUPS = RAIL_GROUPS.filter(g => g.label).map(g => g.id);
+/** Declared rail-group values already warned about, so a bad value logs once per page, not per render. */
+const warnedRailGroups = new Set<string>();
+
 /**
  * IIA v6 shell rail (TW#26371963) is an ADDITIVE variant of this component.
  *
@@ -92,6 +97,9 @@ export class InsSidebar {
    * The partials emit a flat list in install order (and the index menu wraps its items in a bare
    * <div>); the design shows Dashboard, then Work / Build / Sell / Configure with a rule and a
    * label above each. Done on the light DOM here, once, so the slot simply renders the wrappers.
+   *
+   * An item's own `rail-group` (TW#26868377) is read first and always wins; it lands after the
+   * icon-ranked items of that group, in emit order. Items without it go through the icon lookup.
    */
   private groupRailItems(){
     const host = this.insSidebarEl;
@@ -102,9 +110,13 @@ export class InsSidebar {
     const buckets = RAIL_GROUPS.map(g => ({ ...g, els: [] as Array<{ el: HTMLElement; rank: number }> }));
     const rest: HTMLElement[] = [];
     const hidden: HTMLElement[] = [];
+    let declaredSeq = 0;
     top.forEach(el => {
       if (el.classList.contains('hide-for-medium')) { hidden.push(el); return; }
-      const hit = railGroupForLegacyIcon(el.getAttribute('icon'));
+      const declared = this.declaredRailGroup(el);
+      const hit = declared
+        ? { id: declared, rank: 1000 + declaredSeq++ }   // after every icon-ranked item, in emit order
+        : railGroupForLegacyIcon(el.getAttribute('icon'));
       const b = hit ? buckets.find(x => x.id === hit.id) : null;
       if (b) b.els.push({ el, rank: hit.rank }); else rest.push(el);
     });
@@ -136,6 +148,26 @@ export class InsSidebar {
     if (hidden.length) makeGroup('', false, hidden, 'Account'); // mobile-only rows, hidden by CSS at every width
     wrappers.forEach(w => { if (!w.querySelector('ins-sidebar-item')) w.remove(); });
     host.appendChild(frag);
+  }
+
+  /**
+   * v6: the group an item names with `rail-group`, or null to use the icon lookup. Read from the
+   * attribute (the item may not be hydrated yet) or from the `railGroup` property a script set.
+   * Trimmed, any case. Anything other than work, build, sell or configure, including '' and
+   * 'primary', warns once and returns null.
+   */
+  private declaredRailGroup(el: HTMLElement): string | null {
+    const raw = el.hasAttribute('rail-group') ? el.getAttribute('rail-group') : (el as any).railGroup;
+    if (raw === null || raw === undefined) return null;
+    const value = String(raw).trim().toLowerCase();
+    if (DECLARABLE_RAIL_GROUPS.indexOf(value) >= 0) return value;
+    const label = el.getAttribute('label') || (el as any).label || '';
+    const key = `${label}\u0000${raw}`;
+    if (!warnedRailGroups.has(key)) {
+      warnedRailGroups.add(key);
+      console.warn(`ins-sidebar: unknown rail-group "${raw}" on "${label}"; valid values are ${DECLARABLE_RAIL_GROUPS.join(', ')}.`);
+    }
+    return null;
   }
 
   componentDidLoad(){

@@ -2,7 +2,7 @@ import { h, Component, Prop, Event, EventEmitter, State, Method, Element, Host }
 import { glyphForLegacyIcon } from '../../utils/phosphor-shell-icons';
 
 /**
- * IIA v6 rail item (TW#26371963). No new props: when the closest <ins-sidebar>
+ * IIA v6 rail item (TW#26371963). When the closest <ins-sidebar>
  * carries variant="v6" this item renders the Admin Shell v1.5 row instead of the
  * legacy one. Its public API and every method the module partials and the hash
  * router rely on are unchanged, so the ten module rail partials and the two
@@ -16,6 +16,9 @@ import { glyphForLegacyIcon } from '../../utils/phosphor-shell-icons';
  * The icon: the legacy `icon="icon-…"` class is resolved centrally to a Phosphor
  * glyph (utils/phosphor-shell-icons). Unmapped classes fall back to the font icon,
  * so an unknown module still renders.
+ *
+ * The group: a top-level item may name its rail group with `rail-group` (TW#26868377);
+ * without it the rail places the item by its icon class, as before.
  */
 @Component({ tag: 'ins-sidebar-item' })
 export class InsSidebarItem {
@@ -37,6 +40,13 @@ export class InsSidebarItem {
   @Prop({ mutable: true }) load: boolean = false;
   @Prop({ mutable: true }) checkLoad: boolean = false;
   @Prop({ mutable: true }) tooltip: boolean = false;
+  /**
+   * v6 rail only: the named group this top-level item sits in, `work`, `build`, `sell` or
+   * `configure` (trimmed, any case). It wins over the icon lookup and places the item after the
+   * group's icon-ranked items. Any other value logs one console.warn and falls back to the icon
+   * lookup. Ignored on nested items, on `hide-for-medium` items and without `variant="v6"`.
+   */
+  @Prop() railGroup: string;
 
   @State() submenuVisible: boolean;
   @State() isActive: boolean;

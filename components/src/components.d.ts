@@ -1544,7 +1544,7 @@ export namespace Components {
         "toggleMenu": () => Promise<void>;
     }
     /**
-     * IIA v6 rail item (TW#26371963). No new props: when the closest <ins-sidebar>
+     * IIA v6 rail item (TW#26371963). When the closest <ins-sidebar>
      * carries variant="v6" this item renders the Admin Shell v1.5 row instead of the
      * legacy one. Its public API and every method the module partials and the hash
      * router rely on are unchanged, so the ten module rail partials and the two
@@ -1556,6 +1556,8 @@ export namespace Components {
      * The icon: the legacy `icon="icon-…"` class is resolved centrally to a Phosphor
      * glyph (utils/phosphor-shell-icons). Unmapped classes fall back to the font icon,
      * so an unknown module still renders.
+     * The group: a top-level item may name its rail group with `rail-group` (TW#26868377);
+     * without it the rail places the item by its icon class, as before.
      */
     interface InsSidebarItem {
         "activate": () => Promise<boolean>;
@@ -1574,6 +1576,10 @@ export namespace Components {
         "landingPage": boolean;
         "link": any;
         "load": boolean;
+        /**
+          * v6 rail only: the named group this top-level item sits in, `work`, `build`, `sell` or `configure` (trimmed, any case). It wins over the icon lookup and places the item after the group's icon-ranked items. Any other value logs one console.warn and falls back to the icon lookup. Ignored on nested items, on `hide-for-medium` items and without `variant="v6"`.
+         */
+        "railGroup": string;
         "routePageHandler": (e?: Event | string) => Promise<{ crumbs: any[]; }>;
         "showSubMenu": () => Promise<boolean>;
         "tooltip": boolean;
@@ -3661,7 +3667,7 @@ declare global {
         "didHover": { x: number; y: number; label: string; state: boolean };
     }
     /**
-     * IIA v6 rail item (TW#26371963). No new props: when the closest <ins-sidebar>
+     * IIA v6 rail item (TW#26371963). When the closest <ins-sidebar>
      * carries variant="v6" this item renders the Admin Shell v1.5 row instead of the
      * legacy one. Its public API and every method the module partials and the hash
      * router rely on are unchanged, so the ten module rail partials and the two
@@ -3673,6 +3679,8 @@ declare global {
      * The icon: the legacy `icon="icon-…"` class is resolved centrally to a Phosphor
      * glyph (utils/phosphor-shell-icons). Unmapped classes fall back to the font icon,
      * so an unknown module still renders.
+     * The group: a top-level item may name its rail group with `rail-group` (TW#26868377);
+     * without it the rail places the item by its icon class, as before.
      */
     interface HTMLInsSidebarItemElement extends Components.InsSidebarItem, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsSidebarItemElementEventMap>(type: K, listener: (this: HTMLInsSidebarItemElement, ev: InsSidebarItemCustomEvent<HTMLInsSidebarItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -5567,7 +5575,7 @@ declare namespace LocalJSX {
         "label"?: string;
     }
     /**
-     * IIA v6 rail item (TW#26371963). No new props: when the closest <ins-sidebar>
+     * IIA v6 rail item (TW#26371963). When the closest <ins-sidebar>
      * carries variant="v6" this item renders the Admin Shell v1.5 row instead of the
      * legacy one. Its public API and every method the module partials and the hash
      * router rely on are unchanged, so the ten module rail partials and the two
@@ -5579,6 +5587,8 @@ declare namespace LocalJSX {
      * The icon: the legacy `icon="icon-…"` class is resolved centrally to a Phosphor
      * glyph (utils/phosphor-shell-icons). Unmapped classes fall back to the font icon,
      * so an unknown module still renders.
+     * The group: a top-level item may name its rail group with `rail-group` (TW#26868377);
+     * without it the rail places the item by its icon class, as before.
      */
     interface InsSidebarItem {
         "app"?: boolean;
@@ -5595,6 +5605,10 @@ declare namespace LocalJSX {
         "onDidHover"?: (event: InsSidebarItemCustomEvent<{ x: number; y: number; label: string; state: boolean }>) => void;
         "onDidLoad"?: (event: InsSidebarItemCustomEvent<void>) => void;
         "onRoutePage"?: (event: InsSidebarItemCustomEvent<{ crumbs: any[]; redirect: boolean }>) => void;
+        /**
+          * v6 rail only: the named group this top-level item sits in, `work`, `build`, `sell` or `configure` (trimmed, any case). It wins over the icon lookup and places the item after the group's icon-ranked items. Any other value logs one console.warn and falls back to the icon lookup. Ignored on nested items, on `hide-for-medium` items and without `variant="v6"`.
+         */
+        "railGroup"?: string;
         "tooltip"?: boolean;
         "withSubmenu"?: boolean;
     }
@@ -6150,7 +6164,7 @@ declare module "@stencil/core" {
             "ins-sidebar-footer-button": LocalJSX.InsSidebarFooterButton & JSXBase.HTMLAttributes<HTMLInsSidebarFooterButtonElement>;
             "ins-sidebar-footer-menu": LocalJSX.InsSidebarFooterMenu & JSXBase.HTMLAttributes<HTMLInsSidebarFooterMenuElement>;
             /**
-             * IIA v6 rail item (TW#26371963). No new props: when the closest <ins-sidebar>
+             * IIA v6 rail item (TW#26371963). When the closest <ins-sidebar>
              * carries variant="v6" this item renders the Admin Shell v1.5 row instead of the
              * legacy one. Its public API and every method the module partials and the hash
              * router rely on are unchanged, so the ten module rail partials and the two
@@ -6162,6 +6176,8 @@ declare module "@stencil/core" {
              * The icon: the legacy `icon="icon-…"` class is resolved centrally to a Phosphor
              * glyph (utils/phosphor-shell-icons). Unmapped classes fall back to the font icon,
              * so an unknown module still renders.
+             * The group: a top-level item may name its rail group with `rail-group` (TW#26868377);
+             * without it the rail places the item by its icon class, as before.
              */
             "ins-sidebar-item": LocalJSX.InsSidebarItem & JSXBase.HTMLAttributes<HTMLInsSidebarItemElement>;
             "ins-sort": LocalJSX.InsSort & JSXBase.HTMLAttributes<HTMLInsSortElement>;

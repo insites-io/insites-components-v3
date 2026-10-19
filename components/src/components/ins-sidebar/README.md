@@ -19,7 +19,9 @@ from Phosphor regular to fill. Before the first render the rail arranges its top
 the design's groups (Dashboard; Work; Build; Sell; Configure), each labelled group opening with a
 1px rule and a 12px label; the collapsed rail keeps only the rules. The grouping is keyed by each
 item's `icon` class in `utils/phosphor-shell-icons`, so partials stay untouched, and any module the
-design does not place lands in an unlabelled trailing group. A module with a sub-menu opens a fixed flyout beside the rail
+design does not place lands in an unlabelled trailing group. An item can name its group instead
+with `rail-group="work|build|sell|configure"`, which wins over the icon (TW#26868377; see
+`ins-sidebar-item`). A module with a sub-menu opens a fixed flyout beside the rail
 on hover (tap below 1024px). Only the Dashboard item carries a divider after it.
 
 Nothing about the items' API changes. Each item's existing `icon="icon-…"` class is resolved to a

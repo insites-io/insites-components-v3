@@ -1,4 +1,5 @@
 # Unreleased
+- [TW#26868377](https://pm.cbo.me/#tasks/26868377) New optional prop `railGroup` (`rail-group`, no default): names the v6 rail group (`work`, `build`, `sell`, `configure`) a top-level item sits in, so a module whose icon is not on the rail's icon list stops landing in the unlabelled trailing group. Read by `ins-sidebar`; ignored on nested items and without `variant="v6"`.
 - [TW#26371963](https://pm.cbo.me/#tasks/26371963) Render the IIA v6 rail row when the closest `ins-sidebar` carries `variant="v6"`. No new props: the existing `icon` class is mapped to a Phosphor glyph through `utils/phosphor-shell-icons` (unmapped classes keep the font icon), nested items stay in the DOM for routing but are drawn by the parent's flyout, a click on a plain item lets the anchor navigate (the rail's hash matcher then routes it; only `href="#"` and a re-click on the current page route directly), and `routePageHandler()`/`activate()` behave exactly as before. `toggleMenuNav()` now tolerates a header without `.full-width-navs`, and `showSubMenu()` no longer un-collapses the rail in v6.
 
 # 1.0.22 (07-17-2018)
