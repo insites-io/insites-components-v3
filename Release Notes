@@ -1,5 +1,18 @@
 Release Notes
 
+*Insites Components* `v3.4.0` — pinned at `v3/3.4.0` (TW#26868377, TW#26801633)
+
+A module can now place its rail item in a named group, and the header's "Ask us anything" pill is the whole support chat: it opens and closes Intercom and shows office-hours availability.
+
+- `ins-sidebar-item`: new optional `rail-group` attribute (`work`, `build`, `sell`, `configure`; trimmed, any case). On the v6 rail it wins over the icon list, and the item sits after the group's icon-ranked items. Any other value logs one `console.warn` and falls back to the icon list. `hide-for-medium` items stay hidden. With no `rail-group` the rail renders exactly as in 3.3.7, so no module partial needs editing (TW#26868377). CRM can then add `rail-group="work"` to Activities (TW#25895224).
+- `ins-header` (v6): a click on the support pill, or on the icon button below 768px, opens the Intercom Messenger, and a second click while it is open closes it. The header follows Intercom's `onShow`/`onHide`, so closing from inside Intercom resets it, and it subscribes even when Intercom loads after the header through Google Tag Manager. `insSupportOpen` still fires on open. The corner bubble stays off through the instance's `hide_default_launcher: true` (TW#26801633).
+- `ins-header` (v6): the pill reads "Online" Monday to Friday 08:00 to 18:00 and "Replies in ~2h" with a muted dot otherwise, re-checked every minute. New attributes `support-hours` (default `1-5 08:00-18:00`) and `support-time-zone` (default: the browser's zone). `support-presence` no longer defaults to "Online"; a host that sets it pins the label and the green dot as before. No v6 host sets it today, so every admin now sees the reply line outside office hours in the administrator's own time zone until CRM passes `support-time-zone`.
+- The screen reader label stays "Open support chat, N unread messages".
+
+*Rollback*: re-pin CRM to `v3/3.3.7`.
+
+---
+
 *Insites Components* `v3.3.7` — pinned at `v3/3.3.7` (TW#26897281)
 
 Admin pages lost their logo, module screens stayed blank, and Google Maps or component files failed, mostly on slow or VPN connections.

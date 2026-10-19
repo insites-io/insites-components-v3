@@ -14235,6 +14235,9 @@ ins-header.iia-hdr-host--raised { z-index: var(--iia-z-header-raised); }
 .iia-chat > i { font-size: var(--ins-text-md); }
 .iia-chat__presence { margin-left: auto; display: flex; align-items: center; gap: 6px; font-size: var(--ins-text-xs); color: var(--ins-chrome-fg); }
 .iia-chat__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ins-alert-positive); }
+/* Outside support hours (TW#26801633): the label is the reply-time line and the dot goes muted. */
+.iia-chat__presence--away { color: var(--ins-chrome-fg-muted); }
+.iia-chat__dot--away { background: var(--ins-chrome-fg-subtle); }
 .iia-chat__badge {
   position: absolute; top: -6px; right: -8px; min-width: 16px; height: 16px; box-sizing: border-box; padding: 0 4px; border-radius: var(--ins-radius-pill);
   background: var(--iia-badge-negative); color: var(--iia-text-white); font-size: 10px; line-height: 1; font-weight: var(--ins-weight-semibold);

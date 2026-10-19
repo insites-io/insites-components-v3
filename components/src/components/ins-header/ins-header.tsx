@@ -1,5 +1,6 @@
-import { h, Component, State, Prop, Element, Method, Event, EventEmitter, Listen, Host } from "@stencil/core";
+import { h, Component, State, Prop, Element, Method, Event, EventEmitter, Listen, Host, Watch } from "@stencil/core";
 import { PHOSPHOR_SHELL_ICONS } from '../../utils/phosphor-shell-icons';
+import { DEFAULT_SUPPORT_HOURS, SupportHours, parseSupportHours, withinSupportHours } from '../../utils/support-hours';
 
 /**
  * IIA v6 shell header (TW#26371963) is an ADDITIVE variant of this component.
@@ -19,6 +20,13 @@ import { PHOSPHOR_SHELL_ICONS } from '../../utils/phosphor-shell-icons';
  * Tooltips use the shared `data-tip` mechanism rather than a nested component; the
  * design's 150ms delay / instant hide / suppress-after-click live in CSS on the
  * `iia-hdr` scope.
+ *
+ * Support chat (TW#26801633): the support pill, and the icon button that replaces it below
+ * 768px, are the only way into Intercom (the instance boots Intercom with
+ * `hide_default_launcher: true`). A click opens the Messenger and a click while it is open
+ * closes it; the open state comes from Intercom's onShow/onHide. The pill reads "Online"
+ * during `support-hours` in `support-time-zone` and `support-reply-line` otherwise, checked
+ * every minute; a non-empty `support-presence` pins the label and the online dot instead.
  */
 @Component({ tag: 'ins-header' })
 export class InsHeader {
@@ -62,9 +70,19 @@ export class InsHeader {
   /** Administrator-preferences endpoint: holds the dismissed help panels and the production-switch
    *  "Don't show me again" choice, per administrator, across devices. */
   @Prop() preferencesEndpoint: string = '/insites/core/administrator-preferences';
-  /** Presence label on the support pill. */
-  @Prop() supportPresence: string = 'Online';
+  /** Presence label on the support pill. Leave it unset and the pill follows `support-hours`
+   *  ("Online" inside them, `support-reply-line` outside). A non-empty value pins this label and
+   *  the online dot whatever the time. */
+  @Prop() supportPresence: string;
+  /** What the support pill reads outside `support-hours`, beside the away dot. */
   @Prop() supportReplyLine: string = 'Replies in ~2h';
+  /** Support office hours: ISO weekdays (1 = Monday to 7 = Sunday) as a range or comma list, a
+   *  space, then HH:MM-HH:MM in 24-hour time with an exclusive end. An unreadable value warns
+   *  once and falls back to the default. */
+  @Prop() supportHours: string = DEFAULT_SUPPORT_HOURS;
+  /** IANA time zone `support-hours` are in, e.g. "Australia/Melbourne". Empty: the browser's time
+   *  zone. An unknown zone warns once and falls back to the browser's. */
+  @Prop() supportTimeZone: string = '';
 
   @Event() insInstanceSwitch: EventEmitter<{ from: string; to: string; env: string }>;
   @Event() insThemeChange: EventEmitter<{ theme: string }>;
@@ -102,6 +120,13 @@ export class InsHeader {
   @State() narrow: boolean = false;   // < 1024
   @State() tight: boolean = false;    // < 640
   @State() unread: number = 0;
+  /** Inside support hours (the pill shows "Online"); re-checked every minute while connected. */
+  @State() supportOnline: boolean = true;
+  /** The Intercom Messenger is open, from Intercom's onShow/onHide. */
+  @State() supportChatOpen: boolean = false;
+  private supportTimer: any = null;
+  private intercomBound = false;
+  private supportWarned = new Set<string>();
   @State() umHoverY: number = 0; @State() umHoverH: number = 40; @State() umHoverOn: boolean = false;
   @State() hmHoverY: number = 0; @State() hmHoverH: number = 40; @State() hmHoverOn: boolean = false;
   @State() envHoverY: number = 0; @State() envHoverH: number = 52; @State() envHoverOn: boolean = false;
@@ -131,6 +156,18 @@ export class InsHeader {
   private lastFocus: HTMLElement | null = null;
 
   get isV6() { return this.variant === 'v6'; }
+
+  connectedCallback() {
+    if (!this.isV6) return;
+    this.evaluateSupportHours();
+    if (!this.supportTimer) this.supportTimer = setInterval(() => { this.bindIntercom(); this.evaluateSupportHours(); }, 60000);
+  }
+
+  @Watch('supportHours')
+  @Watch('supportTimeZone')
+  supportHoursChanged() {
+    if (this.isV6) this.evaluateSupportHours();
+  }
 
   componentWillLoad() {
     this.sidebarMini = false;
@@ -187,6 +224,7 @@ export class InsHeader {
   }
 
   disconnectedCallback(){
+    if (this.supportTimer) { clearInterval(this.supportTimer); this.supportTimer = null; }
     if (this.isV6) {
       [this.mqMobile, this.mqNarrow, this.mqTight].forEach(m => m && m.removeEventListener('change', this.onMq));
       if (this.mqOverlay) this.mqOverlay.removeEventListener('change', this.onOverlay);
@@ -444,18 +482,61 @@ export class InsHeader {
       }).catch(() => {});
   }
 
+  /** "Message support" rows: always open the Messenger. */
   private openSupport = (e?: Event) => {
     this.closeMenus();
+    this.bindIntercom();
     this.insSupportOpen.emit();
     const ic = (window as any).Intercom;
     if (typeof ic === 'function') ic('show');
     this.suppressTip(e);
   };
 
+  /** The support pill and the phone-width icon button: open the Messenger, or close it when it is open. */
+  private toggleSupport = (e?: Event) => {
+    this.bindIntercom();
+    if (!this.supportChatOpen) { this.openSupport(e); return; }
+    this.closeMenus();
+    const ic = (window as any).Intercom;
+    if (typeof ic === 'function') ic('hide');
+    this.suppressTip(e);
+  };
+
+  /**
+   * Subscribe to Intercom once. Intercom may arrive after the header (it loads through Google Tag
+   * Manager), so this also runs on a support click and on the minute tick; Intercom's own stub
+   * queues the calls until its script is ready.
+   */
   private bindIntercom() {
+    if (this.intercomBound) return;
     const ic = (window as any).Intercom;
     if (typeof ic !== 'function') return;
+    this.intercomBound = true;
     try { ic('onUnreadCountChange', (n: number) => { this.unread = n || 0; }); } catch (err) { /* ignore */ }
+    try { ic('onShow', () => { this.supportChatOpen = true; }); } catch (err) { /* ignore */ }
+    try { ic('onHide', () => { this.supportChatOpen = false; }); } catch (err) { /* ignore */ }
+  }
+
+  private warnSupportOnce(msg: string) {
+    if (this.supportWarned.has(msg)) return;
+    this.supportWarned.add(msg);
+    console.warn(msg);
+  }
+
+  /** Re-check the office hours. Runs on connect, every minute while connected, and on a prop change. */
+  private evaluateSupportHours() {
+    let hours: SupportHours | null = parseSupportHours(this.supportHours);
+    if (!hours) {
+      this.warnSupportOnce(`ins-header: unreadable support-hours "${this.supportHours}"; using "${DEFAULT_SUPPORT_HOURS}". Format: ISO weekdays then HH:MM-HH:MM, e.g. "1-5 08:00-18:00".`);
+      hours = parseSupportHours(DEFAULT_SUPPORT_HOURS);
+    }
+    const now = new Date();
+    try {
+      this.supportOnline = withinSupportHours(hours, now, this.supportTimeZone);
+    } catch (err) {
+      this.warnSupportOnce(`ins-header: unknown support-time-zone "${this.supportTimeZone}"; using the browser's time zone.`);
+      this.supportOnline = withinSupportHours(hours, now);
+    }
   }
 
   // ---- administrator preferences (help panels, production warning) --------
@@ -668,6 +749,10 @@ export class InsHeader {
     const searchOn = roster.length > 5;
     const noMatches = searchOn && !!this.envQuery.trim() && groups.length === 0;
     const crumbs = this.crumbView();
+    // A non-empty support-presence pins the label and the online dot; otherwise the office hours decide.
+    const presencePinned = !!this.supportPresence;
+    const supportOnline = presencePinned || this.supportOnline;
+    const supportLabel = presencePinned ? this.supportPresence : (supportOnline ? 'Online' : this.supportReplyLine);
     const infoText = (this.narrow ? 'Tap an instance to switch to it. ' : '') + (envProd
       ? 'Production is live. Changes here reach real visitors and send real emails.'
       : 'Staging is a test copy. Changes never reach the live site and no emails are sent.');
@@ -697,10 +782,10 @@ export class InsHeader {
 
           {/* centre: support pill (>= 768) */}
           {!this.mobile ? (
-            <button type="button" class="iia-chat" aria-haspopup="dialog" aria-label={`Open support chat, ${this.unread} unread messages`} onClick={this.openSupport}>
+            <button type="button" class="iia-chat" aria-haspopup="dialog" aria-expanded={String(this.supportChatOpen)} aria-label={`Open support chat, ${this.unread} unread messages`} onClick={this.toggleSupport}>
               <i class="icon-message-circle" aria-hidden="true"></i>
               <span>Ask us anything</span>
-              <span class="iia-chat__presence"><span class="iia-chat__dot" aria-hidden="true"></span>{this.supportPresence}</span>
+              <span class={{ 'iia-chat__presence': true, 'iia-chat__presence--away': !supportOnline }}><span class={{ 'iia-chat__dot': true, 'iia-chat__dot--away': !supportOnline }} aria-hidden="true"></span>{supportLabel}</span>
               {this.unread > 0 ? <span class="iia-chat__badge iia-chat__badge--lg" aria-hidden="true">{this.unread}</span> : null}
             </button>
           ) : null /* below 768px the grid is `auto 1fr` with two children; a placeholder here would wrap the right cluster onto a second row */}
@@ -778,7 +863,7 @@ export class InsHeader {
             ) : null}
 
             {this.mobile ? (
-              <button type="button" class="iia-hdr__btn" data-tip="Help & support" aria-haspopup="dialog" aria-label="Open support chat" onClick={this.openSupport}>
+              <button type="button" class="iia-hdr__btn" data-tip="Help & support" aria-haspopup="dialog" aria-expanded={String(this.supportChatOpen)} aria-label="Open support chat" onClick={this.toggleSupport}>
                 <span class="iia-hdr__badgewrap"><i class="icon-message-circle" aria-hidden="true"></i>{this.unread > 0 ? <span class="iia-chat__badge" aria-hidden="true">{this.unread}</span> : null}</span>
               </button>
             ) : null}

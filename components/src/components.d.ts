@@ -603,6 +603,12 @@ export namespace Components {
      * Tooltips use the shared `data-tip` mechanism rather than a nested component; the
      * design's 150ms delay / instant hide / suppress-after-click live in CSS on the
      * `iia-hdr` scope.
+     * Support chat (TW#26801633): the support pill, and the icon button that replaces it below
+     * 768px, are the only way into Intercom (the instance boots Intercom with
+     * `hide_default_launcher: true`). A click opens the Messenger and a click while it is open
+     * closes it; the open state comes from Intercom's onShow/onHide. The pill reads "Online"
+     * during `support-hours` in `support-time-zone` and `support-reply-line` otherwise, checked
+     * every minute; a non-empty `support-presence` pins the label and the online dot instead.
      */
     interface InsHeader {
         "checkLoad": boolean;
@@ -646,12 +652,23 @@ export namespace Components {
          */
         "preferencesEndpoint": string;
         "profileHref": string;
+        /**
+          * Support office hours: ISO weekdays (1 = Monday to 7 = Sunday) as a range or comma list, a space, then HH:MM-HH:MM in 24-hour time with an exclusive end. An unreadable value warns once and falls back to the default.
+         */
+        "supportHours": string;
         "supportLink": string;
         /**
-          * Presence label on the support pill.
+          * Presence label on the support pill. Leave it unset and the pill follows `support-hours` ("Online" inside them, `support-reply-line` outside). A non-empty value pins this label and the online dot whatever the time.
          */
         "supportPresence": string;
+        /**
+          * What the support pill reads outside `support-hours`, beside the away dot.
+         */
         "supportReplyLine": string;
+        /**
+          * IANA time zone `support-hours` are in, e.g. "Australia/Melbourne". Empty: the browser's time zone. An unknown zone warns once and falls back to the browser's.
+         */
+        "supportTimeZone": string;
         "themeEndpoint": string;
         "toggleNav": () => Promise<void>;
         "toggleSidebar": () => Promise<void>;
@@ -2783,6 +2800,12 @@ declare global {
      * Tooltips use the shared `data-tip` mechanism rather than a nested component; the
      * design's 150ms delay / instant hide / suppress-after-click live in CSS on the
      * `iia-hdr` scope.
+     * Support chat (TW#26801633): the support pill, and the icon button that replaces it below
+     * 768px, are the only way into Intercom (the instance boots Intercom with
+     * `hide_default_launcher: true`). A click opens the Messenger and a click while it is open
+     * closes it; the open state comes from Intercom's onShow/onHide. The pill reads "Online"
+     * during `support-hours` in `support-time-zone` and `support-reply-line` otherwise, checked
+     * every minute; a non-empty `support-presence` pins the label and the online dot instead.
      */
     interface HTMLInsHeaderElement extends Components.InsHeader, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInsHeaderElementEventMap>(type: K, listener: (this: HTMLInsHeaderElement, ev: InsHeaderCustomEvent<HTMLInsHeaderElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -4651,6 +4674,12 @@ declare namespace LocalJSX {
      * Tooltips use the shared `data-tip` mechanism rather than a nested component; the
      * design's 150ms delay / instant hide / suppress-after-click live in CSS on the
      * `iia-hdr` scope.
+     * Support chat (TW#26801633): the support pill, and the icon button that replaces it below
+     * 768px, are the only way into Intercom (the instance boots Intercom with
+     * `hide_default_launcher: true`). A click opens the Messenger and a click while it is open
+     * closes it; the open state comes from Intercom's onShow/onHide. The pill reads "Online"
+     * during `support-hours` in `support-time-zone` and `support-reply-line` otherwise, checked
+     * every minute; a non-empty `support-presence` pins the label and the online dot instead.
      */
     interface InsHeader {
         "checkLoad"?: boolean;
@@ -4697,12 +4726,23 @@ declare namespace LocalJSX {
          */
         "preferencesEndpoint"?: string;
         "profileHref"?: string;
+        /**
+          * Support office hours: ISO weekdays (1 = Monday to 7 = Sunday) as a range or comma list, a space, then HH:MM-HH:MM in 24-hour time with an exclusive end. An unreadable value warns once and falls back to the default.
+         */
+        "supportHours"?: string;
         "supportLink"?: string;
         /**
-          * Presence label on the support pill.
+          * Presence label on the support pill. Leave it unset and the pill follows `support-hours` ("Online" inside them, `support-reply-line` outside). A non-empty value pins this label and the online dot whatever the time.
          */
         "supportPresence"?: string;
+        /**
+          * What the support pill reads outside `support-hours`, beside the away dot.
+         */
         "supportReplyLine"?: string;
+        /**
+          * IANA time zone `support-hours` are in, e.g. "Australia/Melbourne". Empty: the browser's time zone. An unknown zone warns once and falls back to the browser's.
+         */
+        "supportTimeZone"?: string;
         "themeEndpoint"?: string;
         "userEmail"?: string;
         "userName"?: string;
@@ -6061,6 +6101,12 @@ declare module "@stencil/core" {
              * Tooltips use the shared `data-tip` mechanism rather than a nested component; the
              * design's 150ms delay / instant hide / suppress-after-click live in CSS on the
              * `iia-hdr` scope.
+             * Support chat (TW#26801633): the support pill, and the icon button that replaces it below
+             * 768px, are the only way into Intercom (the instance boots Intercom with
+             * `hide_default_launcher: true`). A click opens the Messenger and a click while it is open
+             * closes it; the open state comes from Intercom's onShow/onHide. The pill reads "Online"
+             * during `support-hours` in `support-time-zone` and `support-reply-line` otherwise, checked
+             * every minute; a non-empty `support-presence` pins the label and the online dot instead.
              */
             "ins-header": LocalJSX.InsHeader & JSXBase.HTMLAttributes<HTMLInsHeaderElement>;
             "ins-header-user": LocalJSX.InsHeaderUser & JSXBase.HTMLAttributes<HTMLInsHeaderUserElement>;

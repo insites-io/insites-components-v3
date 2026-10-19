@@ -42,6 +42,42 @@ confirmation, and confirming emits `insInstanceSwitch` without navigating.
 </ins-header>
 ```
 
+### Support chat (Intercom)
+
+The support pill, and the icon button that replaces it below 768px, are the only way into Intercom
+chat (TW#26801633). The instance boots Intercom with `hide_default_launcher: true`, so Intercom's
+corner bubble never shows.
+
+- A click opens the Messenger (`Intercom('show')`) and emits `insSupportOpen`. A click while the
+  Messenger is open closes it (`Intercom('hide')`, no event). The header tracks the open state
+  through `Intercom('onShow')` and `Intercom('onHide')`, so closing the Messenger from inside
+  Intercom resets the toggle; `aria-expanded` follows it. The "Message support" rows in the help and
+  account menus always open.
+- The unread badge counts from `Intercom('onUnreadCountChange')`. The pill's screen reader label is
+  "Open support chat, N unread messages".
+- Intercom may load after the header (Google Tag Manager). The header subscribes once, on load, on
+  the first support click or on the next minute tick, whichever finds `window.Intercom` first.
+
+Availability follows office hours, because Intercom has no public live-presence API. Inside
+`support-hours` the pill reads "Online" beside the green dot; outside them it reads
+`support-reply-line` ("Replies in ~2h") and the dot goes muted (`iia-chat__dot--away`,
+`iia-chat__presence--away`). The header checks on connect, every minute while connected (the timer
+stops on disconnect), and whenever `support-hours` or `support-time-zone` changes.
+
+| Attribute | Default | Meaning |
+| --- | --- | --- |
+| `support-hours` | `1-5 08:00-18:00` | ISO weekdays (1 = Monday to 7 = Sunday) as a range or comma list, a space, then `HH:MM-HH:MM` in 24-hour time. The end is exclusive: 18:00 reads the reply line. A day range may wrap (`6-1`). |
+| `support-time-zone` | the browser's | IANA name the hours are in, e.g. `Australia/Melbourne`. |
+| `support-reply-line` | `Replies in ~2h` | The label outside the hours. |
+| `support-presence` | unset | A non-empty value pins the label and the online dot, whatever the time. Leave it unset to use the hours. |
+
+An unreadable `support-hours` or an unknown `support-time-zone` logs one `console.warn` and falls
+back to the default hours or the browser's zone.
+
+```html
+<ins-header variant="v6" support-hours="1-5 08:00-18:00" support-time-zone="Australia/Melbourne"></ins-header>
+```
+
 <!-- Auto Generated Below -->
 
 
@@ -65,39 +101,48 @@ Tooltips use the shared `data-tip` mechanism rather than a nested component; the
 design's 150ms delay / instant hide / suppress-after-click live in CSS on the
 `iia-hdr` scope.
 
+Support chat (TW#26801633): the support pill, and the icon button that replaces it below
+768px, are the only way into Intercom (the instance boots Intercom with
+`hide_default_launcher: true`). A click opens the Messenger and a click while it is open
+closes it; the open state comes from Intercom's onShow/onHide. The pill reads "Online"
+during `support-hours` in `support-time-zone` and `support-reply-line` otherwise, checked
+every minute; a non-empty `support-presence` pins the label and the online dot instead.
+
 ## Properties
 
-| Property              | Attribute               | Description                                                                                                                                                    | Type      | Default                                     |
-| --------------------- | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ------------------------------------------- |
-| `checkLoad`           | `check-load`            |                                                                                                                                                                | `boolean` | `false`                                     |
-| `consoleHref`         | `console-href`          |                                                                                                                                                                | `string`  | `'https://console.insites.io/'`             |
-| `docsHref`            | `docs-href`             |                                                                                                                                                                | `string`  | `'https://docs.insites.io/'`                |
-| `environment`         | `environment`           | 'staging' \| 'production' — this instance's tier.                                                                                                              | `string`  | `'staging'`                                 |
-| `frontendHref`        | `frontend-href`         |                                                                                                                                                                | `string`  | `'/'`                                       |
-| `hasLoad`             | `has-load`              |                                                                                                                                                                | `string`  | `undefined`                                 |
-| `hasMenuToggle`       | `has-menu-toggle`       |                                                                                                                                                                | `boolean` | `true`                                      |
-| `helpPanelsDismissed` | `help-panels-dismissed` | Whether help panels are currently dismissed (restore row is actionable). Read from the preference store on load; a host may still set it.                      | `boolean` | `false`                                     |
-| `helpRestore`         | `help-restore`          | Show the "Show help panels" restore row in the account menu.                                                                                                   | `boolean` | `true`                                      |
-| `homeHref`            | `home-href`             |                                                                                                                                                                | `string`  | `'#/'`                                      |
-| `instanceDomain`      | `instance-domain`       |                                                                                                                                                                | `string`  | `''`                                        |
-| `instanceId`          | `instance-id`           |                                                                                                                                                                | `string`  | `'current'`                                 |
-| `instanceName`        | `instance-name`         |                                                                                                                                                                | `string`  | `''`                                        |
-| `instances`           | `instances`             | Optional JSON roster: [{ id, name, env, domain }]. Absent: the current instance alone.                                                                         | `string`  | `''`                                        |
-| `load`                | `load`                  |                                                                                                                                                                | `boolean` | `false`                                     |
-| `lockEndpoint`        | `lock-endpoint`         |                                                                                                                                                                | `string`  | `'/api/sessions'`                           |
-| `lockFormName`        | `lock-form-name`        |                                                                                                                                                                | `string`  | `'modules/insites_core/lock_admin'`         |
-| `logoAlt`             | `logo-alt`              |                                                                                                                                                                | `string`  | `'Insites'`                                 |
-| `logoSrc`             | `logo-src`              |                                                                                                                                                                | `string`  | `''`                                        |
-| `logoutHref`          | `logout-href`           |                                                                                                                                                                | `string`  | `'/admin/sessions/logout'`                  |
-| `preferencesEndpoint` | `preferences-endpoint`  | Administrator-preferences endpoint: holds the dismissed help panels and the production-switch "Don't show me again" choice, per administrator, across devices. | `string`  | `'/insites/core/administrator-preferences'` |
-| `profileHref`         | `profile-href`          |                                                                                                                                                                | `string`  | `'#/my-profile'`                            |
-| `supportLink`         | `support-link`          |                                                                                                                                                                | `string`  | `undefined`                                 |
-| `supportPresence`     | `support-presence`      | Presence label on the support pill.                                                                                                                            | `string`  | `'Online'`                                  |
-| `supportReplyLine`    | `support-reply-line`    |                                                                                                                                                                | `string`  | `'Replies in ~2h'`                          |
-| `themeEndpoint`       | `theme-endpoint`        |                                                                                                                                                                | `string`  | `'/insites/core/themes'`                    |
-| `userEmail`           | `user-email`            |                                                                                                                                                                | `string`  | `''`                                        |
-| `userName`            | `user-name`             |                                                                                                                                                                | `string`  | `''`                                        |
-| `variant`             | `variant`               | '' keeps the original rendering. 'v6' is the Admin Shell v1.5 header.                                                                                          | `string`  | `''`                                        |
+| Property              | Attribute               | Description                                                                                                                                                                                                            | Type      | Default                                     |
+| --------------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ------------------------------------------- |
+| `checkLoad`           | `check-load`            |                                                                                                                                                                                                                        | `boolean` | `false`                                     |
+| `consoleHref`         | `console-href`          |                                                                                                                                                                                                                        | `string`  | `'https://console.insites.io/'`             |
+| `docsHref`            | `docs-href`             |                                                                                                                                                                                                                        | `string`  | `'https://docs.insites.io/'`                |
+| `environment`         | `environment`           | 'staging' \| 'production' — this instance's tier.                                                                                                                                                                      | `string`  | `'staging'`                                 |
+| `frontendHref`        | `frontend-href`         |                                                                                                                                                                                                                        | `string`  | `'/'`                                       |
+| `hasLoad`             | `has-load`              |                                                                                                                                                                                                                        | `string`  | `undefined`                                 |
+| `hasMenuToggle`       | `has-menu-toggle`       |                                                                                                                                                                                                                        | `boolean` | `true`                                      |
+| `helpPanelsDismissed` | `help-panels-dismissed` | Whether help panels are currently dismissed (restore row is actionable). Read from the preference store on load; a host may still set it.                                                                              | `boolean` | `false`                                     |
+| `helpRestore`         | `help-restore`          | Show the "Show help panels" restore row in the account menu.                                                                                                                                                           | `boolean` | `true`                                      |
+| `homeHref`            | `home-href`             |                                                                                                                                                                                                                        | `string`  | `'#/'`                                      |
+| `instanceDomain`      | `instance-domain`       |                                                                                                                                                                                                                        | `string`  | `''`                                        |
+| `instanceId`          | `instance-id`           |                                                                                                                                                                                                                        | `string`  | `'current'`                                 |
+| `instanceName`        | `instance-name`         |                                                                                                                                                                                                                        | `string`  | `''`                                        |
+| `instances`           | `instances`             | Optional JSON roster: [{ id, name, env, domain }]. Absent: the current instance alone.                                                                                                                                 | `string`  | `''`                                        |
+| `load`                | `load`                  |                                                                                                                                                                                                                        | `boolean` | `false`                                     |
+| `lockEndpoint`        | `lock-endpoint`         |                                                                                                                                                                                                                        | `string`  | `'/api/sessions'`                           |
+| `lockFormName`        | `lock-form-name`        |                                                                                                                                                                                                                        | `string`  | `'modules/insites_core/lock_admin'`         |
+| `logoAlt`             | `logo-alt`              |                                                                                                                                                                                                                        | `string`  | `'Insites'`                                 |
+| `logoSrc`             | `logo-src`              |                                                                                                                                                                                                                        | `string`  | `''`                                        |
+| `logoutHref`          | `logout-href`           |                                                                                                                                                                                                                        | `string`  | `'/admin/sessions/logout'`                  |
+| `preferencesEndpoint` | `preferences-endpoint`  | Administrator-preferences endpoint: holds the dismissed help panels and the production-switch "Don't show me again" choice, per administrator, across devices.                                                         | `string`  | `'/insites/core/administrator-preferences'` |
+| `profileHref`         | `profile-href`          |                                                                                                                                                                                                                        | `string`  | `'#/my-profile'`                            |
+| `supportHours`        | `support-hours`         | Support office hours: ISO weekdays (1 = Monday to 7 = Sunday) as a range or comma list, a space, then HH:MM-HH:MM in 24-hour time with an exclusive end. An unreadable value warns once and falls back to the default. | `string`  | `DEFAULT_SUPPORT_HOURS`                     |
+| `supportLink`         | `support-link`          |                                                                                                                                                                                                                        | `string`  | `undefined`                                 |
+| `supportPresence`     | `support-presence`      | Presence label on the support pill. Leave it unset and the pill follows `support-hours` ("Online" inside them, `support-reply-line` outside). A non-empty value pins this label and the online dot whatever the time.  | `string`  | `undefined`                                 |
+| `supportReplyLine`    | `support-reply-line`    | What the support pill reads outside `support-hours`, beside the away dot.                                                                                                                                              | `string`  | `'Replies in ~2h'`                          |
+| `supportTimeZone`     | `support-time-zone`     | IANA time zone `support-hours` are in, e.g. "Australia/Melbourne". Empty: the browser's time zone. An unknown zone warns once and falls back to the browser's.                                                         | `string`  | `''`                                        |
+| `themeEndpoint`       | `theme-endpoint`        |                                                                                                                                                                                                                        | `string`  | `'/insites/core/themes'`                    |
+| `userEmail`           | `user-email`            |                                                                                                                                                                                                                        | `string`  | `''`                                        |
+| `userName`            | `user-name`             |                                                                                                                                                                                                                        | `string`  | `''`                                        |
+| `variant`             | `variant`               | '' keeps the original rendering. 'v6' is the Admin Shell v1.5 header.                                                                                                                                                  | `string`  | `''`                                        |
 
 
 ## Events
