@@ -1,5 +1,14 @@
 Release Notes
 
+*Insites Components* `v3.4.2` — pinned at `v3/3.4.2` (TW#26744156)
+
+The instance switcher's toast no longer claims the target is open before the browser gets there.
+
+- `ins-header` (v6): choosing another instance shows "Switching to <instance>…" instead of "Now in <instance>." The host does the switch (CRM sends the browser through Console's sign-in), so at the moment of the click the switch has only started. New Playwright spec covers a roster set after load, the Switch event and the toast.
+
+*Rollback*: re-pin CRM to `v3/3.4.1`.
+
+---
 *Insites Components* `v3.4.1` — pinned at `v3/3.4.1` (TW#26807060, TW#26801633)
 
 Phones can open the date picker from the calendar icon again, and the support pill's screen reader label follows the chat state.

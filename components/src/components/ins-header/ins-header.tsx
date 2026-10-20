@@ -653,12 +653,11 @@ export class InsHeader {
   private doSwitch(to: string, env: string) {
     this.prodConfirm = null;
     this.closeMenus();
-    // Presentational this release: no Console instance-list API exists yet (see spec README). The toast
-    // ("Now in <instance>.") fires only when a roster row other than this instance was chosen, so it stays
-    // dormant until Console supplies one.
+    // The host does the switch (CRM sends the browser through Console's sign-in to the target), so at this
+    // point the switch has only started: the toast says so, rather than claiming the target is already open.
     this.insInstanceSwitch.emit({ from: this.instanceId, to, env });
     const target = this.roster().find(i => i.id === to);
-    if (target && to !== this.instanceId) this.showToast(`Now in ${target.name}.`);
+    if (target && to !== this.instanceId) this.showToast(`Switching to ${target.name}…`);
   }
 
   private envMenuKeyDown = (e: KeyboardEvent) => {
