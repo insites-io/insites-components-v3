@@ -2690,6 +2690,12 @@ ins-date-time .ins-date-time-wrap_input {
   position: relative
 }
 
+/* On phones flatpickr swaps in the native date input, which draws its own picker button at the
+   right edge. The field's calendar icon sat on top of it and swallowed the tap (TW#26807060). */
+ins-date-time .flatpickr-mobile ~ i[class^=icon-] {
+  display: none
+}
+
 ins-date-time i[class^=icon-] {
   font-size: 16px;
   position: absolute;
