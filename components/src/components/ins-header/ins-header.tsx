@@ -653,11 +653,9 @@ export class InsHeader {
   private doSwitch(to: string, env: string) {
     this.prodConfirm = null;
     this.closeMenus();
-    // The host does the switch (CRM sends the browser through Console's sign-in to the target), so at this
-    // point the switch has only started: the toast says so, rather than claiming the target is already open.
+    // The host does the switch (CRM sends the browser through Console's sign-in to the target). No toast:
+    // at this point nothing has loaded yet, and landing in the target instance is the confirmation.
     this.insInstanceSwitch.emit({ from: this.instanceId, to, env });
-    const target = this.roster().find(i => i.id === to);
-    if (target && to !== this.instanceId) this.showToast(`Switching to ${target.name}…`);
   }
 
   private envMenuKeyDown = (e: KeyboardEvent) => {
