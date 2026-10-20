@@ -211,12 +211,13 @@ test.describe('ins-header support chat toggle', () => {
   test('the phone-width icon button toggles the same way', async ({ page }) => {
     await page.setViewportSize({ width: 600, height: 800 });
     await mount(page, header());
-    const btn = page.locator('ins-header button.iia-hdr__btn[aria-label^="Open support chat"]');
+    const btn = page.locator('ins-header button.iia-hdr__btn[data-tip="Help & support"]');
     await expect(pill(page)).toHaveCount(0);
 
     await btn.click();
     await page.waitForChanges();
     await expect(btn).toHaveAttribute('aria-expanded', 'true');
+    await expect(btn).toHaveAttribute('aria-label', 'Close support chat, 0 unread messages');
     await btn.click();
     await page.waitForChanges();
     expect(await intercomCalls(page)).toEqual(['show', 'hide']);
@@ -231,6 +232,20 @@ test.describe('ins-header support chat toggle', () => {
     await page.waitForChanges();
     await expect(pill(page)).toHaveAttribute('aria-label', 'Open support chat, 3 unread messages');
     await expect(page.locator('ins-header .iia-chat__badge')).toHaveText('3');
+
+    await page.evaluate(() => (window as any).__ic.handlers.onUnreadCountChange.forEach((f: Function) => f(1)));
+    await page.waitForChanges();
+    await expect(pill(page)).toHaveAttribute('aria-label', 'Open support chat, 1 unread message');
+  });
+
+  test('the label says Close while the Messenger is open', async ({ page }) => {
+    await mount(page, header());
+    await pill(page).click();
+    await page.waitForChanges();
+    await expect(pill(page)).toHaveAttribute('aria-label', 'Close support chat, 0 unread messages');
+    await pill(page).click();
+    await page.waitForChanges();
+    await expect(pill(page)).toHaveAttribute('aria-label', 'Open support chat, 0 unread messages');
   });
 
   test('subscribes to Intercom once, even when it loads after the header', async ({ page }) => {

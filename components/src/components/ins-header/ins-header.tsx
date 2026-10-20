@@ -517,6 +517,12 @@ export class InsHeader {
    * Manager), so this also runs on a support click and on the minute tick; Intercom's own stub
    * queues the calls until its script is ready.
    */
+  /** Screen-reader label for the support pill and the phone icon button. */
+  private supportLabel() {
+    const action = this.supportChatOpen ? 'Close support chat' : 'Open support chat';
+    return `${action}, ${this.unread} unread ${this.unread === 1 ? 'message' : 'messages'}`;
+  }
+
   private bindIntercom() {
     if (this.intercomBound) return;
     const ic = (window as any).Intercom;
@@ -792,7 +798,7 @@ export class InsHeader {
 
           {/* centre: support pill (>= 768) */}
           {!this.mobile ? (
-            <button type="button" class="iia-chat" aria-haspopup="dialog" aria-expanded={String(this.supportChatOpen)} aria-label={`Open support chat, ${this.unread} unread messages`} onClick={this.toggleSupport}>
+            <button type="button" class="iia-chat" aria-haspopup="dialog" aria-expanded={String(this.supportChatOpen)} aria-label={this.supportLabel()} onClick={this.toggleSupport}>
               <i class="icon-message-circle" aria-hidden="true"></i>
               <span>Ask us anything</span>
               <span class={{ 'iia-chat__presence': true, 'iia-chat__presence--away': !supportOnline }}><span class={{ 'iia-chat__dot': true, 'iia-chat__dot--away': !supportOnline }} aria-hidden="true"></span>{supportLabel}</span>
@@ -873,7 +879,7 @@ export class InsHeader {
             ) : null}
 
             {this.mobile ? (
-              <button type="button" class="iia-hdr__btn" data-tip="Help & support" aria-haspopup="dialog" aria-expanded={String(this.supportChatOpen)} aria-label={`Open support chat, ${this.unread} unread messages`} onClick={this.toggleSupport}>
+              <button type="button" class="iia-hdr__btn" data-tip="Help & support" aria-haspopup="dialog" aria-expanded={String(this.supportChatOpen)} aria-label={this.supportLabel()} onClick={this.toggleSupport}>
                 <span class="iia-hdr__badgewrap"><i class="icon-message-circle" aria-hidden="true"></i>{this.unread > 0 ? <span class="iia-chat__badge" aria-hidden="true">{this.unread}</span> : null}</span>
               </button>
             ) : null}

@@ -1,5 +1,15 @@
 Release Notes
 
+*Insites Components* `v3.4.1` — pinned at `v3/3.4.1` (TW#26807060, TW#26801633)
+
+Phones can open the date picker from the calendar icon again, and the support pill's screen reader label follows the chat state.
+
+- `ins-date-time`: on phones flatpickr swaps in the native date input, which draws its own picker button. The field's calendar icon sat on top of it and swallowed the tap, and on some screens showed as a second icon. The icon is now hidden while the native input is in use; desktop is unchanged (TW#26807060).
+- `ins-header` (v6): the support pill and the phone icon button read "Close support chat" while the Messenger is open, and "1 unread message" in the singular (TW#26801633).
+
+*Rollback*: re-pin CRM to `v3/3.4.0`.
+
+---
 *Insites Components* `v3.4.0` — pinned at `v3/3.4.0` (TW#26868377, TW#26801633)
 
 A module can now place its rail item in a named group, and the header's "Ask us anything" pill is the whole support chat: it opens and closes Intercom and shows office-hours availability.
