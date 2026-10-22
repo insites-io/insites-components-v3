@@ -123,10 +123,10 @@ const TAB_ICONS: Record<string, string> = {
   'stages': 'icon-git-branch',
   'all opportunities': 'icon-briefcase',
   'open opportunities': 'icon-briefcase',
-  'won opportunities': 'icon-check-circle',
+  'won opportunities': 'icon-check-circle1',
   'lost opportunities': 'icon-x-circle',
   'withdrawn opportunities': 'icon-refresh-cw',
-  'won reason': 'icon-check-circle',
+  'won reason': 'icon-check-circle1',
   'lost reason': 'icon-x-circle',
 };
 

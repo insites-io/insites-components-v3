@@ -1,5 +1,12 @@
 Release Notes
 
+*Insites Components* `v3.4.4` — pinned at `v3/3.4.4` (TW#26923796)
+
+- `ins-tab` (v6): the Won Opportunities and Won Reason tabs in Pipelines show the outline check (`icon-check-circle1`) instead of the filled one, so they match the outline x on the Lost tabs.
+
+*Rollback*: re-pin CRM to `v3/3.4.3`.
+
+---
 *Insites Components* `v3.4.3` — pinned at `v3/3.4.3` (TW#26744156)
 
 - `ins-header` (v6): choosing another instance shows no toast. The host sends the browser through Console's sign-in to the target, so nothing has loaded at the moment of the click, and landing in the target instance is the confirmation. Replaces 3.4.2's "Switching to <instance>…".
