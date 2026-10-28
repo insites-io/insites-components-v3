@@ -22,7 +22,9 @@ item's `icon` class in `utils/phosphor-shell-icons`, so partials stay untouched,
 design does not place lands in an unlabelled trailing group. An item can name its group instead
 with `rail-group="work|build|sell|configure"`, which wins over the icon (TW#26868377; see
 `ins-sidebar-item`). A module with a sub-menu opens a fixed flyout beside the rail
-on hover (tap below 1024px). Only the Dashboard item carries a divider after it.
+on hover (tap below 1024px). While it is open the rail rises to `--iia-z-flyout`, above the page's
+own fixed bars such as an edit screen's DELETE bar (TW#26946871). Only the Dashboard item carries a
+divider after it.
 
 Nothing about the items' API changes. Each item's existing `icon="icon-…"` class is resolved to a
 Phosphor glyph by the map in `utils/phosphor-shell-icons.ts`; an unmapped class keeps its font

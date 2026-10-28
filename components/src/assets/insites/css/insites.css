@@ -13745,9 +13745,13 @@ body.no-transition * {
   --iia-z-rail: 40;
   --iia-z-menu: 50;
   --iia-z-rail-raised: 70;
-  --iia-z-flyout: 80;
   --iia-z-header-raised: 80;
   --iia-z-overlay: 100;
+  /* The rail takes this level while a flyout is open (rail flyout section). It has to clear the
+     page's own fixed bars, which legacy app.min.css puts at 100 (.footer-buttons-wrapper), and
+     stay under the toast region (scrim, 110) and the modules' modals and drawers (1000 and up)
+     (TW#26946871). */
+  --iia-z-flyout: 105;
   --iia-z-scrim: 110;
   --iia-z-drawer: 115;
   --iia-z-switcher: 200;
@@ -14572,6 +14576,14 @@ ins-sidebar.iia-rail ins-sidebar-item.hide-for-medium { display: none !important
 }
 
 /* ---- rail flyout ---------------------------------------------------------- */
+/* The flyout is position:fixed inside ins-sidebar, and the rail is a stacking context (position:relative plus a
+   z-index), so the flyout's own z-index only orders it among the rail's children: on the page it sat at the rail's
+   40 (70 overlaying the content below 1280px). Every module edit screen pins .footer-buttons-wrapper, the bar with
+   DELETE, to the bottom of the viewport at z-index 100 (legacy app.min.css), and that bar drew across the flyout's
+   lower rows: Instance Configuration and Insites Modules could not be clicked (TW#26946871). While a flyout is open
+   the rail itself takes the flyout's level; on close it drops back, so the header's raised menus still cover it.
+   Placed after the overlay-mode rule above, which it ties on specificity. */
+ins-sidebar.iia-rail.iia-rail--flyout-open { z-index: var(--iia-z-flyout); }
 .iia-flyout {
   position: fixed; min-width: 208px; max-height: min(70vh, 460px); overflow-y: auto; background: var(--ins-chrome-surface); border: 1px solid var(--ins-chrome-border);
   border-radius: var(--ins-radius); box-shadow: var(--ins-shadow-2); padding: var(--ins-space-2xs); z-index: var(--iia-z-flyout);
