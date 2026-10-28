@@ -1162,6 +1162,9 @@ export namespace Components {
         "checkLoad": boolean;
         "hasLoad": string;
         "iconColor": string;
+        /**
+          * Loader image. Defaults to https://components.insites.io/assets/images/loading-loop-2x.gif; a root-relative /assets/ path is resolved against the module scripts' asset host.
+         */
         "imageSource": string;
         "load": boolean;
         "stateIcon": string;
@@ -5236,6 +5239,9 @@ declare namespace LocalJSX {
         "checkLoad"?: boolean;
         "hasLoad"?: string;
         "iconColor"?: string;
+        /**
+          * Loader image. Defaults to https://components.insites.io/assets/images/loading-loop-2x.gif; a root-relative /assets/ path is resolved against the module scripts' asset host.
+         */
         "imageSource"?: string;
         "load"?: boolean;
         "onDidLoad"?: (event: InsLoaderCustomEvent<any>) => void;
