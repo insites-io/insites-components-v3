@@ -11,6 +11,13 @@ ins-input-file {
     pointer-events: none;
     cursor: not-allowed;
 
+    // TW#26923706: the field is read-only, its tooltip is not. The label has no for and does not
+    // wrap the input, so a hover or click on the tooltip cannot reach the file chooser.
+    ins-input-tooltip {
+      pointer-events: auto;
+      cursor: default;
+    }
+
     .ins-dropzone {
       border-color: var(--ins-bg-color4);
       .dz-message {

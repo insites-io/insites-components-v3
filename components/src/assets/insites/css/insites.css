@@ -4101,6 +4101,13 @@ ins-input-file[disabled] {
   cursor: not-allowed
 }
 
+/* The field is read-only, its tooltip is not: the label has no for and does not wrap the input, so a
+   hover or click on the tooltip cannot reach the file chooser (TW#26923706). */
+ins-input-file[disabled] ins-input-tooltip {
+  pointer-events: auto;
+  cursor: default
+}
+
 ins-input-file[disabled] .ins-dropzone {
   border-color: var(--ins-bg-color4)
 }
