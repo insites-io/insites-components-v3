@@ -1,5 +1,14 @@
 Release Notes
 
+*Insites Components* `v3.4.6` — pinned at `v3/3.4.6` (TW#26951438)
+
+Loading images show on every module screen on the prod01 stack.
+
+- `ins-loader`: modules pass their loader as a path on the instance host (`/assets/modules/<slug>/insites_admin/images/loader.gif`). The prod01 stack serves assets only from the CDN host the module scripts load from (`files.prod01-insites.io/instances/<id>/assets/...`), so on iia-uat every module except CRM showed a broken image (CRM fixed its own path in TW#26896853). A root-relative `/assets/` image is now resolved against the module scripts' asset host when that host differs from the page's, and the loader falls back to `loading-loop-2x.gif` on the components CDN when no image is given or the image still fails. Absolute URLs, other relative paths and pages whose module scripts load from the page's own origin are unchanged; on iia-staging the path is rewritten to files.staging-insites.io, which serves the same file (`utils/asset-host.ts`, TW#26951438, ships with CRM v6.1.6).
+
+*Rollback*: re-pin CRM to `v3/3.4.5`.
+
+---
 *Insites Components* `v3.4.5` — pinned at `v3/3.4.5` (TW#26951361, TW#26936693, TW#26944935, TW#26936697)
 
 List-page titles no longer drop when their buttons appear, the production warning's checkbox sits on one line with its label, the header and help panel read preferences from the shell's boot data, and the rail and breadcrumb bar keep Email Logs current with filters in the URL.
