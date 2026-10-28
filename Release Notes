@@ -1,5 +1,15 @@
 Release Notes
 
+*Insites Components* `v3.4.7` — pinned at `v3/3.4.7` (TW#26923706)
+
+Field tooltips open on read-only (disabled) fields.
+
+- `ins-input-file` (image, file and media fields) set `pointer-events: none` on the whole element when disabled, so the label's tooltip could not be hovered or clicked: on the Data item View page every upload field's tooltip was dead while Edit worked (MEA, reported by Lee). The tooltip takes pointer events again; the dropzone, inputs and buttons stay disabled.
+- Checked the other data-entry components: `ins-card-select`, `ins-button-group`, `ins-checkbox-card` and `ins-input-slider` disable only their controls (cards, buttons, the range), never the label, and `ins-input`, `ins-textarea`, `ins-select` and the date pickers carry no whole-element rule, so `ins-input-file` was the only one.
+
+Reaches an instance when its CRM loader pins `v3/3.4.7`. *Rollback*: re-pin CRM to `v3/3.4.6`.
+
+---
 *Insites Components* `v3.4.6` — pinned at `v3/3.4.6` (TW#26951438)
 
 Loading images show on every module screen on the prod01 stack.
