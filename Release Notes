@@ -1,5 +1,17 @@
 Release Notes
 
+*Insites Components* `v3.4.5` — pinned at `v3/3.4.5` (TW#26951361, TW#26936693, TW#26944935, TW#26936697)
+
+List-page titles no longer drop when their buttons appear, the production warning's checkbox sits on one line with its label, the header and help panel read preferences from the shell's boot data, and the rail and breadcrumb bar keep Email Logs current with filters in the URL.
+
+- List pages: the title dropped 14px about a second after load. With the in-page crumbs hidden, the title column is 48px tall. The buttons a module draws later carried legacy `app.min.css`'s 24px top margin, which made their column 62px, and the bottom-aligned row grew under the title. From 640px the buttons in a v6 page title have no top margin. When they share the title's line they bottom-align with it inside its 48px. When a long title pushes them onto a second line (API Endpoints at 640-710px, a long database name at 768px), a 24px row gap keeps them clear of the title, the same space as in 3.4.4. Below 640px, where they stack under the title, the margin stays. Record pages are unchanged. CSS only, in `css/insites.css` (TW#26951361, ships with CRM v6.1.6).
+- `ins-header` (v6): the production switch warning reads "<instance> is **a live production instance**" (was "the"). "Don't show me again" is now the dialog's own checkbox with a `<label for>`: box and label share one line, centred under the message, at desktop width and at 380px. Clicking the text toggles it, and keyboard focus draws a 2px ring. `ins-checkbox` is unchanged; the dialog no longer uses it, so the legacy `display:block` rules on its label and box stop applying here (TW#26936693).
+- `ins-header`, `ins-help-panel` (v6): both read administrator preferences from `window.__iiaBoot.administratorPreferences` when the shell provides it (CRM boot data, TW#26784952). The dashboard reads `help_panels:dismissed` once, server-side, where it used to fetch it twice, and the header's production-warning read moves the same way. Without the payload (an older CRM pin, another shell) both fetch as before. Writes still POST, and a dismissal, a restore or "Don't show me again" also updates the payload, so a panel mounted later on the page sees the change (TW#26944935).
+- `ins-sidebar`, `ins-header` (v6): when neither the exact match nor the `?reroute=` match finds an item, a hash with a query string (`#/settings/email-logs?range=last_7_days`) matches its rail item by route alone. After a reload with Email Logs filters in the URL, Settings stays lit and the breadcrumb ends in "Email Logs" as the current crumb (bold, `aria-current`), where 3.4.4 drew a link that dropped the filters. Matching stays exact otherwise: `#/crm` never matches `#/crm-something`. The flyout marks its current row the same way, exact first: a row whose link is the whole hash wins over a sibling that matches only the route (TW#26936697).
+
+*Rollback*: re-pin CRM to `v3/3.4.4`.
+
+---
 *Insites Components* `v3.4.4` — pinned at `v3/3.4.4` (TW#26923796)
 
 - `ins-tab` (v6): the Won Opportunities and Won Reason tabs in Pipelines show the outline check (`icon-check-circle1`) instead of the filled one, so they match the outline x on the Lost tabs.
