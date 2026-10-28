@@ -1,4 +1,5 @@
 import { h, Component, Prop, State, Element, Event, EventEmitter, Listen, Host } from "@stencil/core";
+import { readBootPreference, rememberBootPreference } from '../../utils/admin-preferences';
 
 /**
  * ins-help-panel — the IIA v6 shell's dismissible help panel (Admin Shell v1.5 design, TW#26371963).
@@ -67,6 +68,9 @@ export class InsHelpPanel {
   }
 
   private async readList(): Promise<string[]> {
+    // The shell's boot payload holds every row (TW#26944935); fetch only when there is none.
+    const handed = readBootPreference(InsHelpPanel.PREF_KEY);
+    if (handed !== undefined) return InsHelpPanel.parseList(handed);
     try {
       const r = await fetch(`${this.preferencesEndpoint}?key=${encodeURIComponent(InsHelpPanel.PREF_KEY)}`, { credentials: 'same-origin', headers: { 'Accept': 'application/json' } });
       if (!r.ok) return [];
@@ -89,9 +93,11 @@ export class InsHelpPanel {
     this.insHelpDismiss.emit({ key: this.panelKey, message: this.dismissedMessage });
     const list = await this.readList();
     if (list.indexOf(this.panelKey) === -1) list.push(this.panelKey);
+    const value = JSON.stringify(list);
+    rememberBootPreference(InsHelpPanel.PREF_KEY, value);
     fetch(this.preferencesEndpoint, {
       method: 'POST', credentials: 'same-origin', headers: this.csrfHeaders(),
-      body: JSON.stringify({ payload: { key: InsHelpPanel.PREF_KEY, value: JSON.stringify(list) } }),
+      body: JSON.stringify({ payload: { key: InsHelpPanel.PREF_KEY, value } }),
     }).catch(() => { /* the panel is hidden for this session either way */ });
   };
 

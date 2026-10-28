@@ -1,4 +1,5 @@
 # Unreleased
+- [TW#26944935](https://pm.cbo.me/#tasks/26944935) Administrator preferences (`help_panels:dismissed`, `switcher:skip_production_warning`) are read from `window.__iiaBoot.administratorPreferences` when the shell provides it, and fetched from `preferencesEndpoint` only when it does not. A write also updates the payload, so a later read on the same page sees it.
 - [TW#26936693](https://pm.cbo.me/#tasks/26936693) Production switch warning: "a live production instance" (was "the"), and "Don't show me again" is the dialog's own checkbox with a `<label for>`, on one centred line with its label and a visible keyboard focus ring. The dialog no longer renders `ins-checkbox`.
 - [TW#26744156](https://pm.cbo.me/#tasks/26744156) Switching instance shows no toast: the host navigates away and the target is not open yet when the event fires.
 - [TW#26744156](https://pm.cbo.me/#tasks/26744156) The instance switch toast reads "Switching to <instance>…" instead of "Now in <instance>.", because the host navigates after the event and the target is not open yet.

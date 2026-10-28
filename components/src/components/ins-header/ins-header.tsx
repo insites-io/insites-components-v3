@@ -1,6 +1,7 @@
 import { h, Component, State, Prop, Element, Method, Event, EventEmitter, Listen, Host, Watch } from "@stencil/core";
 import { PHOSPHOR_SHELL_ICONS } from '../../utils/phosphor-shell-icons';
 import { DEFAULT_SUPPORT_HOURS, SupportHours, parseSupportHours, withinSupportHours } from '../../utils/support-hours';
+import { readBootPreference, rememberBootPreference } from '../../utils/admin-preferences';
 
 /**
  * IIA v6 shell header (TW#26371963) is an ADDITIVE variant of this component.
@@ -558,6 +559,9 @@ export class InsHeader {
   // ---- administrator preferences (help panels, production warning) --------
 
   private async readPref(key: string): Promise<string | null> {
+    // The shell's boot payload holds every row (TW#26944935); fetch only when there is none.
+    const handed = readBootPreference(key);
+    if (handed !== undefined) return handed;
     try {
       const r = await fetch(`${this.preferencesEndpoint}?key=${encodeURIComponent(key)}`, { credentials: 'same-origin', headers: { 'Accept': 'application/json' } });
       if (!r.ok) return null;
@@ -568,6 +572,7 @@ export class InsHeader {
   }
 
   private writePref(key: string, value: string) {
+    rememberBootPreference(key, value);
     return fetch(this.preferencesEndpoint, {
       method: 'POST', credentials: 'same-origin', headers: this.csrfHeaders(),
       body: JSON.stringify({ payload: { key, value } }),
