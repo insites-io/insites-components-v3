@@ -1,4 +1,5 @@
 # Unreleased
+- [TW#26936693](https://pm.cbo.me/#tasks/26936693) Production switch warning: "a live production instance" (was "the"), and "Don't show me again" is the dialog's own checkbox with a `<label for>`, on one centred line with its label and a visible keyboard focus ring. The dialog no longer renders `ins-checkbox`.
 - [TW#26744156](https://pm.cbo.me/#tasks/26744156) Switching instance shows no toast: the host navigates away and the target is not open yet when the event fires.
 - [TW#26744156](https://pm.cbo.me/#tasks/26744156) The instance switch toast reads "Switching to <instance>…" instead of "Now in <instance>.", because the host navigates after the event and the target is not open yet.
 - [TW#26801633](https://pm.cbo.me/#tasks/26801633) The support pill and phone icon button label reads "Close support chat" while the Messenger is open, and uses "message" for a count of one.

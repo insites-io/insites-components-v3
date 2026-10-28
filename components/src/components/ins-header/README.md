@@ -198,14 +198,11 @@ Type: `Promise<void>`
 ### Depends on
 
 - [ins-button](../ins-button)
-- [ins-checkbox](../ins-checkbox)
 
 ### Graph
 ```mermaid
 graph TD;
   ins-header --> ins-button
-  ins-header --> ins-checkbox
-  ins-checkbox --> ins-input-tooltip
   style ins-header fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

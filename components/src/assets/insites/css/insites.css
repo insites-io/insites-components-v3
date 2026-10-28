@@ -14476,6 +14476,16 @@ ins-help-panel[hidden] { display: none; }
 .iia-dialog__h2 { margin: 0; font-size: var(--ins-title-5); line-height: var(--ins-leading-tight); font-weight: var(--ins-weight-semibold); letter-spacing: -0.5px; color: var(--ins-text-1); }
 .iia-dialog__p { margin: 0; font-size: var(--ins-text-sm); line-height: 1.6; color: var(--ins-text-2); text-wrap: pretty; }
 .iia-dialog__p strong { font-weight: var(--ins-weight-semibold); color: var(--ins-text-1); }
+/* Production switch "Don't show me again" (TW#26936693). The dialog draws its own checkbox instead of ins-checkbox,
+   whose label and box legacy app.min.css sets to display:block: the box sat on its own line, left of centre, with the
+   text below it. Here box and text share one centred line, the label names the input (<label for>) so clicking the
+   text toggles it, and keyboard focus draws the help panel's 2px ring. The doubled class outranks Foundation and
+   InsitesAdmin.min.css, which restyle every bare label and checkbox (block, 12px semibold, a 1rem bottom margin). */
+.iia-dialog__check { display: inline-flex; align-items: center; gap: var(--ins-space-xs); max-width: 100%; }
+.iia-dialog .iia-dialog__check input[type="checkbox"] { flex: none; width: 16px; height: 16px; margin: 0; accent-color: var(--ins-main); cursor: pointer; }
+.iia-dialog .iia-dialog__check input[type="checkbox"]:focus-visible { outline: 2px solid var(--ins-main); outline-offset: 2px; }
+.iia-dialog .iia-dialog__check label { display: block; margin: 0; font-family: inherit; font-size: var(--ins-text-sm); font-weight: var(--ins-weight-regular); line-height: 1.6; color: var(--ins-text-2); cursor: pointer; }
+[data-theme="dark"] .iia-dialog .iia-dialog__check input[type="checkbox"] { color-scheme: dark; }
 .iia-dialog__actions { display: flex; align-items: center; justify-content: center; gap: var(--ins-space-sm); width: 100%; }
 .iia-dialog__actions--stack { flex-direction: column; }
 .iia-btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; height: 44px; padding: 0 var(--ins-space-md); border-radius: var(--ins-radius); font-family: inherit; font-size: var(--ins-text-xs); font-weight: var(--ins-weight-semibold); letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; transition: background-color var(--ins-duration-fast) var(--ins-ease-out); }

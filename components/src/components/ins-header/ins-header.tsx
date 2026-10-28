@@ -998,8 +998,12 @@ export class InsHeader {
               <div class="iia-dialog__body">
                 <i class="icon-alert-triangle iia-dialog__warn" aria-hidden="true"></i>
                 <h2 id="iia-prod-switch-title" class="iia-dialog__h2">Switch to {this.prodConfirm.name}?</h2>
-                <p class="iia-dialog__p">{this.prodConfirm.name} is <strong>the live production instance</strong>. Visitors see changes <strong>as soon as you save them</strong>, and emails send for real.</p>
-                <ins-checkbox label="Don't show me again" checked={this.prodDontShow} onInsCheck={(e: any) => this.setProdDontShow(!!(e.detail && (e.detail.checked ?? e.detail)))}></ins-checkbox>
+                <p class="iia-dialog__p">{this.prodConfirm.name} is <strong>a live production instance</strong>. Visitors see changes <strong>as soon as you save them</strong>, and emails send for real.</p>
+                {/* The dialog's own checkbox (TW#26936693): a <label for> the text toggles, styled under .iia-dialog__check. */}
+                <div class="iia-dialog__check">
+                  <input id="iia-prod-switch-skip" type="checkbox" checked={this.prodDontShow} onChange={(e: Event) => this.setProdDontShow((e.target as HTMLInputElement).checked)} />
+                  <label htmlFor="iia-prod-switch-skip">Don't show me again</label>
+                </div>
                 <div class={{ 'iia-dialog__actions': true, 'iia-dialog__actions--stack': this.tight }}>
                   <button type="button" class="iia-btn iia-btn--outline" onClick={() => this.prodConfirm = null}><i class="icon-x" aria-hidden="true"></i>Cancel</button>
                   <button type="button" class="iia-btn iia-btn--solid" onClick={() => this.doSwitch(this.prodConfirm.id, 'production')}><i class="icon-refresh-cw" aria-hidden="true"></i>Switch to production</button>
