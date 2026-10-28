@@ -14176,6 +14176,19 @@ body.mini .iia-shell--v6 .ins-renderer-wrap.content { margin-left: 0; width: aut
    kept its 24px bottom margin and the empty h1's 8px, leaving 56px instead of the 24px gutter under the breadcrumb bar
    on every record view (TW#26897268). Collapse it; a title or buttons keep it. Browsers without :has() keep the gap. */
 .iia-shell--v6 .page-title-wrapper:not(:has(.header-title:not(:empty))):not(:has(.buttons-wrapper)):not(:has(> :nth-child(2))) { display: none; }
+/* With the crumbs hidden (rule above), the title column is the h1 and its 8px top margin: 48px. Legacy app.min.css
+   gives the actions a 24px top margin (.page-title-wrapper .buttons-wrapper), so a list page that draws ADD + kebab
+   about a second after its title grew the bottom-aligned row from 48px to 62px and the title dropped 14px. Without
+   the margin the 38px buttons fit inside the title column and bottom-align with it, and nothing moves when they
+   appear. The row is .grid-x (flex-flow: row wrap), so a title and buttons wider than the row put the buttons on a
+   second line (API Endpoints at 640-710px, a long database name at 768px), and that margin was the only space
+   between them and the h1. row-gap gives wrapped lines the same 24px and adds nothing to a single line.
+   From 640px only: below that the row is display:block and the margin is the gap above the stacked buttons.
+   (TW#26951361) */
+@media (min-width: 640px) {
+  .iia-shell--v6 .page-title-wrapper { row-gap: var(--ins-space-md); }
+  .iia-shell--v6 .page-title-wrapper > .buttons-wrapper { margin-top: 0; }
+}
 /* The content column is the scroller, as in the prototype (<main style="flex:1;overflow-y:auto">): header and rail
    stay put, the page scrolls beneath the breadcrumb bar. Legacy app.min.css gives .ins-renderer-wrap overflow:hidden
    from the iframe era, which inside this fixed-height frame clipped every SPA page taller than the viewport and left
