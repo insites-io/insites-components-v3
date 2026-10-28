@@ -1,5 +1,6 @@
 import { h, Component, Prop, Event, EventEmitter, State, Method, Listen, Element, Host } from "@stencil/core";
 import { RAIL_GROUPS, railGroupForLegacyIcon } from "../../utils/phosphor-shell-icons";
+import { routeOf } from "../../utils/hash-route";
 
 /** v6: the groups a module may name with `rail-group` on its top-level item (TW#26868377). */
 const DECLARABLE_RAIL_GROUPS = RAIL_GROUPS.filter(g => g.label).map(g => g.id);
@@ -314,6 +315,19 @@ export class InsSidebar {
       }
     }
 
+    // TW#26936697: a screen that keeps its filters in the URL (#/settings/email-logs?range=...) matched no item, so a
+    // reload fell back to the stored trail and lit the wrong rail item. With nothing matched above, match the route
+    // without its query string, still exactly: #/crm never matches #/crm-something.
+    const route = routeOf(currentHash);
+    if (route && route !== currentHash) {
+      for (let i = 0; i < this.sidebarItemEls.length; i++) {
+        if (route === await this.sidebarItemEls[i].formatRoute()) {
+          await this.loadRoute(this.sidebarItemEls[i], deeplink);
+          return true;
+        }
+      }
+    }
+
     return false
   }
 
@@ -487,16 +501,19 @@ export class InsSidebar {
 
   private refreshFlyoutSubs(){
     if (!this.flyoutFor) return;
-    const subs = Array.from(this.flyoutFor.querySelectorAll(':scope > ins-sidebar-item, :scope > div > ins-sidebar-item')) as HTMLInsSidebarItemElement[];
+    const subs = (Array.from(this.flyoutFor.querySelectorAll(':scope > ins-sidebar-item, :scope > div > ins-sidebar-item')) as HTMLInsSidebarItemElement[])
+      .filter(s => s.label && s.label !== '');
     const hash = window.location.hash;
-    this.flyoutSubs = subs
-      .filter(s => s.label && s.label !== '')
-      .map(s => ({
-        el: s,
-        label: s.label,
-        external: !!s.externalLink,
-        active: !!s.link && hash === s.link,
-      }));
+    // Exact first, as in matchHash (TW#26936697): the route without its query string marks a row only when no
+    // sibling's link is the whole hash, so #/x?a=1 lights its own row and not the #/x row beside it as well.
+    const exact = subs.some(s => !!s.link && s.link === hash);
+    const target = exact ? hash : routeOf(hash);
+    this.flyoutSubs = subs.map(s => ({
+      el: s,
+      label: s.label,
+      external: !!s.externalLink,
+      active: !!s.link && s.link === target,
+    }));
   }
 
   private flyoutEnter = () => { clearTimeout(this.flyCloseTimer); };

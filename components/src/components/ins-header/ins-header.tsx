@@ -2,6 +2,7 @@ import { h, Component, State, Prop, Element, Method, Event, EventEmitter, Listen
 import { PHOSPHOR_SHELL_ICONS } from '../../utils/phosphor-shell-icons';
 import { DEFAULT_SUPPORT_HOURS, SupportHours, parseSupportHours, withinSupportHours } from '../../utils/support-hours';
 import { readBootPreference, rememberBootPreference } from '../../utils/admin-preferences';
+import { routeOf } from '../../utils/hash-route';
 
 /**
  * IIA v6 shell header (TW#26371963) is an ADDITIVE variant of this component.
@@ -733,10 +734,13 @@ export class InsHeader {
     if (!c.length) return null;
     if (c.length === 1 && InsHeader.isHomeCrumb(c[0])) return null;
     const here = InsHeader.crumbPath(hash);
+    // TW#26936697: a screen that keeps its filters in the URL (#/settings/email-logs?search=x) is still the
+    // leaf's page, so the leaf also matches the route without its query string, as ins-sidebar does.
+    const hereRoute = InsHeader.crumbPath(routeOf(hash));
     return c.map((x, i) => {
       const path = InsHeader.crumbPath(x.link);
       const routable = !!path && !x.withSubmenu;
-      const current = i === c.length - 1 && (!routable || path === here);
+      const current = i === c.length - 1 && (!routable || path === here || path === hereRoute);
       return { label: String(x.label || ''), path, routable, current };
     });
   }
