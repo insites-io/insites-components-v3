@@ -1,5 +1,17 @@
 Release Notes
 
+*Insites Components* `v3.4.8` — pinned at `v3/3.4.8` (TW#26946871)
+
+Sidebar flyouts open above an edit screen's sticky action bar.
+
+- The Configure flyouts (Settings, API, Permissions, Integrations) opened under the fixed DELETE/SAVE bar the module edit screens draw (`.footer-buttons-wrapper`, z-index 100 in the shared `dist/styles/app.min.css`), so their lower items could not be clicked. The rail (`ins-sidebar.iia-rail`, z-index 40, 70 in overlay mode) is a stacking context, so the flyout's own z-index only ordered it inside the rail.
+- `--iia-z-flyout` goes from 80 to 105 (above the bar, below the toast region at 110 and the modules' modals and drawers at 1000 and up), and the rail takes that layer only while a flyout is open (`.iia-rail--flyout-open`), so the header's raised menus still cover it otherwise.
+- Includes 3.4.7 (TW#26923706, tooltips on read-only fields).
+
+Reaches an instance when its CRM loader pins `v3/3.4.8`. *Rollback*: re-pin CRM to `v3/3.4.6` (or `v3/3.4.7`).
+
+---
+
 *Insites Components* `v3.4.7` — pinned at `v3/3.4.7` (TW#26923706)
 
 Field tooltips open on read-only (disabled) fields.
