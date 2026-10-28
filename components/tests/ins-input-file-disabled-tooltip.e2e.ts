@@ -17,6 +17,19 @@ test.describe('ins-input-file tooltip', () => {
     await expect(page.locator('.tippy-box')).toContainText('Shown on the listing card');
   });
 
+  // What a module View page actually renders: readonly plus a disabled class, with the shared
+  // dist/styles/app.min.css rule that makes a readonly ins-input-file pointer-events: none.
+  test('opens on a readonly field under the shared stylesheet', async ({ page }) => {
+    await mount(
+      page,
+      '<style>ins-input-file[readonly]{pointer-events:none}</style>' +
+        '<ins-input-file label="Image" tooltip="Shown on the listing card" readonly class="disabled"></ins-input-file>',
+    );
+    await page.locator('ins-input-file ins-input-tooltip .ins-input-tooltip').click();
+    await expect(page.locator('.tippy-box')).toContainText('Shown on the listing card');
+    await expect(page.locator('ins-input-file .ins-dropzone').first()).toHaveCSS('pointer-events', 'none');
+  });
+
   test('leaves the disabled dropzone without pointer events', async ({ page }) => {
     await mount(page, field(true));
     const dropzone = page.locator('ins-input-file .ins-dropzone').first();

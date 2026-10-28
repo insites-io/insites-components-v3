@@ -6,6 +6,13 @@ ins-input-file {
     }
   }
 
+  // TW#26923706: module View pages set readonly, and the shared dist/styles/app.min.css makes a
+  // readonly ins-input-file pointer-events: none; its tooltip still opens.
+  &[readonly] ins-input-tooltip {
+    pointer-events: auto;
+    cursor: default;
+  }
+
   // disable state
   &[disabled] {
     pointer-events: none;

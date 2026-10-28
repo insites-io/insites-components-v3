@@ -2215,8 +2215,11 @@ ins-input-file[disabled] {
 }
 
 /* The field is read-only, its tooltip is not: the label has no for and does not wrap the input, so a
-   hover or click on the tooltip cannot reach the file chooser (TW#26923706). */
-ins-input-file[disabled] ins-input-tooltip {
+   hover or click on the tooltip cannot reach the file chooser (TW#26923706). [readonly] is what the
+   module SPAs set on a View page; the shared dist/styles/app.min.css makes that whole element
+   pointer-events: none too. */
+ins-input-file[disabled] ins-input-tooltip,
+ins-input-file[readonly] ins-input-tooltip {
   pointer-events: auto;
   cursor: default
 }
@@ -9057,8 +9060,11 @@ ins-input-file[disabled] {
 }
 
 /* The field is read-only, its tooltip is not: the label has no for and does not wrap the input, so a
-   hover or click on the tooltip cannot reach the file chooser (TW#26923706). */
-ins-input-file[disabled] ins-input-tooltip {
+   hover or click on the tooltip cannot reach the file chooser (TW#26923706). [readonly] is what the
+   module SPAs set on a View page; the shared dist/styles/app.min.css makes that whole element
+   pointer-events: none too. */
+ins-input-file[disabled] ins-input-tooltip,
+ins-input-file[readonly] ins-input-tooltip {
   pointer-events: auto;
   cursor: default
 }
