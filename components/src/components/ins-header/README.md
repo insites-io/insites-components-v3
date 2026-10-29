@@ -16,7 +16,10 @@ slot.
 the support pill ("Ask us anything", presence dot, unread badge). Right: environment chip opening
 the instance switcher, view-frontend, theme toggle, help menu and account menu. Only one header
 popover is open at a time; Escape closes it; `[` toggles the rail; `?` opens the keyboard-shortcuts
-dialog. Tooltips use the shared `data-tip` mechanism with the design's 150ms hover delay, instant
+dialog. The header draws every scrim inside itself, so it rises while one shows: to
+`--iia-z-header-raised` for the switcher and account menu, above the page's fixed bars, and to
+`--iia-z-modal` for the shortcuts dialog and the production warning, above the modules' drawers and
+modals too (TW#26955888). Tooltips use the shared `data-tip` mechanism with the design's 150ms hover delay, instant
 hide, and suppression once the trigger is clicked. Beneath the bar, a 40px breadcrumb bar follows
 `ins-renderer`'s `insRouteChange` and hides on the dashboard.
 

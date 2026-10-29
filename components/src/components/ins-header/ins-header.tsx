@@ -787,8 +787,9 @@ export class InsHeader {
     ];
     let rowIdx = 0;
 
+    // The dialogs draw their scrim inside this host, so the host takes the modal layer while one is open (TW#26955888).
     return (
-      <Host class={{ 'iia-hdr-host': true, 'iia-hdr-host--raised': this.envOpen || this.userOpen }}>
+      <Host class={{ 'iia-hdr-host': true, 'iia-hdr-host--raised': this.envOpen || this.userOpen, 'iia-hdr-host--modal': this.shortcutsOpen || !!this.prodConfirm }}>
         <header class={{ 'iia-hdr': true, 'iia-hdr--no-chat': this.mobile }} data-screen-label="Top bar">
           {/* left: rail toggle + logo */}
           <div class="iia-hdr__left">

@@ -13745,16 +13745,27 @@ body.no-transition * {
   --iia-z-rail: 40;
   --iia-z-menu: 50;
   --iia-z-rail-raised: 70;
-  --iia-z-header-raised: 80;
   --iia-z-overlay: 100;
   /* The rail takes this level while a flyout is open (rail flyout section). It has to clear the
      page's own fixed bars, which legacy app.min.css puts at 100 (.footer-buttons-wrapper), and
      stay under the toast region (scrim, 110) and the modules' modals and drawers (1000 and up)
      (TW#26946871). */
   --iia-z-flyout: 105;
+  /* The header takes this level while its instance switcher or user menu is open, or one of its
+     tooltips shows. The menus dim the page with a scrim drawn inside the header, so the header
+     has to clear the page's fixed bars (100) and an open flyout (105) for the scrim to cover them
+     (TW#26955888; was 80, under the bars). */
+  --iia-z-header-raised: 106;
   --iia-z-scrim: 110;
   --iia-z-drawer: 115;
   --iia-z-switcher: 200;
+  /* The header takes this level while one of its dialogs is open (keyboard shortcuts, the
+     production switch warning). Their scrim draws inside the header too, so the header has to
+     clear everything a page can show: the rail and its flyout, the page's fixed bars, and the
+     modules' modals, drawers and backdrop (legacy ins-modal, ins-drawer and .ins-backdrop-wrap,
+     9998 and 9999), which "?" can open a dialog over. Fullscreen code editors (32000 and up)
+     stay above (TW#26955888). */
+  --iia-z-modal: 10000;
 }
 
 /* Chrome surfaces re-point for dark; the chrome never goes light. Placed after
@@ -14217,6 +14228,8 @@ body.mini .iia-shell--v6 .ins-renderer-wrap.content { margin-left: 0; width: aut
 /* ---- header ---------------------------------------------------------------- */
 ins-header.iia-hdr-host { display: block; position: relative; z-index: var(--iia-z-header); }
 ins-header.iia-hdr-host--raised { z-index: var(--iia-z-header-raised); }
+/* After --raised: the switcher stays open behind the production switch warning, so both classes apply. */
+ins-header.iia-hdr-host--modal { z-index: var(--iia-z-modal); }
 .iia-hdr {
   height: 56px; background: var(--ins-chrome-bg); color: var(--ins-chrome-fg);
   display: grid; grid-template-columns: 1fr minmax(200px, 480px) 1fr; align-items: center;
@@ -14413,8 +14426,10 @@ ins-header.iia-hdr-host--raised { z-index: var(--iia-z-header-raised); }
 /* Bubbles are centred on every trigger, as the DS Tooltip is; the admin page's <html> has overflow-x hidden,
    so a bubble that pokes past a phone viewport never adds scroll width. */
 /* Bubbles hang below the 56px bar over the rail (z 40) and the content; the header sits at z 30, so a
-   showing bubble would paint behind the rail. Raise the header for as long as one of its tips shows. */
-ins-header.iia-hdr-host:has([data-tip]:hover:not([data-tip-off]), [data-tip]:focus-visible) { z-index: var(--iia-z-header-raised); }
+   showing bubble would paint behind the rail. Raise the header for as long as one of its tips shows.
+   Not while a dialog is open: this selector outranks --modal, so a header button focused from the keyboard
+   behind the dialog would drop it to the raised level, under the modules' drawers (TW#26955888). */
+ins-header.iia-hdr-host:not(.iia-hdr-host--modal):has([data-tip]:hover:not([data-tip-off]), [data-tip]:focus-visible) { z-index: var(--iia-z-header-raised); }
 /* DS tooltip bubble is dark; invert it against dark chrome in dark mode (design). */
 [data-theme="dark"] .iia-hdr [data-tip]::after { background: var(--iia-header); color: var(--iia-sidebar); }
 [data-theme="dark"] .iia-hdr [data-tip]::before { border-bottom-color: var(--iia-header); }
