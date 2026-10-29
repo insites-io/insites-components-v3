@@ -5,7 +5,7 @@ Release Notes
 Header dialogs and menus dim the whole page.
 
 - The keyboard-shortcuts dialog (`?`) and the production switch warning drew their scrim inside `ins-header`, a stacking context at z-index 30, so the rail (40) and an edit screen's fixed DELETE/SAVE bar (`.footer-buttons-wrapper`, 100 in the shared `dist/styles/app.min.css`) stayed bright above an open dialog and took its clicks, and `?` pressed inside an open drawer (9999) opened the shortcuts underneath it. The header now takes `--iia-z-modal` (10000) while a dialog is open, so the scrim covers the rail, the bar and the modules' drawers and modals, and a click outside the dialog closes it.
-- The instance switcher and account menu raise the header to `--iia-z-header-raised`, now 106 (was 80), so their scrim covers the bar too, and on a phone the docked switcher's last rows are no longer under the bar's stacked buttons.
+- The instance switcher and account menu raise the header to `--iia-z-header-raised`, now 106 (was 80), above the bar. The switcher's scrim covers it (the account menu has no scrim), and on a phone the docked switcher's last rows are no longer under the bar's stacked buttons.
 - A header button focused from the keyboard behind an open dialog no longer drops the dialog to the raised level: the tooltip rule skips `.iia-hdr-host--modal`.
 - Includes 3.4.8 (TW#26946871, flyouts above the action bar) and 3.4.7 (TW#26923706).
 
