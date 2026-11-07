@@ -63,10 +63,12 @@ export class InsSparkline {
       chart: {
         renderTo: this.chartContainerEl,
         type: 'spline',
-        height: 150,
-        marginBottom: 30,
+        // A tile sparkline is a thin strip, not a chart (IIA DSH-10).
+        height: 56,
+        marginTop: 4,
+        marginBottom: 4,
         style: {
-          fontFamily: 'Open Sans'
+          fontFamily: 'var(--ins-font-family, Open Sans)'
         }
       },
       title: { text: "" },
@@ -105,8 +107,10 @@ export class InsSparkline {
           offsetY: 1,
           width: 10
         },
-        padding: 5,
-        backgroundColor: '#fff',
+        padding: 8,
+        borderRadius: 6,
+        backgroundColor: 'var(--ins-card, #fff)',
+        style: { fontFamily: 'var(--ins-font-family, Open Sans)', fontSize: '12px', color: 'var(--ins-text-1, #222)' },
         formatter: function () {
           // The point name (a date or hour label) heads the reading; the value is locale formatted.
           const label = this.key ?? this.point?.name ?? this.series?.name ?? '';
