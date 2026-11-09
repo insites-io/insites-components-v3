@@ -163,7 +163,7 @@ export class InsBarChart {
           fontSize: '14px',
           fontWeight: 'normal'
         },
-        itemMarginTop: 30,
+        itemMarginTop: 12,
         symbolRadius: 0,
         symbolWidth: 10,
         symbolHeight: 10,
