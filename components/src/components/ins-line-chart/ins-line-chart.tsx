@@ -171,7 +171,7 @@ export class InsLineChart {
           fontSize:  "14px",
           fontWeight: 'normal'
         },
-        itemMarginTop: 30,
+        itemMarginTop: 12,
         symbolWidth: 32
       },
       credits: {
