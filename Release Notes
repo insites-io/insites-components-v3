@@ -1,5 +1,19 @@
 Release Notes
 
+*Insites Components* `v3.4.10` — pinned at `v3/3.4.10` (TW#26997765)
+
+A saved phone number reopens with the country it was saved in, not the first country that shares its dial code.
+
+- Modules store a phone as `+1 4165551234`, a dial code and the national digits with no ISO country, and `ins-input-tel` set its flag from the dial code alone. `+1` is shared by the US, Canada and 23 other NANP countries, and intl-tel-input resolves a bare `+1` to the US, so a Canadian or Jamaican number picked from the dropdown reopened as the US. For `+1` the field now hands the library the area code as well (through `setValue` and through the `country-code` and `phonenum-value` props), and the library picks the country that owns it: 416 is Canada, 876 Jamaica, 212 the US. No module change: every module's `InsInputTelWrap` already calls `setValue` with the number.
+- Only `+1` works this way. The library's +44 data lists coarse Jersey, Guernsey and Isle of Man ranges that would flag ordinary UK mobiles (07911, 07700) as those islands, so `+44`, `+7`, `+61` and the other shared codes still reopen as their main country. Those need the ISO country stored with the number (TW#26710319).
+- Still the US: Canadian area codes opened after the library's 2019 data (263, 368, 428, 474, 683, 942), toll-free numbers (800, 888), and made-up test numbers whose first three digits are not an area code (`1234567890`).
+- New spec `tests/ins-input-tel.e2e.ts`: 7 cases, 4 of which fail on 3.4.9.
+- Includes 3.4.9 (TW#26955888, header dialogs above the page).
+
+Reaches every v6 instance once `v3/latest` is promoted to 3.4.10. *Rollback*: `scripts/promote.sh 3.4.9`.
+
+---
+
 *Insites Components* `v3.4.9` — pinned at `v3/3.4.9` (TW#26955888)
 
 Header dialogs and menus dim the whole page.
