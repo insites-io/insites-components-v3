@@ -77,7 +77,7 @@ export class InsInputTel {
     this.initBlurEvents();
 
     if (this.countryCode){
-      this.setCountryCode(`+${this.countryCode}`);
+      this.setCountryFromNumber(this.countryCode, this.areacodeValue, this.phonenumValue);
     }
 
     if (this.checkLoad) this.load = true;
@@ -197,7 +197,7 @@ export class InsInputTel {
   @Method()
   async setValue({ country, country_code, area_code, phone_number }: { country?: string; country_code?: string; area_code?: string; phone_number?: string }){
     if (country) this._iti.setCountry(country);
-    if (country_code) this._iti.setNumber(country_code);
+    else if (country_code) this.setCountryFromNumber(country_code, area_code, phone_number);
 
     this.areacodeValue = area_code;
     this._area_code_value = area_code;
@@ -223,6 +223,24 @@ export class InsInputTel {
   @Method()
   async setCountryCode(code: string) {
     this._iti.setNumber(code);
+  }
+
+  // A dial code alone is ambiguous: "+1" belongs to the US, Canada and 23 other countries, and
+  // intl-tel-input resolves a bare "+1" to the first of them, so a saved Canadian number reopened
+  // as the US. With the area code attached ("+1416...") it picks the country that owns it.
+  // Only NANP gets this: its area codes map one-to-one to a country, while the +44 ranges in the
+  // library's data are coarse and would flag ordinary UK mobiles as Jersey or Guernsey.
+  // setNumber leaves the national digits in the hidden flag input, so clear it afterwards.
+  setCountryFromNumber(code: string, areaCode: string, phoneNumber: string) {
+    const dialCode = String(code || '').replace(/[^\d]/g, '');
+    if (!dialCode) return;
+
+    const national = dialCode === '1'
+      ? [this.noAreacode ? '' : areaCode, phoneNumber].join('').replace(/[^\d]/g, '')
+      : '';
+
+    this._iti.setNumber(`+${dialCode}${national}`);
+    this._phone.value = '';
   }
 
   activateLabel() {
